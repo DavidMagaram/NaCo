@@ -5,3 +5,4 @@ node_modules/
 02*.txt
 baseline*.txt
 tmp*
+Assignment2/latex_output/_minted*

@@ -1,8 +1,0 @@
-\begin{MintedVerbatim}[commandchars=\\\{\}]
-\PYG{k}{def}\PYG{+w}{ }\PYG{n+nf}{write\PYGZus{}chunked\PYGZus{}train}\PYG{p}{(}\PYG{n}{train\PYGZus{}seqs}\PYG{p}{:} \PYG{n+nb}{list}\PYG{p}{[}\PYG{n+nb}{str}\PYG{p}{],} \PYG{n}{n}\PYG{p}{:} \PYG{n+nb}{int}\PYG{p}{)} \PYG{o}{\PYGZhy{}\PYGZgt{}} \PYG{n}{Path}\PYG{p}{:}
-    \PYG{n}{chunks} \PYG{o}{=} \PYG{n+nb}{set}\PYG{p}{()}
-    \PYG{k}{for} \PYG{n}{seq} \PYG{o+ow}{in} \PYG{n}{train\PYGZus{}seqs}\PYG{p}{:}
-        \PYG{n}{chunks}\PYG{o}{.}\PYG{n}{update}\PYG{p}{(}\PYG{n}{chunk\PYGZus{}sequence}\PYG{p}{(}\PYG{n}{seq}\PYG{p}{,} \PYG{n}{n}\PYG{p}{))}
-    \PYG{n}{tmp}\PYG{o}{.}\PYG{n}{write}\PYG{p}{(}\PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{\PYGZdq{}}\PYG{o}{.}\PYG{n}{join}\PYG{p}{(}\PYG{n}{chunks}\PYG{p}{)} \PYG{o}{+} \PYG{l+s+s2}{\PYGZdq{}}\PYG{l+s+se}{\PYGZbs{}n}\PYG{l+s+s2}{\PYGZdq{}}\PYG{p}{)}
-    \PYG{k}{return} \PYG{n}{tmp}
-\end{MintedVerbatim}
