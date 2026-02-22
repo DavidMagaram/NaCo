@@ -6,3 +6,10 @@ node_modules/
 baseline*.txt
 tmp*
 Assignment2/latex_output/_minted*
+Assignment2/report.aux
+Assignment2/report.fdb_latexmk
+Assignment2/report.fls
+Assignment2/report.log
+Assignment2/report.out
+Assignment2/report.pyg
+Assignment2/report.synctex.gz

@@ -14,24 +14,16 @@
 \maketitle
 
 \section{Introduction}
-Anomaly detection in system call sequences is a foundational approach to intrusion detection. Because Unix processes communicate with the kernel through system calls, these sequences can provide critical insight into the health of a 
-system. The core premise is that legitimate processes (such as \texttt{sendmail}) generate predictable patterns during normal behavior. In contrast, anomalous system call sequences, such as a normally silent process suddenly 
-opening hundreds of files, can be a strong indicator of a malicious exploit.
+Anomaly detection in system call sequences is a foundational approach to intrusion detection. Because Unix processes communicate with the kernel through system calls, these sequences can provide critical insight into the health of a system. The core premise is that legitimate processes (such as \texttt{sendmail}) generate predictable patterns during normal behavior. In contrast, anomalous system call sequences, such as a normally silent process suddenly opening hundreds of files, can be a strong indicator of a malicious exploit.
 
-To tackle this, the Negative Selection Algorithm (NSA) is used to classify sequences as either normal or anomalous. The NSA is a technique heavily inspired by the biological immune system. In nature, T-cells that react to the body’s 
-own cells (the "self") are eliminated in the thymus during development; only those that tolerate the self survive to recognize and attack foreign, non-self material. The algorithm computationally mirrors this biological process as 
-it generates a repertoire of detectors that explicitly do not match any strings within a labeled "self" training corpus. At test time, any input sequence that is matched by at least one detector in the repertoire is flagged as an anomaly.
+To tackle this, the Negative Selection Algorithm (NSA) can be used to classify sequences as either normal or anomalous. The NSA is a technique heavily inspired by the biological immune system. In nature, T-cells that react to the body’s own cells (the "self") are eliminated in the thymus during development; only those that tolerate the self survive to recognize and attack foreign, non-self material. The algorithm computationally mirrors this biological process as it generates a repertoire of detectors that explicitly do not match any strings within a labeled "self" training corpus. At test time, any input sequence that is matched by at least one detector in the repertoire is flagged as an anomaly.
 
-The objective of this project is to train a classifier using normal system call sequences to accurately detect anomalies in test datasets. We will be working with historical benchmark data originally collected by Stephanie Forrest's group 
-at the University of New Mexico. Given a training corpus of normal system call sequences, the goal is to train a classifier that assigns an anomaly score to each sequence in the test sets ensuring that anomalous sequences score higher 
-than normal ones. The test sets contain both normal and anomalous behavior. Ultimately, the quality of our classification and the algorithm's discriminative power will be evaluated using Receiver Operating Characteristic (ROC) visualizations 
+The objective of this project is to train a classifier using normal system call sequences to accurately detect anomalies in test datasets. We will be working with historical benchmark data originally collected by Stephanie Forrest's group at the University of New Mexico. Given a training corpus of normal system call sequences, the goal is to train a classifier that assigns an anomaly score to each sequence in the test sets ensuring that anomalous sequences score higher than normal ones. The test sets contain both normal and anomalous behavior. Ultimately, the quality of our classification and the algorithm's discriminative power will be evaluated using Receiver Operating Characteristic (ROC) visualizations 
 and the Area Under the Curve (AUC) metric.
 
 \section{Methodology}
 \subsection{Dataset}
-For this analysis, we utilized two primary datasets, \texttt{snd-cert} and \texttt{snd-unm}, located within the provided syscalls directory. These datasets capture the sequences of system calls (such as \texttt{open}, \texttt{read}, or \texttt{write}) 
-made by Unix processes communicating with the kernel.
-Each dataset is structured into several specific files to facilitate training and evaluation:
+For this analysis, we utilized two primary datasets, \texttt{snd-cert} and \texttt{snd-unm}, located within the provided syscalls directory. These datasets capture the sequences of system calls (such as \texttt{open}, \texttt{read}, or \texttt{write}) made by Unix processes communicating with the kernel. Each dataset is structured into several specific files to facilitate training and evaluation:
 \begin{itemize}
     \item \textbf{Training Data} (\texttt{.train}): A single file containing sequences recorded exclusively during the normal, healthy behavior of a process.
     \item \textbf{Alphabet} (\texttt{.alpha}): A file containing the discrete alphabet used to encode the different system calls.
@@ -63,8 +55,7 @@ Each chunk was scored individually by the negative selection algorithm. To merge
 $score(seq) = mean \{ negsel\_score(chunk) \mid chunk \in chunks\_n(seq) \}$
 % Sequences shorter than $n$ produced no chunks and defaulted to a score of zero.
 
-While this approach yielded reasonable results on the \texttt{snd-cert} test split 1 (achieving an AUC of 0.9374 at $n = 15$, $r = 5$), a critical practical limitation became apparent. For the parameter set $n=15$ 
-and $r=6$, runtimes exceeded one hour, making a thorough parameter sweep infeasible. The assignment brief explicitly warns that if running the algorithm on one set of parameters takes too long, you might run into time trouble. Therefore a more effective use of the data was required.
+While this approach yielded reasonable results on the \texttt{snd-cert} test split 1 (achieving an AUC of 0.9374 at $n = 15$, $r = 5$), a critical practical limitation became apparent. For the parameter set $n=15$ and $r=6$, runtimes exceeded one hour, making a thorough parameter sweep infeasible. The assignment brief explicitly warns that if running the algorithm on one set of parameters takes too long, you might run into time trouble. Therefore a more effective use of the data was required.
 
 \subsubsection{Chunked Training File for Optimization}
 To address the severe runtime bottleneck, the pre-processing logic was extended to the training data. The training sequences were also pre-processed into a set of fixed-length, non-overlapping chunks of length $n$. To optimize the process further, only the unique set of these chunks 
@@ -78,8 +69,7 @@ def write_chunked_train(train_seqs: list[str], n: int) -> Path:
     tmp.write("\n".join(chunks) + "\n") 
     return tmp
 \end{minted}
-This drastically reduced the size of the "self" set presented to the algorithm. This smaller self set translates to fewer detectors needing to be matched against, which substantially lowered the runtime. Crucially, this refined approach also produced noticeably higher AUC scores on 
-snd-unm (detailed in Table ...), suggesting that an explicitly compact and distinct set of normal patterns is highly effective at discriminating normal sequences from anomalous ones in this dataset.
+This drastically reduced the size of the "self" set presented to the algorithm. This smaller self set translates to fewer detectors needing to be matched against, which substantially lowered the runtime. Crucially, this refined approach also produced noticeably higher AUC scores on snd-unm (detailed in Table ...), suggesting that an explicitly compact and distinct set of normal patterns is highly effective at discriminating normal sequences from anomalous ones in this dataset.
 
 \subsubsection{Parameters}
 To tune the negative selection algorithm, two hyperparameters must be chosen: the chunk size $n$ and the contiguous matching threshold $r$. To find the optimal balance for intrusion detection, we designed a grid search over the following parameter space:
@@ -90,12 +80,10 @@ To tune the negative selection algorithm, two hyperparameters must be chosen: th
 Performance was initially estimated and tuned on test split 1 for both datasets, and subsequently validated on test splits 2 and 3 to ensure the classifier's generalizability.
 
 \section{Results}
-In this section, we evaluate the performance of the negative selection algorithm using the Area Under the Curve (AUC) metric. The AUC quantifies the algorithm's ability to successfully discriminate between normal system call sequences and anomalous ones. We present the findings in 
-two phases: the initial baseline approach (using unchunked training data) and the optimized approach (where both training and test data were preprocessed into fixed-length chunks).
+In this section, we evaluate the performance of the negative selection algorithm using the Area Under the Curve (AUC) metric. The AUC quantifies the algorithm's ability to successfully discriminate between normal system call sequences and anomalous ones. We present the findings in two phases: the initial baseline approach (using unchunked training data) and the optimized approach (where both training and test data were preprocessed into fixed-length chunks).
 
 \subsection{Unchunked Training Sequences}
-For our baseline evaluation, the training file was fed into the \texttt{negsel2} tool without explicit chunking, while the test sequences were split into non-overlapping chunks. We used the parameters $n = 10$ and $r = 4$ as a foundational starting point. To determine the optimal $n$ and $r$ parameters, we conducted a grid search on the first test split of 
-the \texttt{snd-unm} dataset, because it's smaller than the \texttt{snd-cert} dataset, thus it's computationally more efficient.
+For our baseline evaluation, the training file was fed into the \texttt{negsel2} tool without explicit chunking, while the test sequences were split into non-overlapping chunks. We used the parameters $n = 10$ and $r = 4$ as a foundational starting point. To determine the optimal $n$ and $r$ parameters, we conducted a grid search on the first test split of the \texttt{snd-unm} dataset, because it's smaller than the \texttt{snd-cert} dataset, thus it's computationally more efficient.
 
 We validated a stable parameter combination ($n=10$, $r=4$) across all three test splits for both \texttt{snd-cert} and \texttt{snd-unm}. The algorithm demonstrated solid baseline performance (Table 1), achieving AUC scores around 0.94 on \texttt{snd-cert} and ranging from 0.93 to 0.97 on \texttt{snd-unm}.
 
@@ -126,8 +114,7 @@ We validated a stable parameter combination ($n=10$, $r=4$) across all three tes
 \end{tabular}
 \end{table}
 
-The results from the grid search on the \texttt{snd-unm} dataset, represented in Table 2, indicate that a larger chunk size generally improves discriminative power, provided $r$ is scaled appropriately. However, when running the parameter set $n=15$ 
-and $r=6$ on the \texttt{snd-cert} runtime exceeded one hour. which refeals some computation inefficiency.
+The results from the grid search on the \texttt{snd-unm} dataset, represented in Table 2, indicate that a larger chunk size generally improves discriminative power, provided $r$ is scaled appropriately. However, when running the parameter set $n=15$ and $r=6$ on the \texttt{snd-cert} runtime exceeded one hour. which refeals some computation inefficiency.
 
 \subsection{Chunked Training Sequences}
 To overcome the runtime bottlenecks warned about in the assignment brief and improve detection accuracy, we applied the chunking preprocessing step to the normal training sequences as well. Only the unique chunks were passed as the "self" corpus.
