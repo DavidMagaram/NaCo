@@ -114,7 +114,9 @@ We validated a stable parameter combination ($n=10$, $r=4$) across all three tes
 \end{tabular}
 \end{table}
 
-The results from the grid search on the \texttt{snd-unm} dataset, represented in Table 2, indicate that a larger chunk size generally improves discriminative power, provided $r$ is scaled appropriately. However, when running the parameter set $n=15$ and $r=6$ on the \texttt{snd-cert} runtime exceeded one hour. which refeals some computation inefficiency.
+The results from the grid search on the \texttt{snd-unm} dataset, represented in Table 2, indicate that a larger chunk size generally improves discriminative power, provided $r$ is scaled appropriately. However, when running the parameter set $n=15$ and $r=6$ on the \texttt{snd-cert} runtime exceeded one hour, which reveals some computational inefficiency.
+
+Notably, for $n=15$ with $r < 5$, the algorithm produces NaN scores. These results are likely caused by numerical instability in \texttt{negsel2}'s internal computation. We will discuss this further in the discussion section.
 
 \subsection{Chunked Training Sequences}
 To overcome the runtime bottlenecks warned about in the assignment brief and improve detection accuracy, we applied the chunking preprocessing step to the normal training sequences as well. Only the unique chunks were passed as the "self" corpus.
@@ -133,7 +135,6 @@ Using the same parameter set of $n=10$ and $r=4$ as a starting point, we evaluat
 \end{tabular}
 \end{table}
 
-In table 4 we can see that this preprocessing strategy yielded noticeable improvements. The AUC scores increased across the board, achieving near-perfect separation (AUC = 0.9900) at parameters like $n=7, r=5$ and $n=15, r=5$. Compacting the training data into a localized set of unique chunks not only sped up execution time but also made it easier to differentiate between "self" and "non-self".
 
 \begin{table}[h]
 \centering
@@ -150,7 +151,6 @@ In table 4 we can see that this preprocessing strategy yielded noticeable improv
 \end{table}
 
 \subsubsection{Optimized Parameters}
-Text needed..
 
 \begin{table}[h]
 \centering
@@ -168,6 +168,21 @@ Text needed..
 
 
 \section{Discussion}
+
+\subsection{Numerical Instability at Low $r$}
+
+As we could repeatedly see with the results, running the tests with $n=15$ and $r<5$ as parameters produces NaN values. \texttt{Negsel2} computes detector counts analytically using an inclusion-exclusion formula over large combinatorial terms. With $n=15$ and small $r$, individual terms in this alternating sum reach magnitudes on the order of $10^{18}$. Subtracting these nearly-equal large values causes catastrophic floating-point errors, producing negative counts (e.g., $-7.42 \times 10^{18}$, observed when running it without the -l flag). Since the \texttt{-l} flag computes $\log_2(1+x)$ of these counts, taking the logarithm of a negative number yields NaN. For $r \geq 5$, the r-gram space is large enough that the combinatorial terms remain numerically stable and we can get useable results.
+
+
+\subsection{Relationship Between Chunk Size and AUC}
+An unexpected finding from the parameter sweep is the relationship between chunk size $n$ and AUC: $n=7$ and $n=15$ both achieve AUC = 0.9900 at $r=5$, while $n=10$ plateaus at 0.9804. We believe that this can be explained by the competing mechanisms through which each chunk size achieves discrimination:
+
+
+Small chunks ($n=7$) are granular. Each 1000-character sequence leads to about 142 chunks. The algorithm is highly selective at $n=7$ and $r=5$, and the large number of chunks increases the chance of detecting localized anomalies.
+
+Large chunks ($n=15$) are informative. Longer chunks carry more contextual information, making normal patterns inherently more distinctive from anomalous ones. The chunks themselves are informative enough to separate the two classes.
+
+Medium chunks of $n=10$ fall in between these two values and instead of combining the strengths of small and large chunks, they seem to not do either thing as well. The comparatively bigger chunks when contrasted with $n=7$ lead to fewer samples, while the comparatively smaller chunks when contrasted with $n=15$ provide less information for distinguishing between normal and anomalous test chunks.
 
 \section{Conclusion}
 
