@@ -59,12 +59,12 @@ substrings of length $n$ using the following Python function:
 def chunk_sequence(seq: str, n: int) -> list[str]:
     return [seq[i:i+n] for i in range(0, len(seq) - n + 1, n)]
 \end{minted}
-Each chunk was scored individually by the negative selection algorithm. To merge these counts, we averaged the individual chunk scores to produce a single composite anomaly score per test sequence. Mathematically, this is represented as:
+Each chunk was scored individually by the negative selection algorithm. To merge these counts, we averaged the individual chunk scores to produce a single composite anomaly score per test sequence. Mathematically, this is represented as:\\
 $score(seq) = mean \{ negsel\_score(chunk) \mid chunk \in chunks\_n(seq) \}$
-Sequences shorter than $n$ produced no chunks and defaulted to a score of zero.
+% Sequences shorter than $n$ produced no chunks and defaulted to a score of zero.
 
-While this approach yielded reasonable results on the \texttt{snd-cert} test split 1 (achieving an AUC of 0.9374 at $n = 15$, $r = 5$), a critical practical limitation became apparent. For $n \ge 15$, runtimes exceeded one hour per parameter combination, making a thorough parameter sweep 
-infeasible. The assignment brief explicitly warns that if running the algorithm on one set of parameters takes too long, you might run into time trouble. A more effective use of the data was required.
+While this approach yielded reasonable results on the \texttt{snd-cert} test split 1 (achieving an AUC of 0.9374 at $n = 15$, $r = 5$), a critical practical limitation became apparent. For the parameter set $n=15$ 
+and $r=6$, runtimes exceeded one hour, making a thorough parameter sweep infeasible. The assignment brief explicitly warns that if running the algorithm on one set of parameters takes too long, you might run into time trouble. Therefore a more effective use of the data was required.
 
 \subsubsection{Chunked Training File for Optimization}
 To address the severe runtime bottleneck, the pre-processing logic was extended to the training data. The training sequences were also pre-processed into a set of fixed-length, non-overlapping chunks of length $n$. To optimize the process further, only the unique set of these chunks 
@@ -101,7 +101,7 @@ We validated a stable parameter combination ($n=10$, $r=4$) across all three tes
 
 \begin{table}[h]
 \centering
-\caption{Baseline Validation across Test Splits (Unchunked Training, $n=10$, $r=4$)}
+\caption{Baseline results across both datasets (Unchunked Training, $n=10$, $r=4$)}
 \begin{tabular}{l c c c}
 \hline
 \textbf{Dataset} & \textbf{Split 1} & \textbf{Split 2} & \textbf{Split 3} \\
@@ -119,20 +119,34 @@ We validated a stable parameter combination ($n=10$, $r=4$) across all three tes
 \hline
 \textbf{Chunk Size ($n$)} & \textbf{$r=2$} & \textbf{$r=3$} & \textbf{$r=4$} & \textbf{$r=5$} & \textbf{$r=6$}\\
 \hline
-7  & 0.8912 & 0.9396 & 0.9396 & 0.9388 & 0.9236\\
-10 & 0.9106 & 0.9344 & 0.9344 & 0.9344 & 0.9222 \\
-15 & NaN    & NaN    & NaN    & 0.9724 & -      \\
+7  & 0.8584 & 0.9396 & 0.9396 & 0.9388 & 0.9384 \\
+10 & 0.9272 & 0.9344 & 0.9344 & 0.9344 & 0.9344 \\
+15 & NaN    & NaN    & NaN    & 0.9724 & 0.9724 \\
 \hline
 \end{tabular}
 \end{table}
 
-The results in Table 2 indicate that a larger chunk size generally improves discriminative power, provided $r$ is scaled appropriately. However, a significant limitation was observed at $n=15$ with low $r$ values ($r \le 4$), which resulted in NaN (Not a Number) errors. This likely 
-occurs when the matching criteria are so loose that no distinct detectors can be generated, or all sequences are classified identically, making it impossible to compute an ROC curve.
+The results from the grid search on the \texttt{snd-unm} dataset, represented in Table 2, indicate that a larger chunk size generally improves discriminative power, provided $r$ is scaled appropriately. However, when running the parameter set $n=15$ 
+and $r=6$ on the \texttt{snd-cert} runtime exceeded one hour. which refeals some computation inefficiency.
 
 \subsection{Chunked Training Sequences}
 To overcome the runtime bottlenecks warned about in the assignment brief and improve detection accuracy, we applied the chunking preprocessing step to the normal training sequences as well. Only the unique chunks were passed as the "self" corpus.
 
-This preprocessing strategy yielded dramatic improvements. As seen in the grid search on the \texttt{snd-unm} dataset (Table 3), the AUC scores increased significantly across the board, achieving near-perfect separation (AUC = 0.9900) at parameters like $n=7, r=5$ and $n=15, r=5$. Compacting the training data into a localized set of unique chunks (e.g., only 391 unique chunks for $n=10$ and 374 for $n=15$) not only sped up execution time but also sharpened the boundary between "self" and "non-self"
+Using the same parameter set of $n=10$ and $r=4$ as a starting point, we evaluated the performance across both datasets. The results in table 3 show AUC scores remaining above 0.97 for both datasets.
+\begin{table}[h]
+\centering
+\caption{Results across both datasets (Chunked Training, $n=10$, $r=4$)}
+\begin{tabular}{l c c c}
+\hline
+\textbf{Dataset} & \textbf{Split 1} & \textbf{Split 2} & \textbf{Split 3} \\
+\hline
+\texttt{snd-cert} & 0.9728 & 0.9821 & 0.9839 \\
+\texttt{snd-unm}  & 0.9804 & 0.9821 & 0.9846 \\
+\hline
+\end{tabular}
+\end{table}
+
+In table 4 we can see that this preprocessing strategy yielded noticeable improvements. The AUC scores increased across the board, achieving near-perfect separation (AUC = 0.9900) at parameters like $n=7, r=5$ and $n=15, r=5$. Compacting the training data into a localized set of unique chunks not only sped up execution time but also made it easier to differentiate between "self" and "non-self".
 
 \begin{table}[h]
 \centering
@@ -148,18 +162,23 @@ This preprocessing strategy yielded dramatic improvements. As seen in the grid s
 \end{tabular}
 \end{table}
 
+\subsubsection{Optimized Parameters}
+Text needed..
+
 \begin{table}[h]
 \centering
-\caption{Optimized Validation across Test Splits (Chunked Training, $n=10$, $r=4$)}
+\caption{Optimized validation across both datasets (Chunked Training, $n=7$, $r=5$)}
 \begin{tabular}{l c c c}
 \hline
 \textbf{Dataset} & \textbf{Split 1} & \textbf{Split 2} & \textbf{Split 3} \\
 \hline
-\texttt{snd-cert} & 0.9728 & 0.9821 & 0.9839 \\
+\texttt{snd-cert} & 0.9774 & 0.9841 & 0.9839 \\
 \texttt{snd-unm}  & 0.9804 & 0.9821 & 0.9846 \\
 \hline
 \end{tabular}
 \end{table}
+
+
 
 \section{Discussion}
 
