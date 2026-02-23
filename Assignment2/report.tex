@@ -73,7 +73,7 @@ def write_chunked_train(train_seqs: list[str], n: int) -> Path:
     tmp.write("\n".join(chunks) + "\n") 
     return tmp
 \end{minted}
-This drastically reduced the size of the "self" set presented to the algorithm. This smaller self set translates to fewer detectors needing to be matched against, which substantially lowered the runtime. Crucially, this refined approach also produced noticeably higher AUC scores on snd-unm (detailed in Table ...), suggesting that an explicitly compact and distinct set of normal patterns is highly effective at discriminating normal sequences from anomalous ones in this dataset.
+This drastically reduced the size of the "self" set presented to the algorithm. This smaller self set translates to fewer detectors needing to be matched against, which substantially lowered the runtime. Crucially, this refined approach also produced noticeably higher AUC scores on snd-unm (detailed in Table 3), suggesting that an explicitly compact and distinct set of normal patterns is highly effective at discriminating normal sequences from anomalous ones in this dataset.
 
 \subsubsection{Parameters}
 To tune the negative selection algorithm, two hyperparameters must be chosen: the chunk size $n$ and the contiguous matching threshold $r$. To find the optimal balance for intrusion detection, we designed a grid search over the following parameter space:
@@ -228,7 +228,7 @@ These factors compete: $n=7$ produces more chunks, while $n=15$ requires more ma
 
 The sweet spot for $n$ in this dataset is around $10$, with changes in both directions getting very slightly worse results. While the parameter sweep on \texttt{snd-unm} Split 1 suffered from noise and showed $n=15$ and $n=7$ beating out $n=10$, it actually produces the best results on average. Note, however, that the scale of the plot is very small and so are the differences.
 
-Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd-unm} Split~1 and perform comparably across all test splits. On averade, $n=7$ is slightly better. However, as $n=15$ ran in 25:48 compared to 44:42 for $n=7$, it is likely the better choice over $n=7$ for time-sensitive usecases. 
+Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd-unm} Split~1 and perform comparably across all test splits. On average, $n=7$ is slightly better. However, as $n=15$ ran in 25:48 compared to 44:42 for $n=7$, it is likely the better choice over $n=7$ for time-sensitive usecases. 
 
 It is also notable that the best parameters for intrusion detection are different from the best parameters for language classification. For language classification we found $r=3$ to be the best parameter (with the given $n=10$), while for intrusion detection the best value of $r$ we could identify is $5$.
 
@@ -237,7 +237,7 @@ Implementing the negative selection algorithm from scratch would be challenging 
 
 Another obstacle would be the selection of the right parameters, such as chunk size $n$ and $r$. As demonstrated by this project, different parameter values can lead to different results, both performance and runtime wise, and some parameter configurations cause the algorithm to fail entirely. During the experiments, it was observed that runs with the same parameter configurations could vary in runtime, which would make performance tuning and debugging much more difficult.
 
-Overall, implementing the negative selection algorithm from scratch would be difficult because it requires careful otpimization, testing, and selection of stable parameters to achieve good performance and low runtime.
+Overall, implementing the negative selection algorithm from scratch would be difficult because it requires careful optimization, testing, and selection of stable parameters to achieve good performance and low runtime.
 
 \section{Conclusion}
 In this project, the effectiveness of the negative selection algorithm for anomaly detection in Unix system call sequences was investigated. The aim is to train a classifier using normal system call sequences to accurately detect anomalies in test data, using the AUC metric for evaluation. Additionally, emphasis was placed on understanding how hyperparameter configurations affect detection performance and computational viability. 
