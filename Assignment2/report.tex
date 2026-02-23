@@ -5,7 +5,9 @@
 \usepackage{enumitem}
 \usepackage{amsmath}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
-\usepackage{minted} 
+\usepackage{minted}
+\usepackage{float}
+\usepackage{graphicx}
 
 \title{Anomaly Detection using Negative Selection Algorithms\\[0.3em] \large Report on Assignment 2}
 \author{Group 28}
@@ -167,6 +169,18 @@ We tried the two best configurations from the earlier results out in more detail
 \end{tabular}
 \end{table}
 
+\begin{table}[H]
+\centering
+\caption{Optimized validation across both datasets (Chunked Training, $n=10$, $r=5$). This took 30:44min to run on the test machine (Processor: Intel i5-8365U; 16 GB RAM) including chunking.}
+\begin{tabular}{l c c c}
+\hline
+\textbf{Dataset} & \textbf{Split 1} & \textbf{Split 2} & \textbf{Split 3} \\
+\hline
+\texttt{snd-cert} & 0.9728 & 0.9820 & 0.9838 \\
+\texttt{snd-unm}  & 0.9804 & 0.9821 & 0.9846 \\
+\hline
+\end{tabular}
+\end{table}
 
 \begin{table}[H]
 \centering
@@ -181,6 +195,11 @@ We tried the two best configurations from the earlier results out in more detail
 \end{tabular}
 \end{table}
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{avg_auc_by_config.png}
+\caption{Mean AUC across all three test splits for each configuration with chunked training data and $r=5$.}
+\end{figure}
 
 \section{Discussion}
 
@@ -219,6 +238,12 @@ Total windows $W$ & 426 & 726 \\
 \end{center}
 These factors compete: $n=7$ produces more chunks, while $n=15$ requires more matching windows per sequence. In this experiment with the given dataset and on our test machine, $n=7$ ran much slower than $n=15$, suggesting that the fixed per-chunk overhead is more demanding than the per-window matching cost. To be accurate it must be said that total runtime is just an indication of computational cost, not an accurate measure of it, but the results in this case were quite clear. 
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{cost_analysis.png}
+\caption{Computational cost breakdown and measured runtime for each chunk size with $r=5$. Despite having the fewest total matching windows, $n=7$ is the slowest, indicating that per-chunk overhead dominates.}
+\end{figure}
+
 \subsection{The "Best" Parameters}
 Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd-unm} Split~1 and perform comparably across all test splits. We therefore consider them equivalent in terms of results. However, as $n=15$ ran in 25:48 compared to 44:42 for $n=7$, we would prefer it for this usecase. Used in practice to catch fraudulent programs, it might also be useful to run two algorithms with both chunk-sizes simultaneously, as they observe the data at a different scale and might be able to detect different kinds of intrusions that the other one would overlook. $n=15$ with $r=6$ also received the same score as $n=15$ with $r=5$, but takes longer to run, so we did not observe it further. 
 
@@ -227,7 +252,7 @@ It is also notable that the best parameters for intrusion detection are differen
 \section{Conclusion}
 In this project, the effectiveness of the negative selection algorithm for anomaly detection in Unix system call sequences was investigated. The aim is to train a classifier using normal system call sequences to accurately detect anomalies in test data, using the AUC metric for evaluation. Additionally, emphasis was placed on understanding how hyperparameter configurations affect detection performance and computational viability. 
 
-The initial baseline approach split the test sequences into non-overlapping chunks while the training data remained unprocessed. With parameters $n = 10$ and $r = 4$, the model achieved AUC scores of around 0.94 across both datasets, showing that the model has a strong discriminative power. However, computational limitations for larger chunk sizes and r-values were discovered, where the algorithm became extremely slow or produced invalid results (NaN) because of numerical instability. To address this, a preprocessing strategy where chunking was applied to the training data and only unique values were retained was introduced. This not only reduced the runtime, but it also improved classification performance. With chunked training data, the AUC scores improved, exceeding 0.97 across both datasets. This suggests that compact representations of normal behaviors are more effective and efficient for anomaly detection. 
+The initial baseline approach split the test sequences into non-overlapping chunks while the training data remained unprocessed. With parameters $n = 10$ and $r = 4$, the model achieved AUC scores of around 0.94 across both datasets, showing that the model has a strong discriminative power. However, computational limitations for larger chunk sizes and r-values were discovered, where the algorithm became extremely slow or produced invalid results (\texttt{NaN}) because of numerical instability. To address this, a preprocessing strategy where chunking was applied to the training data and only unique values were retained was introduced. This not only reduced the runtime, but it also improved classification performance. With chunked training data, the AUC scores improved, exceeding 0.97 across both datasets. This suggests that compact representations of normal behaviors are more effective and efficient for anomaly detection. 
 
 Our analysis revealed further insights about trade-offs between chunk sizes and AUC performance. Smaller chunks worked well as they can detected localized anomalies better. Larger chunks also performed well since they contain more context and are more informative, making it easier to recognize normal behavior. However, chunks that were of medium size did not perform as well because they did not fully benefit from either of the advantages. Although both $n = 7$ and $n = 15$ obtained similar AUC scores, $n = 15$ required less runtime, making it more desirable in practical applications.
 
