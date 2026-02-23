@@ -83,7 +83,7 @@ Performance was initially estimated and tuned on test split 1 for both datasets,
 In this section, we evaluate the performance of the negative selection algorithm using the Area Under the Curve (AUC) metric. The AUC quantifies the algorithm's ability to successfully discriminate between normal system call sequences and anomalous ones. We present the findings in two phases: the initial baseline approach (using unchunked training data) and the optimized approach (where both training and test data were preprocessed into fixed-length chunks).
 
 \subsection{Unchunked Training Sequences}
-For our baseline evaluation, the training file was fed into the \texttt{negsel2} tool without explicit chunking, while the test sequences were split into non-overlapping chunks. We used the parameters $n = 10$ and $r = 4$ as a foundational starting point. To determine the optimal $n$ and $r$ parameters, we conducted a grid search on the first test split of the \texttt{snd-unm} dataset, because it's smaller than the \texttt{snd-cert} dataset, thus it's computationally more efficient.
+For our baseline evaluation, the training file was fed into the \texttt{negsel2} tool without explicit chunking, while the test sequences were split into non-overlapping chunks. We used the parameters $n = 10$ and $r = 4$ as a foundational starting point. To determine the optimal $n$ and $r$ parameters, we conducted a grid search on the first test split of the \texttt{snd-unm} dataset, because it's smaller than the \texttt{snd-cert} dataset, thus it's faster to run and test.
 
 We validated a stable parameter combination ($n=10$, $r=4$) across all three test splits for both \texttt{snd-cert} and \texttt{snd-unm}. The algorithm demonstrated solid baseline performance (Table 1), achieving AUC scores around 0.94 on \texttt{snd-cert} and ranging from 0.93 to 0.97 on \texttt{snd-unm}.
 
@@ -217,19 +217,17 @@ Total windows $W$ & 426 & 726 \\
 \hline
 \end{tabular}
 \end{center}
-These factors compete: $n=7$ produces more chunks, while $n=15$ requires more matching windows per sequence. In this experiment with the given dataset and on our test machine, $n=7$ ran slower than $n=15$, suggesting that the fixed per-chunk overhead is more demanding than the per-window matching cost.
+These factors compete: $n=7$ produces more chunks, while $n=15$ requires more matching windows per sequence. In this experiment with the given dataset and on our test machine, $n=7$ ran much slower than $n=15$, suggesting that the fixed per-chunk overhead is more demanding than the per-window matching cost. To be accurate it must be said that total runtime is just an indication of computational cost, not an accurate measure of it, but the results in this case were quite clear. 
 
 \subsection{The "Best" Parameters}
-Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd-unm} Split~1 and perform comparably across all test splits. We therefore consider them equivalent in terms of results. However, as $n=15$ ran in 25:48 compared to 44:42 for $n=7$, we would prefer it for this usecase. Used in practice to catch fraudulent programs, it might also be useful to run two algorithms with both chunk-sizes simultaneously, as they observe the data at a different scale and might be able to detect different kinds of intrusions that the other one would overlook. 
+Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd-unm} Split~1 and perform comparably across all test splits. We therefore consider them equivalent in terms of results. However, as $n=15$ ran in 25:48 compared to 44:42 for $n=7$, we would prefer it for this usecase. Used in practice to catch fraudulent programs, it might also be useful to run two algorithms with both chunk-sizes simultaneously, as they observe the data at a different scale and might be able to detect different kinds of intrusions that the other one would overlook. $n=15$ with $r=6$ also received the same score as $n=15$ with $r=5$, but takes longer to run, so we did not observe it further. 
+
+It is also notable that the best parameters for intrusion detection are different from the best parameters for language classification. For language classification we found $r=3$ to be the best parameter (with the given $n=10$), while for intrusion detection the best value of $r$ we could identify is $5$.
 
 \section{Conclusion}
 
-\subsection{How to create Sections and Subsections}
+\newpage
 
-\begin{thebibliography}{9}
-\end{thebibliography}
-
-\clearpage
 \begin{appendices}
 \section*{Task 1: Using the Negative Selection Algorithm}
 This section contains the questions and answers from "Your task" on page 2 of the second assignment.
