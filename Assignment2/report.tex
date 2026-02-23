@@ -9,6 +9,7 @@
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{multirow}
+\usepackage{subcaption}
 
 \title{Anomaly Detection using Negative Selection Algorithms\\[0.3em] \large Report on Assignment 2}
 \author{Group 28}
@@ -154,8 +155,7 @@ Using the same parameter set of $n=10$ and $r=4$ as a starting point, we evaluat
 \end{table}
 
 \subsubsection{Optimized Parameters}
-
-We tried the two best configurations from the earlier results out in more detail:
+As we notice that $r<5$ has worse results for all options of $n$ and does not give answers for $n=15$, and $r>6$ takes longer to compute but does not improve the results, we choose $r=5$ and further compare $n=7$, $n=10$ and $n=15$.
 
 \begin{table}[H]
 \centering
@@ -178,8 +178,14 @@ We tried the two best configurations from the earlier results out in more detail
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{avg_auc_by_config.png}
+\includegraphics[width=\textwidth]{imgs/avg_auc_by_config.png}
 \caption{Mean AUC across all three test splits for each configuration with chunked training data and $r=5$.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.45\textwidth]{imgs/unm_1_15.png}
+\caption{ROC curve for the best single-split result: \texttt{snd-unm} Split 1 ($n=15$, $r=5$), AUC = 0.990. See Appendix~\ref{app:roc} for all ROC curves.}
 \end{figure}
 
 \section{Discussion}
@@ -214,7 +220,7 @@ These factors compete: $n=7$ produces more chunks, while $n=15$ requires more ma
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=\textwidth]{cost_analysis.png}
+\includegraphics[width=\textwidth]{imgs/cost_analysis.png}
 \caption{Computational cost breakdown and measured runtime for each chunk size with $r=5$. Despite having the fewest total matching windows, $n=7$ is the slowest.}
 \end{figure}
 
@@ -273,6 +279,43 @@ This section contains the questions and answers from "Your task" on page 2 of th
     Using shorter strings makes it more difficult to find matches as the sliding windo would be much smaller. This would likely result in many zero or non-matches. Longer strings would have the opposite effect. With longer input strings, we 
     would be able to find more matching patterns. However, the anomalous part of a long string might be overshadowed by the high number of normal matches, making it harder to classify accurately.
 \end{enumerate}
+
+\newpage
+\section*{ROC Curves for Optimized Parameters}\label{app:roc}
+The following figures show the ROC curves for all test splits across both datasets, for each chunk size configuration with $r=5$ and chunked training data.
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_1_7.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_2_7.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_3_7.png}\end{subfigure}\\[0.3em]
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_1_7.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_2_7.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_3_7.png}\end{subfigure}
+\caption{ROC curves for $n=7$, $r=5$. Top row: \texttt{snd-cert} splits 1--3. Bottom row: \texttt{snd-unm} splits 1--3.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_1_10.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_2_10.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_3_10.png}\end{subfigure}\\[0.3em]
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_1_10.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_2_10.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_3_10.png}\end{subfigure}
+\caption{ROC curves for $n=10$, $r=5$. Top row: \texttt{snd-cert} splits 1--3. Bottom row: \texttt{snd-unm} splits 1--3.}
+\end{figure}
+
+\begin{figure}[H]
+\centering
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_1_15.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_2_15.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/cert_3_15.png}\end{subfigure}\\[0.3em]
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_1_15.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_2_15.png}\end{subfigure}
+\begin{subfigure}{0.32\textwidth}\includegraphics[width=\textwidth]{imgs/unm_3_15.png}\end{subfigure}
+\caption{ROC curves for $n=15$, $r=5$. Top row: \texttt{snd-cert} splits 1--3. Bottom row: \texttt{snd-unm} splits 1--3.}
+\end{figure}
 
 \end{appendices}
 
