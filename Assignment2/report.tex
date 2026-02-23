@@ -8,6 +8,7 @@
 \usepackage{minted}
 \usepackage{float}
 \usepackage{graphicx}
+\usepackage{multirow}
 
 \title{Anomaly Detection using Negative Selection Algorithms\\[0.3em] \large Report on Assignment 2}
 \author{Group 28}
@@ -158,39 +159,19 @@ We tried the two best configurations from the earlier results out in more detail
 
 \begin{table}[H]
 \centering
-\caption{Optimized validation across both datasets (Chunked Training, $n=7$, $r=5$). This took 44:42min to run on the test machine (Processor: Intel i5-8365U; 16 GB RAM) including chunking.}
-\begin{tabular}{l c c c}
+\caption{Optimized validation across both datasets (Chunked Training, $r=5$). Runtimes on the test machine for all six test sets (Intel i5-8365U, 16 GB RAM) including chunking: $n=7$: 44:42min, $n=10$: 30:44min, $n=15$: 25:48min.}
+\begin{tabular}{l l c c c}
 \hline
-\textbf{Dataset} & \textbf{Split 1} & \textbf{Split 2} & \textbf{Split 3} \\
+\textbf{Config} & \textbf{Dataset} & \textbf{Split 1} & \textbf{Split 2} & \textbf{Split 3} \\
 \hline
-\texttt{snd-cert} & 0.9774 & 0.9841 & 0.9748 \\
-\texttt{snd-unm}  & 0.9900 & 0.9630 & 0.9854 \\
+\multirow{2}{*}{$n=7$}  & \texttt{snd-cert} & 0.9774 & 0.9841 & 0.9748 \\
+                         & \texttt{snd-unm}  & 0.9900 & 0.9630 & 0.9854 \\
 \hline
-\end{tabular}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Optimized validation across both datasets (Chunked Training, $n=10$, $r=5$). This took 30:44min to run on the test machine (Processor: Intel i5-8365U; 16 GB RAM) including chunking.}
-\begin{tabular}{l c c c}
+\multirow{2}{*}{$n=10$} & \texttt{snd-cert} & 0.9728 & 0.9820 & 0.9838 \\
+                         & \texttt{snd-unm}  & 0.9804 & 0.9821 & 0.9846 \\
 \hline
-\textbf{Dataset} & \textbf{Split 1} & \textbf{Split 2} & \textbf{Split 3} \\
-\hline
-\texttt{snd-cert} & 0.9728 & 0.9820 & 0.9838 \\
-\texttt{snd-unm}  & 0.9804 & 0.9821 & 0.9846 \\
-\hline
-\end{tabular}
-\end{table}
-
-\begin{table}[H]
-\centering
-\caption{Optimized validation across both datasets (Chunked Training, $n=15$, $r=5$). This took 25:48min to run on the test machine (Processor: Intel i5-8365U; 16 GB RAM) including chunking.}
-\begin{tabular}{l c c c}
-\hline
-\textbf{Dataset} & \textbf{Split 1} & \textbf{Split 2} & \textbf{Split 3} \\
-\hline
-\texttt{snd-cert} & 0.9756 & 0.9832 & 0.9746 \\
-\texttt{snd-unm}  & 0.9900 & 0.9732 & 0.9760 \\
+\multirow{2}{*}{$n=15$} & \texttt{snd-cert} & 0.9756 & 0.9832 & 0.9746 \\
+                         & \texttt{snd-unm}  & 0.9900 & 0.9732 & 0.9760 \\
 \hline
 \end{tabular}
 \end{table}
