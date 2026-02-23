@@ -225,6 +225,7 @@ For a sequence of length $L$ chunked with size $n$ and matching threshold $r$, t
     W(n, r) = \left\lfloor \frac{L}{n} \right\rfloor \cdot (n - r + 1)
 \end{equation}
 For $L = 1000$ and $r = 5$:
+
 \begin{center}
 \begin{tabular}{l c c}
 \hline
@@ -236,12 +237,13 @@ Total windows $W$ & 426 & 726 \\
 \hline
 \end{tabular}
 \end{center}
+
 These factors compete: $n=7$ produces more chunks, while $n=15$ requires more matching windows per sequence. In this experiment with the given dataset and on our test machine, $n=7$ ran much slower than $n=15$, suggesting that the fixed per-chunk overhead is more demanding than the per-window matching cost. To be accurate it must be said that total runtime is just an indication of computational cost, not an accurate measure of it, but the results in this case were quite clear. 
 
 \begin{figure}[H]
 \centering
 \includegraphics[width=\textwidth]{cost_analysis.png}
-\caption{Computational cost breakdown and measured runtime for each chunk size with $r=5$. Despite having the fewest total matching windows, $n=7$ is the slowest, indicating that per-chunk overhead dominates.}
+\caption{Computational cost breakdown and measured runtime for each chunk size with $r=5$. Despite having the fewest total matching windows, $n=7$ is the slowest.}
 \end{figure}
 
 \subsection{The "Best" Parameters}
