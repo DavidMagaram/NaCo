@@ -202,25 +202,24 @@ This section contains the questions and answers from "Your task" on page 2 of th
     Plot 1 has an $r$-value of 1, plot 2 has an $r$-value of 7, and plot 3 has an $r$-value of 4.
     \item \textit{How does the AUC change when you modify the parameter $r$? Specifically, what behaviour do you observe at $r = 1$ and $r = 9$ and how can you explain this behaviour? Which value of $r$ leads to the best discrimination?}
 
-    When increasing the $r$-value pass 3 the AUC curve “flattens”, making it slightly worser at discrimination. At $r$-values 1, 8 and 9, the AUC value is close to 0.5, making it almost no better than random guessing.\\ For $r=3$ you get the best AUC, with a score of 0.8311.
+    When increasing the $r$-value beyond 3, the AUC curve “flattens”, making it slightly worse at discrimination. At $r$-values 1, 8 and 9, the AUC value is close to 0.5, making it almost no better than random guessing.\\ The best performance is achieved by $r = 3$ with an AUC score of 0.8311.
     \item \textit{The folder 'lang' contains strings from 4 other languages. Which languages can be best discriminated from English using the negative selection algorithm, and for which is this most difficult?}
     
-    The best AUC scores for all languages where found with a $r$-value of 3. The AUC scores of each language compared to english are given below:
+    The best AUC scores for all languages were found with an $r$-value of 3. The AUC scores for each language compared to English are listed below:
     \begin{itemize}
         \item \textbf{Middle-english:} 0.5424.
         \item \textbf{Plautdietsch: }0.7747.
         \item \textbf{Hiligaynon:} 0.8397.
         \item \textbf{Xhosa:} 0.8893.
     \end{itemize}
-    We observe that Middle-English is the hardest language to discriminate from English. This is a pretty logical conclusion since English is a direct descendant of Middle-english and both languages share vocabulary and many patterns.  
-    The best AUC value of 0.5424 is close to random guessing and the algorithm produces only a few matches, meaning that it is very difficult to distinguish Middle-endligh from regular English.
+    We observe that Middle-english is the hardest language to discriminate from English. This is a logical conclusion as English is a direct descendant of Middle-english, and both languages share vocabulary and structural patterns.  
+    The best AUC value of 0.5424 is close to random guessing, meaning that the algorithm produces only a few matches and struggles to distinguish Middle-english from regular English.
 
-    On the other hand, Xhosa, Hiligaynon, and Plautdietsch were much easier to discriminate. Xhosa was the easiest to discriminate with an AUC score of 0.8893, followed by Hiligaynon with an AUC of 0.8397. These languages are very distant 
-    from English as they use different consonants and combine characters differently.
-    Plautdietsch is the hardest out of these three to distinguish from English with an AUC score of 0.7747. It could be because is a dialect of German and shares some similarities with the English language.
+    On the other hand, Xhosa, Hiligaynon, and Plautdietsch were much easier to discriminate. Xhosa is the easiest to discriminate, with an AUC score of 0.8893. This is followed by Hiligaynon with an AUC of 0.8397. These languages are linguistically distant from English as they use different consonants and combine characters differently.
+    Plautdietsch is the hardest out of these three to distinguish, with an AUC score of 0.7747. This may be due to the fact that it is a dialect of German and shares some similarities with the English language.
     \item \textit{We train the repertoire on strings of a certain length, but we could in theory input strings of other lengths. Explain in your own words the issue with providing strings that are too long/short.}
     
-    If we use shorter strings, it will be more difficult to find matches as the window would be much smaller. This would likely result in many 0 or non-matches. Longer strings would have the opposite effect. With longer input strings, we 
+    Using shorter strings makes it more difficult to find matches as the sliding windo would be much smaller. This would likely result in many zero or non-matches. Longer strings would have the opposite effect. With longer input strings, we 
     would be able to find more matching patterns. However, the anomalous part of a long string might be overshadowed by the high number of normal matches, making it harder to classify accurately.
 \end{enumerate}
 
