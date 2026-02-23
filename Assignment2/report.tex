@@ -226,6 +226,13 @@ Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd
 
 It is also notable that the best parameters for intrusion detection are different from the best parameters for language classification. For language classification we found $r=3$ to be the best parameter (with the given $n=10$), while for intrusion detection the best value of $r$ we could identify is $5$.
 
+\subsection{Implementation Challenges}
+Implementing the negative selection algorithm from scratch would be challenging for several reasons. One of the biggest obstacles in its implementation would be generation of the detectors. The detectors have to be checked against the entire training set, seeing if they do not match any of the normal strings. Because the algorithm needs to compare a large number of strings against many detectors, it makes the algorithm slower as the number of comparisons grows quickly. Efficient data structures and optimization would be necessary to keep the runtimes low. 
+
+Another obstacle would be the selection of the right parameters, such as chunk size $n$ and $r$. As demonstrated by this project, different parameter values can lead to different results, both performance and runtime wise, and some parameter configurations cause the algorithm to fail entirely. During the exeperiments, it was observed that runs with the same parameter configurations could take differently long, which would make performance tuning and debugging much more difficult.
+
+Overall, implementing the negative selection algorithm from scratch would be difficult because it requires careful otpimization, testing, and selection of stable parameters to achieve good performance and low runtime.
+
 \section{Conclusion}
 In this project, the effectiveness of the negative selection algorithm for anomaly detection in Unix system call sequences was investigated. The aim is to train a classifier using normal system call sequences to accurately detect anomalies in test data, using the AUC metric for evaluation. Additionally, emphasis was placed on understanding how hyperparameter configurations affect detection performance and computational viability. 
 
