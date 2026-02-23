@@ -191,15 +191,6 @@ Overall, the negative selection algorithm receives very high AUC scores across a
 As we could repeatedly see with the results, running the tests with $n=15$ and $r<5$ as parameters produces \texttt{NaN} values. \texttt{Negsel2} computes detector counts analytically using an inclusion-exclusion formula over large combinatorial terms. With $n=15$ and small $r$, individual terms in this alternating sum reach magnitudes on the order of $10^{18}$. Subtracting these nearly-equal large values causes catastrophic floating-point errors, producing negative counts (e.g., $-7.42 \times 10^{18}$, observed when running it without the -l flag). Since the \texttt{-l} flag computes $\log_2(1+x)$ of these counts, taking the logarithm of a negative number yields \texttt{NaN}. For $r \geq 5$, the r-gram space is large enough that the numbers remain numerically stable and we can get useable results.
 
 
-\subsection{Relationship Between Chunk Size and AUC}
-An unexpected finding from the parameter sweep is the relationship between chunk size $n$ and AUC: $n=7$ and $n=15$ both achieve AUC = 0.9900 in \texttt{snd-unm} Split 1 at $r=5$, while $n=10$ plateaus at 0.9804. We believe that this can be explained by the competing mechanisms through which the algorithm manages to discriminate good data from fraudulent data with each chunk size:
-
-Small chunks ($n=7$) can provide granularity due to their size. Each 1000-character sequence leads to about 142 chunks, and the large number of chunks increases the chance of detecting local anomalies.
-
-On the other hand, large chunks ($n=15$) are more informative. Longer chunks carry more contextual information, making normal patterns distinctive from anomalous ones. The chunks themselves are likely informative enough to separate the two classes.
-
-Lastly, medium chunks of $n=10$ fall in between these two values and instead of leading to a sweet-spot by combining the strengths of small and large chunks as we would have expected, they seem to not do either thing as well. The comparatively bigger chunks when contrasted with $n=7$ lead to fewer samples, while the comparatively smaller chunks when contrasted with $n=15$ provide less information for distinguishing between normal and anomalous test chunks. The results show that it appears to be better to utilize small or large chunks than to use medium ones.
-
 \subsection{Computational Cost}
 For a sequence of length $L$ chunked with size $n$ and matching threshold $r$, there are two different possible quantities that can define how expensive the program is to run. Non-overlapping chunking produces $\lfloor L/n \rfloor$ chunks, and each chunk requires $(n - r + 1)$ contiguous-window evaluations. The total matching windows per test sequence is therefore:
 \begin{equation}
@@ -219,7 +210,7 @@ Total windows $W$ & 426 & 600 & 726 \\
 \end{tabular}
 \end{center}
 
-These factors compete: $n=7$ produces more chunks, while $n=15$ requires more matching windows per sequence. In this experiment with the given dataset and on our test machine, $n=7$ ran much slower than $n=15$, suggesting that the fixed per-chunk overhead is more demanding than the per-window matching cost. To be accurate it must be said that total runtime is just an indication of computational cost, not an accurate measure of it, but the results in this case were quite clear. 
+These factors compete: $n=7$ produces more chunks, while $n=15$ requires more matching windows per sequence. In this experiment with the given dataset and on our test machine, $n=7$ ran much slower than $n=15$, suggesting that the fixed per-chunk overhead is more demanding than the per-window matching cost. To be accurate it must be said that total runtime is just an indication of computational cost, not an accurate measure of it, but the results in this case were quite clear. $n=10$ lies in between.
 
 \begin{figure}[H]
 \centering
@@ -227,8 +218,11 @@ These factors compete: $n=7$ produces more chunks, while $n=15$ requires more ma
 \caption{Computational cost breakdown and measured runtime for each chunk size with $r=5$. Despite having the fewest total matching windows, $n=7$ is the slowest.}
 \end{figure}
 
-\subsection{The "Best" Parameters}
-Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd-unm} Split~1 and perform comparably across all test splits. We therefore consider them equivalent in terms of results. However, as $n=15$ ran in 25:48 compared to 44:42 for $n=7$, we would prefer it for this usecase. Used in practice to catch fraudulent programs, it might also be useful to run two algorithms with both chunk-sizes simultaneously, as they observe the data at a different scale and might be able to detect different kinds of intrusions that the other one would overlook. $n=15$ with $r=6$ also received the same score as $n=15$ with $r=5$, but takes longer to run, so we did not observe it further. 
+\subsection{The Best Parameters}
+
+The sweet spot for $n$ in this dataset is around $10$, with changes in both directions getting very slightly worse results. While the parameter sweep on \texttt{snd-unm} Split 1 suffered from noise and showed $n=15$ and $n=7$ beating out $n=10$, it actually produces the best results on average. Note, however, that the scale of the plot is very small and so are the differences.
+
+Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd-unm} Split~1 and perform comparably across all test splits. On averade, $n=7$ is slightly better. However, as $n=15$ ran in 25:48 compared to 44:42 for $n=7$, it is likely the better choice over $n=7$ for time-sensitive usecases. 
 
 It is also notable that the best parameters for intrusion detection are different from the best parameters for language classification. For language classification we found $r=3$ to be the best parameter (with the given $n=10$), while for intrusion detection the best value of $r$ we could identify is $5$.
 
