@@ -225,7 +225,13 @@ Both $n=7$ and $n=15$ with $r=5$ achieve equivalent AUC of 0.9900 on \texttt{snd
 It is also notable that the best parameters for intrusion detection are different from the best parameters for language classification. For language classification we found $r=3$ to be the best parameter (with the given $n=10$), while for intrusion detection the best value of $r$ we could identify is $5$.
 
 \section{Conclusion}
+In this project, the effectiveness of the negative selection algorithm for anomaly detection in Unix system call sequences was investigated. The aim is to train a classifier using normal system call sequences to accurately detect anomalies in test data, using the AUC metric for evaluation. Additionally, emphasis was placed on understanding how hyperparameter configurations affect detection performance and computational viability. 
 
+The initial baseline approach split the test sequences into non-overlapping chunks while the training data remained unprocessed. With parameters $n = 10$ and $r = 4$, the model achieved AUC scores of around 0.94 across both datasets, showing that the model has a strong discriminative power. However, computational limitations for larger chunk sizes and r-values were discovered, where the algorithm became extremely slow or produced invalid results (NaN) because of numerical instability. To address this, a preprocessing strategy where chunking was applied to the training data and only unique values were retained was introduced. This not only reduced the runtime, but it also improved classification performance. With chunked training data, the AUC scores improved, exceeding 0.97 across both datasets. This suggests that compact representations of normal behaviors are more effective and efficient for anomaly detection. 
+
+Our analysis revealed further insights about trade-offs between chunk sizes and AUC performance. Smaller chunks worked well as they can detected localized anomalies better. Larger chunks also performed well since they contain more context and are more informative, making it easier to recognize normal behavior. However, chunks that were of medium size did not perform as well because they did not fully benefit from either of the advantages. Although both $n = 7$ and $n = 15$ obtained similar AUC scores, $n = 15$ required less runtime, making it more desirable in practical applications.
+
+In conclusion, this study confirms that the negative selection algorithm can be effective for anomaly detection for system calls, given the appropriate preprocessing and parameter configurations.  
 \newpage
 
 \begin{appendices}
