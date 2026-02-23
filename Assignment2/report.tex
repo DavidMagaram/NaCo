@@ -12,7 +12,8 @@
 \usepackage{subcaption}
 
 \title{Anomaly Detection using Negative Selection Algorithms\\[0.3em] \large Report on Assignment 2}
-\author{Group 28}
+\author{Aaron Bussche \and Jason Kasdiran \and David Magaram}
+\date{Group 28}
 
 \begin{document}
 \maketitle
@@ -242,9 +243,9 @@ Overall, implementing the negative selection algorithm from scratch would be dif
 \section{Conclusion}
 In this project, the effectiveness of the negative selection algorithm for anomaly detection in Unix system call sequences was investigated. The aim is to train a classifier using normal system call sequences to accurately detect anomalies in test data, using the AUC metric for evaluation. Additionally, emphasis was placed on understanding how hyperparameter configurations affect detection performance and computational viability. 
 
-The initial baseline approach split the test sequences into non-overlapping chunks while the training data remained unprocessed. With parameters $n = 10$ and $r = 4$, the model achieved AUC scores of around 0.94 across both datasets, showing that the model has a strong discriminative power. However, computational limitations for larger chunk sizes and r-values were discovered, where the algorithm became extremely slow or produced invalid results (\texttt{NaN}) because of numerical instability. To address this, a preprocessing strategy where chunking was applied to the training data and only unique values were retained was introduced. This not only reduced the runtime, but it also improved classification performance. With chunked training data, the AUC scores improved, exceeding 0.97 across both datasets. This suggests that compact representations of normal behaviors are more effective and efficient for anomaly detection. 
+The initial baseline approach split the test sequences into non-overlapping chunks while the training data remained unprocessed. With parameters $n=10$ and $r=4$, the model achieved AUC scores of around 0.94 across both datasets, showing that the model has a strong discriminative power. However, computational limitations for larger chunk sizes and r-values were discovered, where the algorithm became extremely slow or produced invalid results (\texttt{NaN}) because of numerical instability. To address this, a preprocessing strategy where chunking was applied to the training data and only unique values were retained was introduced. This not only reduced the runtime, but it also improved classification performance. With chunked training data, the AUC scores improved, exceeding 0.97 across both datasets. This suggests that compact representations of normal behaviors are more effective and efficient for anomaly detection. 
 
-Our analysis revealed further insights about trade-offs between chunk sizes and AUC performance. Even though $n = 10$ and $n = 7$ obtained high AUC scores, final results show that the best value for $n$ in this dataset is around 10. Although $n = 15$ required less runtime, $n = 10$ produced the best results on average across different configurations. Furthermore, while $r = 3$ was the best parameter value for language classification, $r = 5$ performed better and was ultimately selected as the optimal parameter value for intrusion detection. 
+Our analysis revealed further insights about trade-offs between chunk sizes and AUC performance. Even though $n=15$ and $n=7$ obtained high AUC scores, final results show that the best value for $n$ in this dataset is around $10$. Although $n=15$ required less runtime, $n=10$ produced the best results on average across different configurations. Furthermore, while $r=3$ was the best parameter value for language classification, $r=5$ performed better and was ultimately selected as the optimal parameter value for intrusion detection. 
 
 In conclusion, this study confirms that the negative selection algorithm can be effective for anomaly detection for system calls, given the appropriate preprocessing and parameter configurations.  
 \newpage
