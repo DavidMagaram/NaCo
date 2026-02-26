@@ -27,7 +27,7 @@ Obstacles represent some environmental constraints that affect collective cell m
 \section{Methodology}
 The Artistoo framework was used to implement the two-dimensional Cellular Potts Model simulations. The model was defined on a square grid of 200x200 pixels with wrapped dimensions. In addition to the background, there were two types of cells in the simulations: moving cells and obstacles. Obstacles were implemented by creating a new type of cell with different parameters in order to distinguish the two types of cells and to give them desired properties.
 
-Obstacles were initialized with a target volume (V) of 150 pixels and volume constraint strength ($\lambda$V) of 500 to ensure they are static and do not deform. Their perimeter (P) was set to 10 with a strong perimeter constraint strength ($\lambda$P) 200, keeping their shape strongly constrained. To further prevent any movement, their act ($\lambda$act, Maxact) was set to 0. Additionally, the adhesion between obstacles and moving cells (Jobstacle-cell) was set to a 1000 to ensure moving cells do not stick to obstacles or penetrate them.
+Obstacles were initialized with a target volume ($V$) of 150 pixels and volume constraint strength ($\lambda_V$) of 500 to ensure they are static and do not deform. Their perimeter ($P$) was set to 10 with a strong perimeter constraint strength ($\lambda_P$) of 200, keeping their shape strongly constrained. To further prevent any movement, their act ($\lambda_{\text{act}}, \text{Max}_{\text{act}}$) was set to 0. Additionally, the adhesion between obstacles and moving cells ($J_{\text{obstacle-cell}}$) was set to 1000 to ensure moving cells do not stick to obstacles or penetrate them.
 
 
 
