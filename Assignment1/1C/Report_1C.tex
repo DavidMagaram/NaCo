@@ -10,6 +10,7 @@
 \usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{subcaption}
+\usepackage{booktabs}
 
 \title{Making a CPM of Collective Migration\\[0.3em] \large Report on Assignment 1C}
 \author{Aaron Bussche \and Jason Kasdiran \\[0.3em] Group 28 \and David Magaram}
@@ -29,6 +30,20 @@ The Artistoo framework was used to implement the two-dimensional Cellular Potts 
 
 Obstacles were initialized with a target volume ($V$) of 150 pixels and volume constraint strength ($\lambda_V$) of 500 to ensure they are static and do not deform. Their perimeter ($P$) was set to 10 with a strong perimeter constraint strength ($\lambda_P$) of 200, keeping their shape strongly constrained. To further prevent any movement, their act ($\lambda_{\text{act}}, \text{Max}_{\text{act}}$) was set to 0. Additionally, the adhesion between obstacles and moving cells ($J_{\text{obstacle-cell}}$) was set to 1000 to ensure moving cells do not stick to obstacles or penetrate them.
 
+\begin{table}[h!]
+\centering
+\begin{tabular}{llllllllll}
+Adhesion$_{\text{cell-matrix}}$ & Adhesion$_{\text{cell-cell}}$ & Volume & $\lambda_{\text{Volume}}$ & Perimeter & $\lambda_{P}$ & $Max_{act}$ & $\lambda_{\text{Act}}$ & T \\
+\midrule
+20 & 0 & 200 & 50 & 180 & 2 & 20 & 200 & 20 \\
+\end{tabular}
+\end{table}
+
+\section{Results}
+
+\section{Conclusion}
+
+\section{Discussion}
 
 
 \newpage
