@@ -56,7 +56,7 @@ let config = {
 		T : 20,
 		
 		// Adhesion parameters: [background, moving cell, obstacle]
-		J: [[0,20,20], [10,0,1000], [10,1000,0]],
+		J: [[0,20,20], [20,0,1000], [20,1000,0]],
 		
 		// VolumeConstraint parameters
 		LAMBDA_V: [0,50,500],      // Obstacles are rigid (high lambda)
@@ -75,7 +75,7 @@ let config = {
 	// Simulation setup and configuration
 	simsettings : {
         NRCELLS : [120, 0], // [moving cells, obstacles], Keep obstacles 0 here.
-		NUM_OBSTACLES : 49, // Number of obstacles. Keep square (3x3, 4x4, 5x5....). 
+		NUM_OBSTACLES : 0, // Number of obstacles. Keep square (3x3, 4x4, 5x5....). 
 		OBSTACLE_RADIUS : 6, // Just places pixels in that radius. Then V and P determine final shape and size of obstacles.
 		OBSTACLE_PADDING : 10, // Padding from borders. 25 is golden, but can always adjust if changing NUM_OBSTACLES or field size.
 		
