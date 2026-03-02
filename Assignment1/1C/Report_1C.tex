@@ -99,7 +99,98 @@ There were 4 experiments in total. All were performed under the same conditions 
 To get quantitative data, a Python script was used to calculate the average speed and average distance traversed, as well as find the fastest and slowest cells, along with the standard deviation in speeds. It also calculates the Vicsek order parameter for each timestep and takes the mean, giving us data on how stable the alignment of moving cells is. This allows us to analyze the cell movements for both environments with and without obstacles in a quantitative, objective way, and base our qualitative analysis on facts. 
 
 \section{Results}
-Observing the simulations with and without obstacles showed clear differences. Without obstacles, cells were initialized randomly and started moving around. Several moments later, smaller groups of cells start emerging. After some time, these smaller groups merged together and formed larger groups, all moving coherently in the same direction. This is depicted in Figure 1. 
+\subsection*{Qualitative observations}
+In the baseline experiments(Figure~\ref{fig:baseline}), cells initialized randomly and, after several
+Monte Carlo steps the clustered into groups. The groups migrated collectively in the sense that cells moved
+in coordination and maintained contact, but the net displacement of the group as a whole was small.
+Cells tended to explore without a sustained preferred direction, resulting in low-persistence
+collective motion rather than directed migration. This is likely caused by $\text{Max}_\text{act} = 20$, which 
+prevented the group from aligning persistently.
+
+The adjusted experiments (Figure~\ref{fig:adjusted}) produced noticably different behavior in the
+obstacle-free condition. With $\text{Max}_\text{act} = 60$, we see large groups that not
+only maintained cohesion but also migrated persistently and rapidly in a single shared direction,
+covering substantially greater distances than in the baseline experiments. This represents a qualitative
+shift from low-persistence collective exploration to directed collective migration.
+
+Introducing obstacles in the adjusted experiments progressively disrupted this collective
+behavior. When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change.
+At 9 obstacles, the effect was negligible(Figures~\ref{fig:adjusted}d, h, l). However at 25 obstacles, group sizes
+decreased and movement became more spatially constrained, with cells forced to migrate in one of 4 directions.
+(Figures~\ref{fig:adjusted}c, g, k). At 49 obstacles, cells frequently moved alone or in very
+small clusters that changed direction often due to collisions with obstacles.
+
+\subsection*{Quantative observations}
+The quantitative results for the baseline experiments are summarized in Table~\ref{tab:baseline}.
+Despite the low-persistence character of migration at $\text{Max}_\text{act} = 20$,
+a clear decrease in both average speed and average distance traveled is observed as
+obstacle density increases. From 0.0347 pixels/step and 82.95 pixels at 0 obstacles down to
+0.0300 pixels/step and 71.76 pixels at 49 obstacles, which is a reduction of approximately
+14\% in speed and 13\% in distance. Notice that the fastest individual cell at 49 obstacles 
+(0.0814 pixels/step) substantially exceeds that at 0 obstacles (0.0614 pixels/step), possibly 
+because isolated cells are channeled by obstacles into brief stretches of unimpeded motion. 
+The slowest cell speed drops markedly in the presence of obstacles, consistent with occasional blockage.
+
+\begin{table}[h!]
+    \centering
+    \caption{Speed and distance results (pixels/step) of CPM with baseline parameters.}
+    \label{tab:baseline}
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Amount of Obstacles} & \textbf{0} & \textbf{9} & \textbf{25} & \textbf{49}\\
+        \midrule
+        Avg speed across all cells & 0.0347 & 0.0340 & 0.0324 & 0.0300\\
+        Std dev of cell speeds & 0.0075 & 0.0094 & 0.0070 & 0.0107\\
+        Fastest cell avg speed & 0.0614 & 0.0614 & 0.0597 & 0.0814\\
+        Slowest cell avg speed & 0.0239 & 0.0044 & 0.0198 & 0.0026\\
+        Avg distance across all cells & 82.95 & 81.36 & 77.47 & 71.76\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+Table~\ref{tab:adjusted} shows results for the adjusted experiments. Compared to the baseline
+the average speeds are approximately 3.4$\times$ higher (0.1168 vs.\ 0.0347 pixels/step at
+0 obstacles), and average distances are more than three times greater (279.12 vs.\ 82.95 pixels).
+This increase directly reflects the directed, persistent character of collective migration
+at $\text{Max}_\text{act} = 60$, because groups sustain a shared direction over many Monte Carlo steps. 
+Despite these higher absolute values, the same trend can be observed. We see that the average speed 
+and distance decrease with obstacle density, from 0.1168 pixels/step and 279.12 pixels at 0 obstacles 
+to 0.1008 pixels/step and 240.95 pixels at 49 obstacles. This is a reduction of roughly 14\% in both 
+metrics, nearly identical in proportion to the baseline experiments.
+\begin{table}[h!]
+    \centering
+    \caption{Speed distance results (pixels/step) of CPM with adjusted parameters.}
+    \label{tab:adjusted}
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Amount of Obstacles} & \textbf{0} & \textbf{9} & \textbf{25} & \textbf{49}\\
+        \midrule
+        Avg speed across all cells & 0.1168 & 0.1100 & 0.1094 & 0.1008\\
+        Std dev of cell speeds & 0.0070 & 0.0116 & 0.0095 & 0.0131\\
+        Fastest cell avg speed & 0.1366 & 0.1333 & 0.1319 & 0.1316\\
+        Slowest cell avg speed & 0.1005 & 0.0616 & 0.0917 & 0.0677\\
+        Avg distance across all cells & 279.12 & 262.96 & 261.54 & 240.95\\
+        \bottomrule
+    \end{tabular}
+\end{table}
+
+\section{Discussion}
+This experiment explores how different obstacle configurations impact collective cell migration. While it achieves its goal, there are several limitations that were not addressed. 
+
+All obstacle configurations were equally spaced and placed in a grid-like pattern. Because of this, the environment did not change much between obstacle configurations. Moreover, only 4 obstacle configurations were explored, all with the same layout. 
+Furthermore, most parameter values were taken from the self-study exercise 1.3 and no other parameter configurations were explored. 
+It is recommended that future studies explore different parameter configurations, irregular obstacle placement, and dynamic obstacles. 
+
+\section{Conclusion}
+This study investigated the effect of obstacles on collective cell migration using a two-dimensional Cellular Potts Model implemented in Artistoo. Without obstacles, cells formed large groups that coherently moved together in the same direction. Increasing the obstacle density disrupted collective migration. Low obstacle densities only had minor effects, however, as the density increases, group sizes and cell movement become more restricted. This is also supported by the quantitative results which show consistent decrease in average speed and in distance traveled as the number of obstacles grows.
+
+Overall, this work demonstrates that obstacles play a critical role in collective cell behavior. 
+
+\newpage
+
+\begin{appendices}
+
+\end{appendices}
 \begin{figure}[htbp]
     \centering
     % Subfigure 1
@@ -203,10 +294,9 @@ Observing the simulations with and without obstacles showed clear differences. W
     \hfill
     
     \caption{80 Cells in an environment with different amount of obstacles with baseline parameters.}
-    \label{fig:overall_label}
+    \label{fig:baseline}
 \end{figure}
-Introducing obstacles changes the cell behavior. All obstacle configurations are displayed in Figures 2-4. At 9 obstacles, only a minor change in cell behavior can be observed. When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change. Increasing the number of obstacles to 25 limits the collective cell migration scale. This density of obstacles prevents the formation of larger groups and restricts their movement. Now, obstacles are forced to migrate in one of 4 directions.
-When the environment is covered with 49 obstacles, the cell movement and collective behavior is significantly restricted. Cells no longer form large groups that migrate in the same direction, instead, cells move alone or in smaller groups, often changing directions because of bumping into obstacles or another cells. 
+
 \begin{figure}[htbp]
     \centering
     % Subfigure 1
@@ -310,60 +400,7 @@ When the environment is covered with 49 obstacles, the cell movement and collect
     \hfill
     
     \caption{80 Cells in an environment with different amount of obstacles with adjusted parameters.}
-    \label{fig:fig2}
+    \label{fig:adjusted}
 \end{figure}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{lccccc}
-\hline
-\textbf{Amount of Obstacles} & \textbf{0} & \textbf{9} & \textbf{25} & \textbf{49}\\
-\hline
-Avg speed across all cells & 0.0347 & 0.0340 & 0.0324 & 0.0300\\
-Std dev of cell speeds & 0.0075 & 0.0094 & 0.0070 & 0.0107\\
-Fastest cell avg speed & 0.0614 & 0.0614 & 0.0597 & 0.0814\\
-Slowest cell avg speed & 0.0239 & 0.0044 & 0.0198 & 0.0026\\
-Avg distance across all cells & 82.95 & 81.36 & 77.47 & 71.76\\
-\hline
-\end{tabular}
-\caption{Speed and distance results (pixels/step) of CPM with baseline parameters.}
-\end{table}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{lccccc}
-\hline
-\textbf{Amount of Obstacles} & \textbf{0} & \textbf{9} & \textbf{25} & \textbf{49}\\
-\hline
-Avg speed across all cells & 0.1168 & 0.1100 & 0.1094 & 0.1008\\
-Std dev of cell speeds & 0.0070 & 0.0116 & 0.0095 & 0.0131\\
-Fastest cell avg speed & 0.1366 & 0.1333 & 0.1319 & 0.1316\\
-Slowest cell avg speed & 0.1005 & 0.0616 & 0.0917 & 0.0677\\
-Avg distance across all cells & 279.12 & 262.96 & 261.54 & 240.95\\
-\hline
-\end{tabular}
-\caption{Speed distance results (pixels/step) of CPM with adjusted parameters.}
-\end{table}
-
-Tables 3 and 4 display the observed changes in speed across different parameter configurations. Both tables displays a gradual decrease in average cell speed and in average distance traveled as obstacle density increased. 
-This indicates that obstacles generally limit cell speed even when using different parameters. 
-
-\section{Discussion}
-This experiment explores how different obstacle configurations impact collective cell migration. While it achieves its goal, there are several limitations that were not addressed. 
-
-All obstacle configurations were equally spaced and placed in a grid-like pattern. Because of this, the environment did not change much between obstacle configurations. Moreover, only 4 obstacle configurations were explored, all with the same layout. 
-Furthermore, most parameter values were taken from the self-study exercise 1.3 and no other parameter configurations were explored. 
-It is recommended that future studies explore different parameter configurations, irregular obstacle placement, and dynamic obstacles. 
-
-\section{Conclusion}
-This study investigated the effect of obstacles on collective cell migration using a two-dimensional Cellular Potts Model implemented in Artistoo. Without obstacles, cells formed large groups that coherently moved together in the same direction. Increasing the obstacle density disrupted collective migration. Low obstacle densities only had minor effects, however, as the density increases, group sizes and cell movement become more restricted. This is also supported by the quantitative results which show consistent decrease in average speed and in distance traveled as the number of obstacles grows.
-
-Overall, this work demonstrates that obstacles play a critical role in collective cell behavior. 
-
-\newpage
-
-\begin{appendices}
-
-\end{appendices}
 
 \end{document}
