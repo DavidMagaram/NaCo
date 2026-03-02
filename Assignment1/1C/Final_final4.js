@@ -37,7 +37,7 @@ let config = {
 		T : 20,
 
 		// Adhesion parameters: [background, moving cell, obstacle]
-		J: [[0,20,20], [15,0,1000], [15,1000,0]],
+		J: [[0,20,20], [20,0,1000], [20,1000,0]],
 		
 		// VolumeConstraint parameters
 		LAMBDA_V: [0,50,500],      // Obstacles are rigid (high lambda)
@@ -48,8 +48,8 @@ let config = {
 		P : [0,180,50],
 		
 		// ActivityConstraint parameters
-		LAMBDA_ACT : [0,150,0],    // Obstacles don't move (0 activity)
-		MAX_ACT : [0,40,0],        // Obstacles don't move
+		LAMBDA_ACT : [0,200,0],    // Obstacles don't move (0 activity)
+		MAX_ACT : [0,60,0],        // Obstacles don't move
 		ACT_MEAN : "geometric"
 	},
 
@@ -62,7 +62,7 @@ let config = {
 		MANUAL_CELL_COUNT : cliCells !== null ? cliCells : 60,
 
 		BURNIN : 100,
-		RUNTIME : 2000,
+		RUNTIME : 2400,
 
 		CANVASCOLOR : "eaecef",
 		CELLCOLOR : ["000000", "888888"],  // Moving cells black, obstacles gray

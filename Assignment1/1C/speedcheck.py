@@ -4,9 +4,9 @@ import subprocess
 import glob
 import os
 
-CELLS = 50
+CELLS = 80
 OBSTACLE_COUNTS = [0, 9, 25, 49]
-RESULTS_DIR = "results_1"
+RESULTS_DIR = "results_2"
 
 def run_simulation(cells, obstacles):
     """Run Final_final4.js and return the log filename."""
