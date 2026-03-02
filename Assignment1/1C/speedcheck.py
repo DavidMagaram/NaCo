@@ -24,7 +24,7 @@ def make_gif(cells, obstacles):
     gif_file = os.path.join(RESULTS_DIR, f"output_cells{cells}_obs{obstacles}.gif")
     print(f"  Creating gif...")
     subprocess.run([
-        "ffmpeg", "-y", "-framerate", "10", "-start_number", "0",
+        "ffmpeg", "-y", "-framerate", "30", "-start_number", "0",
         "-i", "img/simulation-t%d.png",
         "-vf", "split[s0][s1];[s0]palettegen=max_colors=256:stats_mode=full[p];[s1][p]paletteuse=dither=floyd_steinberg",
         gif_file
