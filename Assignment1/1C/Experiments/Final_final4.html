@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ActModel</title>
+<link rel="stylesheet" href="../../css/explorable.css">
+<style type="text/css">
+body{
+	 padding-left : 5px;
+	 padding-right: 5px;
+	 padding-top: 0px;
+	 margin: 0px;
+}
+
+table {
+	margin-bottom: 20px;
+	border-collapse: collapse;
+}
+
+td {
+	padding: 5px;
+}
+
+input[type="range"] {
+	width: 200px;
+}
+
+input[type="number"] {
+	width: 60px;
+}
+
+h2 {
+	margin-top: 20px;
+	margin-bottom: 10px;
+}
+
+button {
+	margin: 5px;
+	padding: 8px 15px;
+	cursor: pointer;
+}
+</style>
+
+<script src="./artistoo_minimal/build/artistoo.js"></script>
+
+<script>
+"use strict"
+
+let config = {
+	// Grid settings
+	ndim : 2,
+	field_size : [200,200],
+	
+	// CPM parameters and configuration
+	conf : {
+		// Basic CPM parameters
+		torus : [true,true],
+		T : 20,
+		
+		// Adhesion parameters: [background, moving cell, obstacle]
+		J: [[0,20,20], [15,0,1000], [15,1000,0]],
+		
+		// VolumeConstraint parameters
+		LAMBDA_V: [0,50,500],      // Obstacles are rigid (high lambda)
+		V: [0,200,100],            // Obstacle volume ~130 pixels (radius 6.5)
+		
+		// PerimeterConstraint parameters
+		LAMBDA_P: [0,2,200],       // Obstacles maintain shape (high lambda)
+		P : [0,180,50],
+		
+		// ActivityConstraint parameters
+		LAMBDA_ACT : [0,150,0],    // Obstacles don't move (0 activity)
+		MAX_ACT : [0,40,0],        // Obstacles don't move
+		ACT_MEAN : "geometric"
+	},
+	
+	// Simulation setup and configuration
+	simsettings : {
+        NRCELLS : [50, 0], // [moving cells, obstacles], Keep obstacles 0 here.
+		NUM_OBSTACLES : 0, // Number of obstacles. Keep square (3x3, 4x4, 5x5....). 
+		OBSTACLE_RADIUS : 6, // Just places pixels in that radius. Then V and P determine final shape and size of obstacles.
+		OBSTACLE_PADDING : 10, // Padding from borders. 25 is golden, but can always adjust if changing NUM_OBSTACLES or field size.
+		
+		BURNIN : 0,
+		RUNTIME : 600,
+		RUNTIME_BROWSER : "Inf",
+		
+		CANVASCOLOR : "eaecef",
+		CELLCOLOR : ["000000", "888888"],  // Moving cells black, obstacles gray
+		ACTCOLOR : [true, false],          // Show activity for moving cells only
+		SHOWBORDERS : [false, false],
+		zoom : 2,
+		
+		SAVEIMG : false,
+		STATSOUT : { browser: false, node: true },
+		LOGRATE : 10
+	}
+}
+
+let sim, meter
+let movingCells = []  // Track moving cell IDs
+
+function initialize(){
+	let custommethods = {
+		initializeGrid : initializeGrid,
+		buildObstacles : buildObstacles,
+		drawBelow : drawBelow
+	}
+
+	sim = new CPM.Simulation( config, custommethods )
+	sim.Cim = new CPM.Canvas( sim.C, {
+		zoom:sim.conf.zoom, 
+		parentElement : document.getElementById("sim")
+	} )
+	sim.helpClasses[ "canvas" ] = true
+	
+	// Add stop flag
+	sim.C.stop = false
+	
+	step()
+}
+
+function step(){
+	if( !sim.C.stop ){
+		for( let i = 0; i < 5; i++ ){
+			sim.step()
+		}
+	}
+	
+	if( sim.conf["RUNTIME_BROWSER"] == "Inf" | sim.time+1 < sim.conf["RUNTIME_BROWSER"] ){
+		requestAnimationFrame( step )
+	}
+}
+
+function drawBelow(){
+	// Optional: can draw something below cells if needed
+}
+
+function initializeGrid(){
+	if( !this.helpClasses["gm"] ){ this.addGridManipulator() }
+	this.buildObstacles()
+	
+	// Seed moving cells (cellkind 1)
+	for( let i = 0; i < this.conf["NRCELLS"][0]; i++ ){
+		let cid = this.gm.seedCell( 1 )
+		movingCells.push(cid)
+	}
+}
+
+function buildObstacles(){
+	const numObstacles = this.conf["NUM_OBSTACLES"]
+	
+	if( numObstacles === 0 ){
+		return
+	}
+	
+	const gridSize = Math.sqrt(numObstacles)
+	const radius = this.conf["OBSTACLE_RADIUS"]
+	const padding = this.conf["OBSTACLE_PADDING"]
+	
+	const xSpacing = Math.floor((this.C.extents[0] - 2 * padding) / (gridSize - 1))
+	const ySpacing = Math.floor((this.C.extents[1] - 2 * padding) / (gridSize - 1))
+	
+	// Create obstacle cells (cellkind 2)
+	for( let i = 0; i < gridSize; i++ ){
+		for( let j = 0; j < gridSize; j++ ){
+			const centerX = padding + xSpacing * i
+			const centerY = padding + ySpacing * j
+			
+			// Create a new obstacle cell
+			const obstacleID = this.C.makeNewCellID( 2 )
+			
+			// Place pixels for this obstacle
+			for( let xx = centerX - radius; xx <= centerX + radius; xx++ ){
+				for( let yy = centerY - radius; yy <= centerY + radius; yy++){
+					let dx = Math.abs( xx - centerX )
+					let dy = Math.abs( yy - centerY )
+					if( Math.sqrt( dx*dx + dy*dy ) < radius ){
+						this.C.setpix( [xx, yy], obstacleID )
+					}	
+				}
+			}
+		}
+	}
+}
+
+// Start/stop functions
+function startsim(){
+	if( sim.C.stop ){
+		sim.C.stop = false
+	}
+}
+
+function stopsim(){
+	sim.C.stop = true
+}
+
+// Add/remove cells dynamically
+function addCells(n){
+	if( !sim.helpClasses["gm"] ){ sim.addGridManipulator() }
+	for( let i = 0; i < n; i++ ){
+		let cid = sim.gm.seedCell( 1 )
+		movingCells.push(cid)
+	}
+}
+
+function killCell(){
+	if( movingCells.length > 0 ){
+		let cidToRemove = movingCells.pop()
+		
+		for( let cp of sim.C.cellPixels() ){
+			if( cp[1] === cidToRemove ){
+				sim.C.setpix( cp[0], 0 )
+			}
+		}
+	}
+}
+
+function killAllCells(){
+	if( movingCells.length === 0 ) return
+	
+	for( let cp of sim.C.cellPixels() ){
+		// Only remove moving cells (cellkind 1), not obstacles
+		if( sim.C.cellKind(cp[1]) === 1 ){
+			sim.C.setpix( cp[0], 0 )
+		}
+	}
+	movingCells = []
+}
+
+</script>
+</head>
+<body onload="initialize()">
+
+<h1>Cell Migration with Obstacles</h1>
+
+<h2>Simulation Control</h2>
+<button onclick="startsim()">▶ Start</button>
+<button onclick="stopsim()">⏸ Stop</button>
+
+<h2>Cell Management</h2>
+<button onclick="addCells(1)">+ 1 Cell</button>
+<button onclick="addCells(5)">+ 5 Cells</button>
+<button onclick="addCells(10)">+ 10 Cells</button>
+<button onclick="killCell()">Remove 1 Cell</button>
+<button onclick="killAllCells()">Remove All Cells</button>
+
+<h2>Activity Parameters (Moving Cells)</h2>
+<table>
+<tr>
+	<td style="width:150px">max<sub>act</sub></td>
+	<td style="width:50px">0</td>
+	<td style="width:250px"> 
+		<input type="range" min="0" max="100" value="20" 
+			oninput="sim.C.getConstraint('ActivityConstraint').conf.MAX_ACT[1]=parseInt(this.value); document.getElementById('mact_val').value=this.value">
+	</td>
+	<td style="width:50px">100</td>
+	<td><input type="number" id="mact_val" value="20" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>λ<sub>act</sub></td>
+	<td>0</td>
+	<td> 
+		<input type="range" min="0" max="1000" value="750" 
+			oninput="sim.C.getConstraint('ActivityConstraint').conf.LAMBDA_ACT[1]=parseInt(this.value); document.getElementById('lact_val').value=this.value">
+	</td>
+	<td>500</td>
+	<td><input type="number" id="lact_val" value="750" style="width:50px" readonly></td>
+</tr>
+</table>
+
+<h2>Moving Cell Properties</h2>
+<table>
+<tr>
+	<td style="width:150px">Volume</td>
+	<td style="width:50px">50</td>
+	<td style="width:250px">
+		<input type="range" min="50" max="500" value="200" 
+			oninput="sim.C.conf.V[1]=parseInt(this.value); document.getElementById('vol_val').value=this.value">
+	</td>
+	<td style="width:50px">500</td>
+	<td><input type="number" id="vol_val" value="200" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>λ<sub>Volume</sub></td>
+	<td>0</td>
+	<td>
+		<input type="range" min="0" max="200" value="50" 
+			oninput="sim.C.conf.LAMBDA_V[1]=parseInt(this.value); document.getElementById('lvol_val').value=this.value">
+	</td>
+	<td>200</td>
+	<td><input type="number" id="lvol_val" value="50" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>Perimeter</td>
+	<td>50</td>
+	<td>
+		<input type="range" min="50" max="400" value="180" 
+			oninput="sim.C.conf.P[1]=parseInt(this.value); document.getElementById('per_val').value=this.value">
+	</td>
+	<td>400</td>
+	<td><input type="number" id="per_val" value="180" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>λ<sub>Perimeter</sub></td>
+	<td>0</td>
+	<td>
+		<input type="range" min="0" max="20" value="2" step="0.5"
+			oninput="sim.C.conf.LAMBDA_P[1]=parseFloat(this.value); document.getElementById('lper_val').value=this.value">
+	</td>
+	<td>20</td>
+	<td><input type="number" id="lper_val" value="2" style="width:50px" readonly></td>
+</tr>
+</table>
+
+<h2>Obstacle Properties</h2>
+<table>
+<tr>
+	<td style="width:150px">Volume</td>
+	<td style="width:50px">50</td>
+	<td style="width:250px">
+		<input type="range" min="50" max="300" value="130" 
+			oninput="sim.C.conf.V[2]=parseInt(this.value); document.getElementById('obsvol_val').value=this.value">
+	</td>
+	<td style="width:50px">300</td>
+	<td><input type="number" id="obsvol_val" value="130" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>λ<sub>Volume</sub></td>
+	<td>0</td>
+	<td>
+		<input type="range" min="0" max="1000" value="500" 
+			oninput="sim.C.conf.LAMBDA_V[2]=parseInt(this.value); document.getElementById('obslvol_val').value=this.value">
+	</td>
+	<td>1000</td>
+	<td><input type="number" id="obslvol_val" value="500" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>Perimeter</td>
+	<td>20</td>
+	<td>
+		<input type="range" min="20" max="200" value="50" 
+			oninput="sim.C.conf.P[2]=parseInt(this.value); document.getElementById('obsper_val').value=this.value">
+	</td>
+	<td>200</td>
+	<td><input type="number" id="obsper_val" value="50" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>λ<sub>Perimeter</sub></td>
+	<td>0</td>
+	<td>
+		<input type="range" min="0" max="500" value="200" 
+			oninput="sim.C.conf.LAMBDA_P[2]=parseInt(this.value); document.getElementById('obslper_val').value=this.value">
+	</td>
+	<td>500</td>
+	<td><input type="number" id="obslper_val" value="200" style="width:50px" readonly></td>
+</tr>
+</table>
+
+<h2>Adhesion</h2>
+<table>
+<tr>
+	<td style="width:150px">J<sub>cell-matrix</sub></td>
+	<td style="width:50px">0</td>
+	<td style="width:250px">
+		<input type="range" min="0" max="100" value="10" 
+			oninput="sim.C.conf.J[1][0]=sim.C.conf.J[0][1]=parseInt(this.value); document.getElementById('jcm_val').value=this.value">
+	</td>
+	<td style="width:50px">100</td>
+	<td><input type="number" id="jcm_val" value="15" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>J<sub>cell-cell</sub></td>
+	<td>0</td>
+	<td>
+		<input type="range" min="0" max="100" value="0" 
+			oninput="sim.C.conf.J[1][1]=parseInt(this.value); document.getElementById('jcc_val').value=this.value">
+	</td>
+	<td>100</td>
+	<td><input type="number" id="jcc_val" value="0" style="width:50px" readonly></td>
+</tr>
+<tr>
+	<td>J<sub>cell-obstacle</sub></td>
+	<td>0</td>
+	<td>
+		<input type="range" min="0" max="2000" value="1000" 
+			oninput="sim.C.conf.J[1][2]=sim.C.conf.J[2][1]=parseInt(this.value); document.getElementById('jco_val').value=this.value">
+	</td>
+	<td>2000</td>
+	<td><input type="number" id="jco_val" value="1000" style="width:50px" readonly></td>
+</tr>
+</table>
+
+<h2>System</h2>
+<table>
+<tr>
+	<td style="width:150px">Temperature (T)</td>
+	<td style="width:50px">1</td>
+	<td style="width:250px">
+		<input type="range" min="1" max="50" value="20" 
+			oninput="sim.C.conf.T=parseInt(this.value); document.getElementById('temp_val').value=this.value">
+	</td>
+	<td style="width:50px">50</td>
+	<td><input type="number" id="temp_val" value="20" style="width:50px" readonly></td>
+</tr>
+</table>
+
+<div class="container">
+	<div id="sim" class="simcontainer"></div>
+</div>
+
+
+</body>
+</html>

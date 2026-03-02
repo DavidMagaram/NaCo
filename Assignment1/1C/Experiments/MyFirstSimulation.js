@@ -46,9 +46,9 @@ let config = {
 	simsettings : {
 
 		// Cells on the grid - set to [0,0] since we manually place obstacles and seed cells below
-		NRCELLS : [120, 0],
+		NRCELLS : [40, 0],
 
-		NUM_OBSTACLES : 25, // Number of obstacles. Keep square (3x3, 4x4, 5x5....). 
+		NUM_OBSTACLES : 0, // Number of obstacles. Keep square (3x3, 4x4, 5x5....). 
 		OBSTACLE_RADIUS : 6, // Just places pixels in that radius. Then V and P determine final shape and size of obstacles.
 		OBSTACLE_PADDING : 10, // Padding from borders. 25 is golden, but can always adjust if changing NUM_OBSTACLES or field size.
 

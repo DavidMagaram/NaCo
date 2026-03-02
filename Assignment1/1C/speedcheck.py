@@ -4,7 +4,7 @@ import subprocess
 import glob
 import os
 
-CELLS = 60
+CELLS = 50
 OBSTACLE_COUNTS = [0, 9, 25, 49]
 RESULTS_DIR = "results"
 
