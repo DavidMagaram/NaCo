@@ -1,7 +1,7 @@
 cells=50, obstacles=9
-Mean speed:     0.0950
-Std dev:        0.0188
-Fastest cell:   0.1530
-Slowest cell:   0.0514
-Mean distance:  94.06
-Alignment:      0.1778 +/- 0.0712
+Mean speed:     0.1014
+Std dev:        0.0193
+Fastest cell:   0.1332
+Slowest cell:   0.0611
+Mean distance:  100.34
+Alignment:      0.2005 +/- 0.0663
