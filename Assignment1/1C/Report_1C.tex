@@ -96,7 +96,11 @@ There were 4 experiments in total. All were performed under the same conditions 
 To get quantitative data, a Python script was used to calculate the average speed and average distance traversed, as well as find the fastest and slowest cells, along with the standard deviation in speeds. It also calculates the Vicsek order parameter for each timestep and takes the mean, giving us data on how stable the alignment of moving cells is. This allows us to analyze the cell movements for both environments with and without obstacles in a quantitative, objective way, and base our qualitative analysis on facts. 
 
 \section{Results}
+Observing the simulations with and without obstacles showed clear differences. Without obstacles, cells were initialized randomly and started moving around. Several moments later, smaller groups of cells start emerging. After some time, these smaller groups merged together and formed larger groups, all moving coherently in the same direction. This is depicted in Figure 1. 
 
+Introducing obstacles changes the cell behavior. At 9 obstacles, only a minor change in cell behavior can be observed. When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change. Increasing the number of obstacles to 25 limits the collective cell migration scale. This density of obstacles prevents the formation of larger groups and restricts their movement. Now, obstacles are forced to migrate in one of 4 directions.
+
+We start observing drastic changes to cell behavior at 49 obstacles, where the majority of the environment is covered.
 
 \begin{table}[h!]
 \centering
