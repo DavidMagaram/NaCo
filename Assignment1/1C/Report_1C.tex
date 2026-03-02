@@ -139,9 +139,8 @@ Observing the simulations with and without obstacles showed clear differences. W
     \label{fig:overall_label}
 \end{figure}
 
-Introducing obstacles changes the cell behavior. At 9 obstacles, only a minor change in cell behavior can be observed. When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change. Increasing the number of obstacles to 25 limits the collective cell migration scale. This density of obstacles prevents the formation of larger groups and restricts their movement. Now, obstacles are forced to migrate in one of 4 directions.
-
-We start observing drastic changes to cell behavior at 49 obstacles, where the majority of the environment is covered.
+Introducing obstacles changes the cell behavior. All obstacle configurations are displayed in Figures 2-4. At 9 obstacles, only a minor change in cell behavior can be observed. When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change. Increasing the number of obstacles to 25 limits the collective cell migration scale. This density of obstacles prevents the formation of larger groups and restricts their movement. Now, obstacles are forced to migrate in one of 4 directions.
+When the environment is covered with 49 obstacles, the cell movement and collective behavior is significantly restricted. Cells no longer form large groups that migrate in the same direction, instead, cells move alone or in smaller groups, often changing directions because of bumping into obstacles or another cells. 
 
 \begin{table}[h!]
 \centering
@@ -175,7 +174,8 @@ Avg distance across all cells & 279.12 & 262.96 & 261.54 & 240.95\\
 \caption{Speed distance results (pixels/step) of CPM with adjusted parameters.}
 \end{table}
 
-
+Tables 3 and 4 display the observed changes in speed across different parameter configurations. Both tables displays a gradual decrease in average cell speed and in average distance traveled as obstacle density increased. 
+This indicates that obstacles generally limit cell speed even when using different parameters. 
 
 \section{Discussion}
 This experiment explores how different obstacle configurations impact collective cell migration. While it achieves its goal, there are several limitations that were not addressed. 
@@ -185,7 +185,9 @@ Furthermore, most parameter values were taken from the self-study exercise 1.3 a
 It is recommended that future studies explore different parameter configurations, irregular obstacle placement, and dynamic obstacles. 
 
 \section{Conclusion}
-This study demonstrated that ...
+This study investigated the effect of obstacles on collective cell migration using a two-dimensional Cellular Potts Model implemented in Artistoo. Without obstacles, cells formed large groups that coherently moved together in the same direction. Increasing the obstacle density disrupted collective migration. Low obstacle densities only had minor effects, however, as the density increases, group sizes and cell movement become more restricted. This is also supported by the quantitative results which show consistent decrease in average speed and in distance traveled as the number of obstacles grows.
+
+Overall, this work demonstrates that obstacles play a critical role in collective cell behavior. 
 
 \newpage
 
