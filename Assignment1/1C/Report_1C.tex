@@ -74,52 +74,6 @@ Obstacle padding  & -- & 10 \\
 \textbf{Parameter} & \textbf{Moving Cells} & \textbf{Obstacles} \\
 \hline
 Temperature (T) & 20 & 20 \\
-Adhesion cell–matrix ($J_{\text{obstacle-matrix}}$) & 15 & 15 \\
-Adhesion cell–cell ($J_{\text{cell-cell}}$) & 0 & 0 \\
-Adhesion obstacle–cell ($J_{\text{obstacle-cell}}$) & 1000 & 1000 \\
-Target volume (V) & 200 & 100 \\
-Volume constraint ($\lambda_V$) & 50 & 500 \\
-Target perimeter (P) & 180 & 50 \\
-Perimeter constraint ($\lambda_P$) & 2 & 200 \\
-Activity strength ($\lambda_{\text{act}}$)& 150 & 0 \\
-Activity memory ($\text{Max}_{\text{act}}$)  & 40 & 0 \\
-Number of cells & 50 & 0, 9, 25, 49 \\
-Obstacle padding  & -- & 10 \\
-\hline
-\end{tabular}
-\caption{CPM parameters for moving cells and obstacles.}
-\end{table}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{lccc}
-\hline
-\textbf{Parameter} & \textbf{Moving Cells} & \textbf{Obstacles} \\
-\hline
-Temperature (T) & 20 & 20 \\
-Adhesion cell–matrix ($J_{\text{obstacle-matrix}}$) & 15 & 15 \\
-Adhesion cell–cell ($J_{\text{cell-cell}}$) & 0 & 0 \\
-Adhesion obstacle–cell ($J_{\text{obstacle-cell}}$) & 1000 & 1000 \\
-Target volume (V) & 200 & 100 \\
-Volume constraint ($\lambda_V$) & 50 & 500 \\
-Target perimeter (P) & 180 & 50 \\
-Perimeter constraint ($\lambda_P$) & 2 & 200 \\
-Activity strength ($\lambda_{\text{act}}$)& 200 & 0 \\
-Activity memory ($\text{Max}_{\text{act}}$)  & 60 & 0 \\
-Number of cells & 80 & 0, 9, 25, 49 \\
-Obstacle padding  & -- & 10 \\
-\hline
-\end{tabular}
-\caption{CPM parameters for moving cells and obstacles.}
-\end{table}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{lccc}
-\hline
-\textbf{Parameter} & \textbf{Moving Cells} & \textbf{Obstacles} \\
-\hline
-Temperature (T) & 20 & 20 \\
 Adhesion cell–matrix ($J_{\text{obstacle-matrix}}$) & 20 & 20 \\
 Adhesion cell–cell ($J_{\text{cell-cell}}$) & 0 & 0 \\
 Adhesion obstacle–cell ($J_{\text{obstacle-cell}}$) & 1000 & 1000 \\
@@ -144,6 +98,18 @@ To get quantitative data, a Python script was used to calculate the average spee
 
 
 \section{Results}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{lccc}
+\hline
+\textbf{Amount of Obstacles} & \textbf{0} & \textbf{9} & \textbf{25} & \textbf{49}\\
+\hline
+Average speed across all cells & 20 & 20 \\
+\hline
+\end{tabular}
+\caption{Speed results table 1.}
+\end{table}
 
 
 \section{Conclusion}
