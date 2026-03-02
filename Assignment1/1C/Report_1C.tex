@@ -199,7 +199,25 @@ densities only had minor effects, however, as the density increases, group sizes
 more restricted. This is also supported by the quantitative results which show consistent decrease in 
 average speed and in distance traveled as the number of obstacles grows.
 
-Overall, this work demonstrates that obstacles play a critical role in collective cell behavior. 
+Overall, this work demonstrates that obstacles play a critical role in collective cell behavior.
+
+\section{Revision Summary}
+
+This report is a revised version of our earlier Assignment 1A report. Through the peer feedback process, we both received constructive criticism from- and gave feedback to other teams, which enabled us to significantly improve our report.
+
+The feedback we received showed that there were several important shortcomings of our earlier report, along with even more plentiful smaller ones. We agreed with the vast majority of the feedback and implemented many changes based on it, just falling short of a full rewrite. We therefore chose not to highlight the changes in the report visually, as this would make more sense with smaller, targeted changes and would make our report look cluttered.
+
+Important weaknesses of our paper that were noted were the absence of a 0-obstacle baseline, not enough different configurations compared, too few cells (37) to exhibit true collective migration, a lack of a clear description of the amount of monte carlo steps our results were produced at, that we only gathered qualitative data for one obstacle configuration and different data reported in different places with inconsistencies between them.
+
+Ideas that inspired us from other groups were to use visual graphs to show the differences between configurations, using parameters that lead to better observable collective cell migration, a nice big parameter overview with the most important ones justified, better reproducibility by mentioning more details of our implementation, the explanation and justification of how CPM works and why it is relevant here, including the Hamiltonian equation.
+
+We therefore replaced the original obstacle set (4, 9, 16, 25) with (0, 9, 25, 49), so that we could compare multiple different obstacle values against a 0 baseline, added a run with ($\text{Max}_\text{act} = 60$) instead of ($\text{Max}_\text{act} = 20$) after plenty of experimentation to show which parameters could lead to proper collective cell migration, increased the number of moving cells from 37 to 80, and added equations, a proper parameter table, finished the previously incomplete discussion and conclusion section, cited literature, clearly formulated the research question, added a small discussion of the directional alignment being disrupted by obstacles, and added quantitative data for all of the obstacle configurations. We also improved the previously buggy implementation of the CPM and its measurement (we did not initially account for cells passing the wrapped boundaries and 'teleporting' 200 pixels in one step).
+
+Now we have a clearer, more approachable, accurate and reproducible report that clearly shows the point it is trying to make. While we received excellent feedback, even more of the revisions were inspired by looking at what other groups did better than us and they failed against the peer feedback questions, as we were often making the same mistakes as them. 
+
+\section*{Acknowledgements}
+We thank Group~16 for their detailed and constructive peer feedback, which directly informed several of our revisions. We also thank Group~2, whose report we thought had a great structure and inspired our inclusion of the CPM equations and parameter table.
+
 \begin{thebibliography}{9}
 
 \bibitem{graner1992}
