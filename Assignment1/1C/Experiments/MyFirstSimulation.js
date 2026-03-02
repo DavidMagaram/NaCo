@@ -16,7 +16,7 @@ let config = {
 	conf : {
 		// Basic CPM parameters
 		torus : [true,true],// Border. True = wrapped. False=borders.
-		seed : 4,							// Seed for random number generation.
+		// seed : 4,							// Seed for random number generation.
 		T : 20,								// CPM temperature
 
 		// Constraint parameters.
@@ -25,11 +25,11 @@ let config = {
 		// First value is always cellkind 0 (the background) and is often not used.
 
 		// Adhesion parameters: [background, obstacle, moving cell]
-		J: [[0,20,20], [15,0,1000], [15,1000,0]],
+		J: [[0,20,20], [20,0,1000], [20,1000,0]],
 
 		// VolumeConstraint parameters
 		LAMBDA_V: [0,50,500],					// Obstacle rigid, moving cell flexible
-		V: [0,200,130],							// Same size for both
+		V: [0,200,100],							// Same size for both
 
 		// PerimeterConstraint parameters
 		LAMBDA_P: [0,2,200],
@@ -46,11 +46,11 @@ let config = {
 	simsettings : {
 
 		// Cells on the grid - set to [0,0] since we manually place obstacles and seed cells below
-		NRCELLS : [40, 0],
+		NRCELLS : [120, 0],
 
-		NUM_OBSTACLES : 9, // Number of obstacles. Keep square (3x3, 4x4, 5x5....). 
+		NUM_OBSTACLES : 25, // Number of obstacles. Keep square (3x3, 4x4, 5x5....). 
 		OBSTACLE_RADIUS : 6, // Just places pixels in that radius. Then V and P determine final shape and size of obstacles.
-		OBSTACLE_PADDING : 25, // Padding from borders. 25 is golden, but can always adjust if changing NUM_OBSTACLES or field size.
+		OBSTACLE_PADDING : 10, // Padding from borders. 25 is golden, but can always adjust if changing NUM_OBSTACLES or field size.
 
 		// Runtime etc
 		BURNIN : 0,

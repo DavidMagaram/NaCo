@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-df = pd.read_csv('030201.txt', sep='\t', names=['time', 'cellID', 'cellType', 'x', 'y'])
+df = pd.read_csv('030210.txt', sep='\t', names=['time', 'cellID', 'cellType', 'x', 'y'])
 
 # Filter to only active/moving cells (cellType 1), exclude background (0) and obstacles (2)
 df = df[df['cellType'] == 1]
