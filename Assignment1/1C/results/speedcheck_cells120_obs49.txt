@@ -1,6 +1,0 @@
-cells=120, obstacles=49
-Mean speed:     0.0322
-Std dev:        0.0086
-Fastest cell:   0.0624
-Slowest cell:   0.0143
-Mean distance:  19.01

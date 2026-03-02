@@ -48,8 +48,8 @@ let config = {
 		P : [0,180,50],
 
 		// ActivityConstraint parameters
-		LAMBDA_ACT : [0,200,0],    // Obstacles don't move (0 activity)
-		MAX_ACT : [0,20,0],        // Obstacles don't move
+		LAMBDA_ACT : [0,300,0],    // Obstacles don't move (0 activity)
+		MAX_ACT : [0,40,0],        // Obstacles don't move
 		ACT_MEAN : "geometric"
 	},
 
@@ -59,7 +59,7 @@ let config = {
 		NUM_OBSTACLES : cliObstacles !== null ? cliObstacles : 0,
 		OBSTACLE_RADIUS : 6,
 		OBSTACLE_PADDING : 10,
-		MANUAL_CELL_COUNT : cliCells !== null ? cliCells : 120,
+		MANUAL_CELL_COUNT : cliCells !== null ? cliCells : 60,
 
 		BURNIN : 0,
 		RUNTIME : 600,

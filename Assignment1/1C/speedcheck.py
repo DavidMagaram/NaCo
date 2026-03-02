@@ -4,7 +4,7 @@ import subprocess
 import glob
 import os
 
-CELLS = 120
+CELLS = 60
 OBSTACLE_COUNTS = [0, 9, 25, 49]
 RESULTS_DIR = "results"
 
@@ -35,37 +35,51 @@ def torus_diff(d, L):
     """Minimum image convention: wrap displacements to [-L/2, L/2]."""
     return ((d + L / 2) % L) - L / 2
 
-def analyze_speeds(log_file, field_size=(200, 200)):
-    """Analyze cell speeds from a simulation log. Returns a DataFrame of per-cell stats."""
+def analyze(log_file, field_size=(200, 200)):
+    """Analyze cell speeds and alignment from a simulation log."""
     df = pd.read_csv(log_file, sep='\t', names=['time', 'cellID', 'cellType', 'x', 'y'])
     # Filter to only active/moving cells (cellType 1), exclude background (0) and obstacles (2)
     df = df[df['cellType'] == 1]
 
-    speeds = []
-    for cell_id, group in df.groupby('cellID'):
-        group = group.sort_values('time')
-        dx = torus_diff(group['x'].diff(), field_size[0])
-        dy = torus_diff(group['y'].diff(), field_size[1])
-        dt = group['time'].diff()
-        displacement = np.sqrt(dx**2 + dy**2)
-        speed = displacement / dt
-        speeds.append({
-            'cellID': cell_id,
-            'avg_speed': speed.mean(),
-            'max_speed': speed.max(),
-            'total_distance': displacement.sum()
-        })
+    # Per-cell: compute velocity vectors using torus-aware displacements
+    df = df.sort_values(['cellID', 'time'])
+    df['dx'] = df.groupby('cellID')['x'].diff().transform(lambda d: torus_diff(d, field_size[0]))
+    df['dy'] = df.groupby('cellID')['y'].diff().transform(lambda d: torus_diff(d, field_size[1]))
+    df['dt'] = df.groupby('cellID')['time'].diff()
+    df['displacement'] = np.sqrt(df['dx']**2 + df['dy']**2)
+    df['speed'] = df['displacement'] / df['dt']
 
-    return pd.DataFrame(speeds)
+    # Per-cell summary
+    per_cell = df.groupby('cellID').agg(
+        avg_speed=('speed', 'mean'),
+        max_speed=('speed', 'max'),
+        total_distance=('displacement', 'sum')
+    ).reset_index()
 
-def print_stats(result, cells, obstacles):
-    """Print speed/distance statistics for a single run."""
+    # Alignment order parameter (Vicsek) per timestep:
+    # phi(t) = |mean unit velocity vector| across all cells at time t
+    # Ranges from 0 (random) to 1 (perfectly aligned)
+    valid = df.dropna(subset=['dx', 'dy']).copy()
+    valid = valid[valid['displacement'] > 0]
+    valid['ux'] = valid['dx'] / valid['displacement']
+    valid['uy'] = valid['dy'] / valid['displacement']
+    alignment_per_t = valid.groupby('time').apply(
+        lambda g: np.sqrt(g['ux'].mean()**2 + g['uy'].mean()**2)
+    )
+    mean_alignment = alignment_per_t.mean()
+    std_alignment = alignment_per_t.std()
+
+    return per_cell, mean_alignment, std_alignment
+
+def print_stats(result, mean_alignment, std_alignment):
+    """Print speed/distance/alignment statistics for a single run."""
     print(f"\n  Dataset: {len(result)} cells tracked")
     print(f"  Mean speed:     {result['avg_speed'].mean():.4f} px/step")
     print(f"  Std dev:        {result['avg_speed'].std():.4f}")
     print(f"  Fastest cell:   {result['avg_speed'].max():.4f}")
     print(f"  Slowest cell:   {result['avg_speed'].min():.4f}")
     print(f"  Mean distance:  {result['total_distance'].mean():.2f} px")
+    print(f"  Alignment:      {mean_alignment:.4f} +/- {std_alignment:.4f}")
 
 def clean_images():
     for f in glob.glob("img/*.png"):
@@ -84,9 +98,11 @@ if __name__ == "__main__":
         clean_images()
         log_file = run_simulation(CELLS, obs)
         gif_file = make_gif(CELLS, obs)
-        result = analyze_speeds(log_file)
+        result, mean_align, std_align = analyze(log_file)
         result['cells'] = CELLS
         result['obstacles'] = obs
+        result['mean_alignment'] = mean_align
+        result['std_alignment'] = std_align
         all_results.append(result)
 
         # Save per-run stats
@@ -98,8 +114,9 @@ if __name__ == "__main__":
             f.write(f"Fastest cell:   {result['avg_speed'].max():.4f}\n")
             f.write(f"Slowest cell:   {result['avg_speed'].min():.4f}\n")
             f.write(f"Mean distance:  {result['total_distance'].mean():.2f}\n")
+            f.write(f"Alignment:      {mean_align:.4f} +/- {std_align:.4f}\n")
 
-        print_stats(result, CELLS, obs)
+        print_stats(result, mean_align, std_align)
         print(f"  -> {gif_file}, {stats_file}")
         print()
 
@@ -114,6 +131,8 @@ if __name__ == "__main__":
             'max_speed': r['avg_speed'].max(),
             'min_speed': r['avg_speed'].min(),
             'mean_dist': r['total_distance'].mean(),
+            'alignment': r['mean_alignment'].iloc[0],
+            'alignment_std': r['std_alignment'].iloc[0],
         })
 
     # Print summary comparison
@@ -123,29 +142,29 @@ if __name__ == "__main__":
     for s in summary:
         print(f"  Obs={s['obstacles']:>3}: "
               f"speed={s['mean_speed']:.4f} +/- {s['std_speed']:.4f}, "
-              f"dist={s['mean_dist']:.2f}")
+              f"dist={s['mean_dist']:.2f}, "
+              f"alignment={s['alignment']:.4f} +/- {s['alignment_std']:.4f}")
 
     # Write LaTeX table
     latex_file = os.path.join(RESULTS_DIR, "results_table.tex")
     with open(latex_file, "w") as f:
         f.write("\\begin{table}[h]\n")
         f.write("\\centering\n")
-        f.write(f"\\caption{{Cell migration speed and distance "
+        f.write(f"\\caption{{Cell migration speed, distance, and alignment "
                 f"for varying obstacle counts "
                 f"($N={CELLS}$ cells).}}\n")
         f.write("\\label{tab:speedcheck}\n")
-        f.write("\\begin{tabular}{r r r r r r}\n")
+        f.write("\\begin{tabular}{r r r r r}\n")
         f.write("\\toprule\n")
         f.write("Obstacles & Mean Speed & Std Dev "
-                "& Max Speed & Min Speed & Mean Distance \\\\\n")
+                "& Mean Distance & Alignment ($\\phi$) \\\\\n")
         f.write("\\midrule\n")
         for s in summary:
             f.write(f"{s['obstacles']} "
                     f"& {s['mean_speed']:.4f} "
                     f"& {s['std_speed']:.4f} "
-                    f"& {s['max_speed']:.4f} "
-                    f"& {s['min_speed']:.4f} "
-                    f"& {s['mean_dist']:.2f} \\\\\n")
+                    f"& {s['mean_dist']:.2f} "
+                    f"& {s['alignment']:.4f} $\\pm$ {s['alignment_std']:.4f} \\\\\n")
         f.write("\\bottomrule\n")
         f.write("\\end{tabular}\n")
         f.write("\\end{table}\n")
