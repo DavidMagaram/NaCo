@@ -49,7 +49,7 @@ let config = {
 		
 		// ActivityConstraint parameters
 		LAMBDA_ACT : [0,200,0],    // Obstacles don't move (0 activity)
-		MAX_ACT : [0,60,0],        // Obstacles don't move
+		MAX_ACT : [0,20,0],        // Obstacles don't move
 		ACT_MEAN : "geometric"
 	},
 

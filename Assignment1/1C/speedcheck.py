@@ -6,7 +6,7 @@ import os
 
 CELLS = 80
 OBSTACLE_COUNTS = [0, 9, 25, 49]
-RESULTS_DIR = "results_2"
+RESULTS_DIR = "results"
 
 def run_simulation(cells, obstacles):
     """Run Final_final4.js and return the log filename."""

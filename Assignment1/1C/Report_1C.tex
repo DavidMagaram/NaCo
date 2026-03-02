@@ -60,7 +60,7 @@ Target perimeter (P) & 180 & 50 \\
 Perimeter constraint ($\lambda_P$) & 2 & 200 \\
 Activity strength ($\lambda_{\text{act}}$)& 200 & 0 \\
 Activity memory ($\text{Max}_{\text{act}}$)  & 20 & 0 \\
-Number of cells & 50 & 0, 9, 25, 49 \\
+Number of cells & 80 & 0, 9, 25, 49 \\
 Obstacle padding  & -- & 10 \\
 \hline
 \end{tabular}
@@ -101,14 +101,17 @@ To get quantitative data, a Python script was used to calculate the average spee
 
 \begin{table}[h!]
 \centering
-\begin{tabular}{lccc}
+\begin{tabular}{lccccc}
 \hline
 \textbf{Amount of Obstacles} & \textbf{0} & \textbf{9} & \textbf{25} & \textbf{49}\\
 \hline
-Average speed across all cells & 20 & 20 \\
+Avg speed across all cells & 0.1168 & 0.1100 & 0.1094 & 0.1008\\
+Std dev of cell speeds & 0.0070 & 0.0116 & 0.0095 & 0.0131\\
+Fastest cell avg speed & 0.1366 & 0.1333 & 0.1319 & 0.1316\\
+Slowest cell avg speed & 0.1005 & 0.0616 & 0.0917 & 0.0677\\
 \hline
 \end{tabular}
-\caption{Speed results table 1.}
+\caption{Speed results table 2.}
 \end{table}
 
 
