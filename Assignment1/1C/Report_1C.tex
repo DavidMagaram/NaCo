@@ -19,7 +19,7 @@
 
 
 \title{Making a CPM of Collective Migration\\[0.3em] \large Report on Assignment 1C}
-% \author{Aaron Bussche \and  David Magaram\\[0.3em] Group 28 \and Jason Kasdiran}
+\author{Aaron Bussche \and  David Magaram\\[0.3em] Group 28 \and Jason Kasdiran}
 \date{\today}
 
 \begin{document}
@@ -190,17 +190,37 @@ metrics, nearly identical in proportion to the baseline experiments.
 \end{table}
 
 \section{Discussion}
-This experiment explores how different obstacle configurations impact collective cell migration. While it achieves its goal, there are several limitations that were not addressed. 
+This experiment explores how different obstacle configurations impact collective cell migration 
+and highlights two distinct findings. First, $\text{Max}_\text{act}$ fundamentally
+determines the mode of collective migration; at $\text{Max}_\text{act} = 20$, cells form cohesive
+groups but wander without a persistent net direction, whereas at $\text{Max}_\text{act} = 60$, the 
+cells sustain their direction of motion, resulting in large groups that migrate persistently and 
+rapidly in a shared direction, covering more than three times the distance. Second, increasing 
+obstacle density consistently disrupts collective migration in both
+series. At low densities (9 obstacles), the effect is minor. At intermediate densities (25), groups
+fragment and become channeled between obstacles. At high densities (49), sustained collective motion
+is largely abolished and cells migrate individually or in small clusters. These effects are reflected
+in the quantitative data, which show a decrease of approximately 14\% in both average
+speed and distance as obstacle density increases from 0 to 49, consistent across both parameter
+series
 
-All obstacle configurations were equally spaced and placed in a grid-like pattern. Because of this, the environment did not change much between obstacle configurations. Moreover, only 4 obstacle configurations were explored, all with the same layout. 
-Furthermore, most parameter values were taken from the self-study exercise 1.3 and no other parameter configurations were explored. 
-It is recommended that future studies explore different parameter configurations, irregular obstacle placement, and dynamic obstacles. 
+Several limitations should be acknowledged. All obstacles were arranged in a regular grid, which
+introduces an artificial directional bias and does not reflect the irregular geometries found in
+biological environments. Only four obstacle densities were tested and most parameter values were 
+taken from the self-study exercise 1.3, so statistical robustness cannot be assessed. 
+It is recommended that future studies explore different parameter configurations, irregular obstacle 
+placement, and dynamic obstacles. 
 
 \section{Conclusion}
-This study investigated the effect of obstacles on collective cell migration using a two-dimensional Cellular Potts Model implemented in Artistoo. Without obstacles, cells formed large groups that coherently moved together in the same direction. Increasing the obstacle density disrupted collective migration. Low obstacle densities only had minor effects, however, as the density increases, group sizes and cell movement become more restricted. This is also supported by the quantitative results which show consistent decrease in average speed and in distance traveled as the number of obstacles grows.
+This study investigated the effect of obstacles on collective cell migration using a two-dimensional 
+Cellular Potts Model implemented in Artistoo, across eight simulations spanning two parameter series 
+and four obstacle densities. Without obstacles, cells formed large groups that coherently moved together 
+in the same direction. Increasing the obstacle density disrupted collective migration. Low obstacle 
+densities only had minor effects, however, as the density increases, group sizes and cell movement become 
+more restricted. This is also supported by the quantitative results which show consistent decrease in 
+average speed and in distance traveled as the number of obstacles grows.
 
 Overall, this work demonstrates that obstacles play a critical role in collective cell behavior. 
-
 \newpage
 
 \begin{appendices}
