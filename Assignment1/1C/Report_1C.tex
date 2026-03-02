@@ -19,7 +19,7 @@
 
 
 \title{Making a CPM of Collective Migration\\[0.3em] \large Report on Assignment 1C}
-\author{Aaron Bussche \and  David Magaram\\[0.3em] Group 28 \and Jason Kasdiran}
+% \author{Aaron Bussche \and  David Magaram\\[0.3em] Group 28 \and Jason Kasdiran}
 \date{\today}
 
 \begin{document}
@@ -100,47 +100,218 @@ To get quantitative data, a Python script was used to calculate the average spee
 
 \section{Results}
 Observing the simulations with and without obstacles showed clear differences. Without obstacles, cells were initialized randomly and started moving around. Several moments later, smaller groups of cells start emerging. After some time, these smaller groups merged together and formed larger groups, all moving coherently in the same direction. This is depicted in Figure 1. 
-
 \begin{figure}[htbp]
     \centering
     % Subfigure 1
     \begin{subfigure}[b]{0.24\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{0_80_0.png}
+        \includegraphics[width=\textwidth]{80_0_01.png}
         \caption{0 Obstacles}
-        \label{fig:img1}
+        \label{fig:img1a}
     \end{subfigure}
     \hfill
     % Subfigure 2
     \begin{subfigure}[b]{0.24\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{0_80_0.png}
+        \includegraphics[width=\textwidth]{80_9_01.png}
         \caption{9 Obstacles}
-        \label{fig:img2}
+        \label{fig:img1b}
     \end{subfigure}
     \hfill
     % Subfigure 3
     \begin{subfigure}[b]{0.24\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{0_80_0.png}
+        \includegraphics[width=\textwidth]{80_25_01.png}
         \caption{25 Obstacles}
-        \label{fig:img3}
+        \label{fig:img1c}
     \end{subfigure}
     \hfill
-    % Subfigure 4
     \begin{subfigure}[b]{0.24\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{0_80_0.png}
+        \includegraphics[width=\textwidth]{80_49_01.png}
         \caption{49 Obstacles}
-        \label{fig:img4}
+        \label{fig:img1d}
     \end{subfigure}
+    \hfill
+    
+    \vspace{0.1cm} % Adds a nice gap between rows
+
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{80_0_02.png}
+        \caption{0 Obstacles}
+        \label{fig:img1e}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{80_9_02.png}
+        \caption{9 Obstacles}
+        \label{fig:img1f}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{80_25_02.png}
+        \caption{25 Obstacles}
+        \label{fig:img1g}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{80_49_02.png}
+        \caption{49 Obstacles}
+        \label{fig:img1h}
+    \end{subfigure}
+    \hfill
+    
+    \vspace{0.1cm} % Adds a nice gap between rows
+
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{80_0_03.png}
+        \caption{0 Obstacles}
+        \label{fig:img1i}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{80_9_03.png}
+        \caption{9 Obstacles}
+        \label{fig:img1g}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{80_25_03.png}
+        \caption{25 Obstacles}
+        \label{fig:img1h}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{80_49_03.png}
+        \caption{49 Obstacles}
+        \label{fig:img1i}
+    \end{subfigure}
+    \hfill
     
     \caption{80 Cells in an environment with different amount of obstacles with baseline parameters.}
     \label{fig:overall_label}
 \end{figure}
-
 Introducing obstacles changes the cell behavior. All obstacle configurations are displayed in Figures 2-4. At 9 obstacles, only a minor change in cell behavior can be observed. When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change. Increasing the number of obstacles to 25 limits the collective cell migration scale. This density of obstacles prevents the formation of larger groups and restricts their movement. Now, obstacles are forced to migrate in one of 4 directions.
 When the environment is covered with 49 obstacles, the cell movement and collective behavior is significantly restricted. Cells no longer form large groups that migrate in the same direction, instead, cells move alone or in smaller groups, often changing directions because of bumping into obstacles or another cells. 
+\begin{figure}[htbp]
+    \centering
+    % Subfigure 1
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_0_01.png}
+        \caption{0 Obstacles}
+        \label{fig:img2a}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_9_01.png}
+        \caption{9 Obstacles}
+        \label{fig:img2b}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_25_01.png}
+        \caption{25 Obstacles}
+        \label{fig:img2c}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_49_01.png}
+        \caption{49 Obstacles}
+        \label{fig:img2d}
+    \end{subfigure}
+    \hfill
+    
+    \vspace{0.1cm} % Adds a nice gap between rows
+
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_0_02.png}
+        \caption{0 Obstacles}
+        \label{fig:img2e}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_9_02.png}
+        \caption{9 Obstacles}
+        \label{fig:img2f}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_25_02.png}
+        \caption{25 Obstacles}
+        \label{fig:img2g}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_49_02.png}
+        \caption{49 Obstacles}
+        \label{fig:img2h}
+    \end{subfigure}
+    \hfill
+    
+    \vspace{0.1cm} % Adds a nice gap between rows
+
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_0_03.png}
+        \caption{0 Obstacles}
+        \label{fig:img2i}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_9_03.png}
+        \caption{9 Obstacles}
+        \label{fig:img2g}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_25_03.png}
+        \caption{25 Obstacles}
+        \label{fig:img2h}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{1_80_49_03.png}
+        \caption{49 Obstacles}
+        \label{fig:img2i}
+    \end{subfigure}
+    \hfill
+    
+    \caption{80 Cells in an environment with different amount of obstacles with adjusted parameters.}
+    \label{fig:fig2}
+\end{figure}
 
 \begin{table}[h!]
 \centering
