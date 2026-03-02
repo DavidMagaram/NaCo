@@ -21,3 +21,11 @@ Assignment2/_minted-report/25EF9B3429D441069853F59E50EDC546F73D778D6577DD371281B
 Assignment2/_minted-report/B6CE9060137B625FCA9E6CE6E867DCE5F73D778D6577DD371281B40198477396.pygtex
 Assignment2/_minted-report/default.pygstyle
 .vscode/settings.json
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.gz
+*.json
+*.png

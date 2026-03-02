@@ -6,10 +6,11 @@ import os
 
 CELLS = 120
 OBSTACLE_COUNTS = [0, 9, 25, 49]
+RESULTS_DIR = "results"
 
 def run_simulation(cells, obstacles):
     """Run Final_final4.js and return the log filename."""
-    log_file = f"log_cells{cells}_obs{obstacles}.txt"
+    log_file = os.path.join(RESULTS_DIR, f"log_cells{cells}_obs{obstacles}.txt")
     print(f"  Running simulation...")
     with open(log_file, "w") as f:
         subprocess.run(
@@ -20,7 +21,7 @@ def run_simulation(cells, obstacles):
 
 def make_gif(cells, obstacles):
     """Create a gif from the simulation frames."""
-    gif_file = f"output_cells{cells}_obs{obstacles}.gif"
+    gif_file = os.path.join(RESULTS_DIR, f"output_cells{cells}_obs{obstacles}.gif")
     print(f"  Creating gif...")
     subprocess.run([
         "ffmpeg", "-y", "-framerate", "10", "-start_number", "0",
@@ -67,6 +68,8 @@ def clean_images():
         os.remove(f)
 
 if __name__ == "__main__":
+    os.makedirs(RESULTS_DIR, exist_ok=True)
+
     all_results = []
 
     for obs in OBSTACLE_COUNTS:
@@ -83,7 +86,7 @@ if __name__ == "__main__":
         all_results.append(result)
 
         # Save per-run stats
-        stats_file = f"speedcheck_cells{CELLS}_obs{obs}.txt"
+        stats_file = os.path.join(RESULTS_DIR, f"speedcheck_cells{CELLS}_obs{obs}.txt")
         with open(stats_file, "w") as f:
             f.write(f"cells={CELLS}, obstacles={obs}\n")
             f.write(f"Mean speed:     {result['avg_speed'].mean():.4f}\n")
@@ -119,7 +122,7 @@ if __name__ == "__main__":
               f"dist={s['mean_dist']:.2f}")
 
     # Write LaTeX table
-    latex_file = "results_table.tex"
+    latex_file = os.path.join(RESULTS_DIR, "results_table.tex")
     with open(latex_file, "w") as f:
         f.write("\\begin{table}[h]\n")
         f.write("\\centering\n")

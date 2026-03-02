@@ -62,7 +62,7 @@ let config = {
 		MANUAL_CELL_COUNT : cliCells !== null ? cliCells : 120,
 
 		BURNIN : 0,
-		RUNTIME : 15001,
+		RUNTIME : 600,
 
 		CANVASCOLOR : "eaecef",
 		CELLCOLOR : ["000000", "888888"],  // Moving cells black, obstacles gray
