@@ -61,8 +61,8 @@ let config = {
 		OBSTACLE_PADDING : 10,
 		MANUAL_CELL_COUNT : cliCells !== null ? cliCells : 60,
 
-		BURNIN : 0,
-		RUNTIME : 1000,
+		BURNIN : 100,
+		RUNTIME : 2000,
 
 		CANVASCOLOR : "eaecef",
 		CELLCOLOR : ["000000", "888888"],  // Moving cells black, obstacles gray
