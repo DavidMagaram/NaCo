@@ -1,6 +1,5 @@
 \documentclass{article}
 \usepackage[english]{babel}
-\usepackage[toc,page]{appendix}
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 \usepackage{enumitem}
 \usepackage{amsmath}
@@ -13,8 +12,7 @@
 \usepackage{booktabs}
 \usepackage[utf8]{inputenc}
 \usepackage{textgreek}
-\usepackage{booktabs}
-\usepackage{subcaption}
+\usepackage[toc,page]{appendix}
 \graphicspath{{./report_images/}}
 
 
@@ -31,28 +29,25 @@
 \section{Introduction}
 
 Collective cell migration concerns the movement of a group of cells in response to environmental or chemical cues, and is an 
-emergent property of many interacting individual cells. In this phenomenon, cells in the back of a group can push the front cells to move quicker than they otherwise would have. Cells in the back can place pixels inside cells that are in front of them, thereby putting the front cells 'under volume'. This results in the front cells placing new pixels in front of them, resulting in faster cell movement. We can explore how individual cells interacting with their environment give rise to such collective behavior, by using the Cellular Potts Model (CPM).
+emergent property of many interacting individual cells. In this phenomenon, cells in the back of a group can push the front cells to move quicker than they otherwise would have. Cells in the back can place pixels inside cells that are in front of them, thereby putting the front cells 'under volume'. This results in the front cells placing new pixels in front of them, resulting in faster cell movement. We can explore how individual cells interacting with their environment give rise to such collective behavior, by using the Cellular Potts Model (CPM) \cite{graner1992}.
 
 Obstacles represent some environmental constraints that affect collective cell migration by guiding the movement of cells or disrupting it. By varying the number of obstacles, changes in the collective cell migration can be observed. Investigating these effects helps reveal the underlying mechanisms that guide cell and group behaviors. This experiment aims to explore how obstacles change the collective migration behavior of cells by observing simulations with 0, 9, 25, and 49 obstacles.
 
-The goal of this project is to use CPM to investigate the impact of obstacles on collective cell migration. 
+In this paper, we aim to answer the question 'How do obstacles affect the collective migration behaviour of cells in a Cellular Potts Model'?
 
 
 
 \section{Methodology}
-The Artistoo framework was used to implement the two-dimensional CPM simulations. The model was defined on a square grid of 200x200 pixels with wrapped dimensions. In addition to the background, there were two types of cells in the simulations: moving cells and obstacles. Obstacles were implemented by creating a new type of cell with different parameters in order to distinguish the two types of cells and to give them desired properties. All parameters used in this project are displayed in Table 1. 
+\subsection*{Model}
+The Cellular Potts Model (CPM) \cite{graner1992} evolves a lattice by stochastically attempting to copy the identity of a randomly chosen pixel to a neighbouring pixel. Each copy attempt is accepted based on the change in the Hamiltonian $H = \sum_{(i,j)\text{ neighbours}} J(\tau(\sigma_i),\tau(\sigma_j))(1 - \delta(\sigma_i, \sigma_j)) + \sum_{\sigma} \lambda_V (V_\sigma - V_\sigma^t)^2 + \sum_{\sigma} \lambda_P (P_\sigma - P_\sigma^t)^2$, where $J$ is the adhesion energy between cell types, $V_\sigma^t$ and $P_\sigma^t$ are the target volume and perimeter, and $\lambda_V$, $\lambda_P$ their constraint strengths. A copy attempt changing $H$ by $\Delta H$ is accepted with probability $\min(1, e^{-\Delta H / T})$, where $T$ is the system temperature. Active cell migration is modelled by adding an activity term $\Delta H_{\text{act}} = -\frac{\lambda_{\text{act}}}{\text{Max}_{\text{act}}} ( \text{act}(\mathbf{x}_{\text{target}}) - \text{act}(\mathbf{x}_{\text{source}}) )$ that rewards extension of recently updated pixels, where $\text{Max}_{\text{act}}$ determines the memory of recent protrusive activity.
 
-Obstacles were initialized with a target volume ($V$) of 100 pixels and volume constraint strength ($\lambda_V$) of 500 to ensure they 
-are static and do not deform. Their perimeter ($P$) was set to 50 with a strong perimeter constraint strength ($\lambda_P$) of 200, keeping their shape strongly constrained. To further prevent any movement, their activity ($\lambda_{\text{act}}, \text{Max}_{\text{act}}$) was set to 0. Additionally, the adhesion between obstacles and moving cells ($J_{\text{obstacle-cell}}$) was set to 1000 to ensure moving cells do not stick to obstacles or penetrate them. Lastly, obstacles were initialized with obstacle padding. This padding is the number of pixels between the border and obstacles. All obstacles within this bounding box are equally spaced in a grid-like pattern. 
+\subsection*{Implementation}
+The Artistoo framework \cite{wortel2021} was used to implement the two-dimensional CPM simulations. The model was defined on a square grid of 200x200 pixels with wrapped dimensions. In addition to the background, there were two types of cells in the simulations: moving cells and obstacles. Obstacles were implemented by creating a new type of cell with different parameters in order to distinguish the two types of cells and to give them desired properties. All parameters used in this project are displayed in Table~\ref{tab:params}.
 
+Obstacles were initialized with a target volume ($V$) of 100 pixels and volume constraint strength ($\lambda_V$) of 500 to ensure they
+are static and do not deform. Their perimeter ($P$) was set to 50 with a strong perimeter constraint strength ($\lambda_P$) of 200, keeping their shape strongly constrained. To further prevent any movement, their activity ($\lambda_{\text{act}}, \text{Max}_{\text{act}}$) was set to 0. Additionally, the adhesion between obstacles and moving cells ($J_{\text{obstacle-cell}}$) was set to 1000 to ensure moving cells do not stick to obstacles or penetrate them. Lastly, obstacles were initialized with obstacle padding. This padding is the number of pixels between the border and obstacles. All obstacles within this bounding box are equally spaced in a grid-like pattern.
 
-On the other hand, moving cells had completely different parameters that would allow them to move and explore their environment, 
-reproducing collective cell migration. Most of these parameters were directly taken from the self-study exercise 1.3, as they are known to reproduce
-collective migration. A total of 80 moving cells were placed on the grid in each simulation. 80 was chosen because it does not clutter the 
-screen and it allows for the observation of collective cell migration. Each moving cell was initialized with V of 200 pixels, making them 
-twice the size of the obstacles, and $\lambda_V$ of 50 to allow them moderate compressibility. Their P was set to 180 and $\lambda_P$ to 2 
-to allow them to take on irregular shapes during their migration. Their movement, and the active migration, was controlled using activity 
-constraints with $\lambda_{act}$ 200 and $\text{Max}_{\text{act}}$ of 20 and 60. These parameters allowed the reproduction of collective migration. 
+On the other hand, moving cells had completely different parameters that would allow them to move and explore their environment, reproducing collective cell migration. Most of these parameters were directly taken from the self-study exercise 1.3, as they are known to reproduce collective migration. A total of 80 moving cells were placed on the grid in each simulation. 80 was chosen because it does not clutter the screen and it allows for the observation of collective cell migration. Each moving cell was initialized with V of 200 pixels, making them twice the size of the obstacles, and $\lambda_V$ of 50 to allow them moderate compressibility. Their P was set to 180 and $\lambda_P$ to 2 to allow them to take on irregular shapes during their migration. Their movement, and the active migration, was controlled using activity constraints with $\lambda_{act}$ of 200. In the baseline experiments, $\text{Max}_{\text{act}} = 20$ was used as given in exercise 1.3. However, this value lead to cells moving individually until they found other cells and then clustering together, and did not show collective cell migration, so an adjusted series with $\text{Max}_{\text{act}} = 60$ was also run, which successfully reproduced persistent collective migration.
 
 \begin{table}[h!]
     \centering
@@ -78,63 +73,42 @@ constraints with $\lambda_{act}$ 200 and $\text{Max}_{\text{act}}$ of 20 and 60.
     \end{tabular}
 \end{table}
 
-% \begin{table}[h!]
-% \centering
-% \begin{tabular}{lccc}
-% \hline
-% \textbf{Parameter} & \textbf{Moving Cells} & \textbf{Obstacles} \\
-% \hline
-% Temperature (T) & 20 & 20 \\
-% Adhesion cell–matrix ($J_{\text{obstacle-matrix}}$) & 20 & 20 \\
-% Adhesion cell–cell ($J_{\text{cell-cell}}$) & 0 & 0 \\
-% Adhesion obstacle–cell ($J_{\text{obstacle-cell}}$) & 1000 & 1000 \\
-% Target volume (V) & 200 & 100 \\
-% Volume constraint ($\lambda_V$) & 50 & 500 \\
-% Target perimeter (P) & 180 & 50 \\
-% Perimeter constraint ($\lambda_P$) & 2 & 200 \\
-% Activity strength ($\lambda_{\text{act}}$)& 200 & 0 \\
-% Activity memory ($\text{Max}_{\text{act}}$)  & 60 & 0 \\
-% Number of cells & 80 & 0, 9, 25, 49 \\
-% Obstacle padding  & -- & 10 \\
-% \hline
-% \end{tabular}
-% \caption{Adjusted CPM parameters for moving cells and obstacles.}
-% \end{table}
 
 \subsection*{Experimental design}
 Eight experiments were performed in total, organized into two subexperiments of four. The only variables changed
-were the number of obstacles (0, 9, 25, and 49), and the value of $\text{Max}_\text{act}$. The baseline experiments 
-used $\text{Max}_\text{act} = 20$, and the adjusted experiments used $\text{Max}_\text{act} = 60$. All other 
-parameters were identical across all eight simulations (Table~\ref{tab:params}). The system temperature was 
-fixed at $T = 20$ for all runs, controlling the stochasticity of the model. Each simulation was initialized 
-by placing the obstacles first, and then randomly seeding moving cells. Each simulation ran for 2000 Monte Carlo 
-steps, which took about 10 minutes in wall-clock time at 1 frame per second, and the observations and results are 
+were the number of obstacles (0, 9, 25, and 49), and the value of $\text{Max}_\text{act}$. The baseline experiments
+used $\text{Max}_\text{act} = 20$, and the adjusted experiments used $\text{Max}_\text{act} = 60$. All other
+parameters were identical across all eight simulations (Table~\ref{tab:params}). The system temperature was
+fixed at $T = 20$ for all runs, controlling the stochasticity of the model. Each simulation was initialized
+by placing the obstacles first, and then randomly seeding moving cells. Each simulation ran for 2000 Monte Carlo
+steps, which took about 10 minutes in wall-clock time at 1 frame per second, and the observations and results are
 reported in the Results section.
 
-To get quantitative data, a Python script was used to calculate the average speed and average distance traversed, as well as find the fastest and slowest cells, along with the standard deviation in speeds. It also calculates the Vicsek order parameter for each timestep and takes the mean, giving us data on how stable the alignment of moving cells is. This allows us to analyze the cell movements for both environments with and without obstacles in a quantitative, objective way, and base our qualitative analysis on facts. 
+To get quantitative data, a Python script was used to calculate the average speed and average distance traversed, as well as find the fastest and slowest cells, along with the standard deviation in speeds. This allows us to analyze the cell movements for both environments with and without obstacles in a quantitative, objective way, and base our qualitative analysis on facts.
 
 \section{Results}
 \subsection*{Qualitative observations}
 In the baseline experiments (Figure~\ref{fig:baseline}), cells initialized randomly and, after several
-Monte Carlo steps they clustered into groups. The groups migrated collectively in the sense that cells moved
+Monte Carlo steps, clustered into groups. The groups migrated collectively in the sense that cells moved
 in coordination and maintained contact, but the net displacement of the group as a whole was small.
 Cells tended to explore without a sustained preferred direction, resulting in low-persistence
-collective motion rather than directed migration. This is likely caused by $\text{Max}_\text{act} = 20$, which 
-prevented the group from aligning persistently.
+collective motion rather than directed migration. This is likely caused by $\text{Max}_\text{act} = 20$, which
+is insufficient for persistent directional alignment.
 
-The adjusted experiments (Figure~\ref{fig:adjusted}) produced noticably different behavior in the
-obstacle-free condition. With $\text{Max}_\text{act} = 60$, we see large groups that not
+The adjusted experiments (Figure~\ref{fig:adjusted}) produced noticeably different behavior in the
+obstacle-free condition. With $\text{Max}_\text{act} = 60$, large groups not
 only maintained cohesion but also migrated persistently and rapidly in a single shared direction,
 covering substantially greater distances than in the baseline experiments. This represents a qualitative
 shift from low-persistence collective exploration to directed collective migration.
 
-Introducing obstacles in the adjusted experiments progressively disrupted this collective
-behavior. When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change.
-At 9 obstacles, the effect was negligible (Figures~\ref{fig:adjusted}b, f, j). However, at 25 obstacles group sizes decreased and movement became more spatially constrained, with cells forced to migrate in one of 4 directions.
+Introducing obstacles in the adjusted experiments progressively changed cell behavior.
+When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change.
+At 9 obstacles, the effect was negligible (Figures~\ref{fig:adjusted}b, f, j). However, at 25 obstacles group sizes decreased and movement became more spatially constrained, with cells forced to migrate in one of 4 directions
 (Figures~\ref{fig:adjusted}c, g, k). At 49 obstacles, cells frequently moved alone or in very
 small clusters that changed direction often due to collisions with obstacles (Figures~\ref{fig:adjusted}d, h, l).
+These observations suggest that increasing obstacle density fragments collective groups and disrupts sustained directional motion.
 
-\subsection*{Quantative observations}
+\subsection*{Quantitative observations}
 The quantitative results for the baseline experiments are summarized in Table~\ref{tab:baseline}.
 Despite the low-persistence character of migration at $\text{Max}_\text{act} = 20$,
 a clear decrease in both average speed and average distance traveled is observed as
@@ -172,7 +146,7 @@ to 0.1008 pixels/step and 240.95 pixels at 49 obstacles. This is a reduction of 
 metrics, nearly identical in proportion to the baseline experiments.
 \begin{table}[h!]
     \centering
-    \caption{Speed distance results (pixels/step) of CPM with adjusted parameters.}
+    \caption{Speed and distance results (pixels/step) of CPM with adjusted parameters.}
     \label{tab:adjusted}
     \begin{tabular}{lccccc}
         \toprule
@@ -187,6 +161,13 @@ metrics, nearly identical in proportion to the baseline experiments.
     \end{tabular}
 \end{table}
 
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\textwidth]{speed_vs_obstacles.png}
+    \caption{Average cell speed as a function of obstacle count for both the baseline ($\text{Max}_{\text{act}}=20$) and adjusted ($\text{Max}_{\text{act}}=60$) parameter series. Error bars show the standard deviation of individual cell speeds within each run.}
+    \label{fig:speed_plot}
+\end{figure}
+
 \section{Discussion}
 This experiment explores how different obstacle configurations impact collective cell migration 
 and highlights two distinct findings. First, $\text{Max}_\text{act}$ fundamentally
@@ -200,12 +181,12 @@ fragment and become channeled between obstacles. At high densities (49), sustain
 is largely abolished and cells migrate individually or in small clusters. These effects are reflected
 in the quantitative data, which show a decrease of approximately 14\% in both average
 speed and distance as obstacle density increases from 0 to 49, consistent across both parameter
-series
+series. Notably, obstacles also disrupt the directional alignment of cells. Without obstacles, cells in the adjusted experiments align and migrate in a shared direction; as obstacle density increases, this alignment is progressively disturbed, with cells forced into different directions by the obstacle layout until, at 49 obstacles, no coherent group direction remains.
 
 Several limitations should be acknowledged. All obstacles were arranged in a regular grid, which
 introduces an artificial directional bias and does not reflect the irregular geometries found in
-biological environments. Only four obstacle densities were tested and most parameter values were 
-taken from the self-study exercise 1.3, so statistical robustness cannot be assessed. 
+biological environments. Only four obstacle densities were tested and most parameter values were
+taken from the self-study exercise 1.3, so statistical robustness cannot be assessed. Additionally, each condition was run only once, so all quantitative values are single-run estimates and may vary across replications.
 It is recommended that future studies explore different parameter configurations, irregular obstacle 
 placement, and dynamic obstacles. 
 
@@ -219,12 +200,24 @@ more restricted. This is also supported by the quantitative results which show c
 average speed and in distance traveled as the number of obstacles grows.
 
 Overall, this work demonstrates that obstacles play a critical role in collective cell behavior. 
-\newpage
+\begin{thebibliography}{9}
 
+\bibitem{graner1992}
+F.~Graner and J.~A.~Glazier,
+``Simulation of biological cell sorting using a two-dimensional extended Potts model,''
+\textit{Physical Review Letters}, vol.~69, no.~13, pp.~2013--2016, 1992.
+
+\bibitem{wortel2021}
+I.~M.~N.~Wortel and J.~Textor,
+``Artistoo, a library to build, share, and explore simulations of cells and tissues in the web browser,''
+\textit{eLife}, vol.~10, e61288, 2021.
+
+\end{thebibliography}
+
+\newpage
 \begin{appendices}
 
-\end{appendices}
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     % Subfigure 1
     \begin{subfigure}[b]{0.24\textwidth}
@@ -306,7 +299,7 @@ Overall, this work demonstrates that obstacles play a critical role in collectiv
         \centering
         \includegraphics[width=\textwidth]{80_9_03.png}
         \caption{9 Obstacles}
-        \label{fig:img1g}
+        \label{fig:img1j}
     \end{subfigure}
     \hfill
     % Subfigure 2
@@ -314,7 +307,7 @@ Overall, this work demonstrates that obstacles play a critical role in collectiv
         \centering
         \includegraphics[width=\textwidth]{80_25_03.png}
         \caption{25 Obstacles}
-        \label{fig:img1h}
+        \label{fig:img1k}
     \end{subfigure}
     \hfill
     % Subfigure 3
@@ -322,15 +315,15 @@ Overall, this work demonstrates that obstacles play a critical role in collectiv
         \centering
         \includegraphics[width=\textwidth]{80_49_03.png}
         \caption{49 Obstacles}
-        \label{fig:img1i}
+        \label{fig:img1l}
     \end{subfigure}
     \hfill
     
-    \caption{80 Cells in an environment with different amount of obstacles with baseline parameters.}
+    \caption{80 Cells in an environment with different amount of obstacles with baseline parameters. Top row: MCS 29, middle row: MCS 49, bottom row: MCS 1980.}
     \label{fig:baseline}
 \end{figure}
 
-\begin{figure}[htbp]
+\begin{figure}[H]
     \centering
     % Subfigure 1
     \begin{subfigure}[b]{0.24\textwidth}
@@ -412,7 +405,7 @@ Overall, this work demonstrates that obstacles play a critical role in collectiv
         \centering
         \includegraphics[width=\textwidth]{1_80_9_03.png}
         \caption{9 Obstacles}
-        \label{fig:img2g}
+        \label{fig:img2j}
     \end{subfigure}
     \hfill
     % Subfigure 2
@@ -420,7 +413,7 @@ Overall, this work demonstrates that obstacles play a critical role in collectiv
         \centering
         \includegraphics[width=\textwidth]{1_80_25_03.png}
         \caption{25 Obstacles}
-        \label{fig:img2h}
+        \label{fig:img2k}
     \end{subfigure}
     \hfill
     % Subfigure 3
@@ -428,12 +421,14 @@ Overall, this work demonstrates that obstacles play a critical role in collectiv
         \centering
         \includegraphics[width=\textwidth]{1_80_49_03.png}
         \caption{49 Obstacles}
-        \label{fig:img2i}
+        \label{fig:img2l}
     \end{subfigure}
     \hfill
     
-    \caption{80 Cells in an environment with different amount of obstacles with adjusted parameters.}
+    \caption{80 Cells in an environment with different amount of obstacles with adjusted parameters. Top row: MCS 49, middle row: MCS 89, bottom row: MCS 1980.}
     \label{fig:adjusted}
 \end{figure}
+
+\end{appendices}
 
 \end{document}
