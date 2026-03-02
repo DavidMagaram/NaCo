@@ -14,6 +14,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage{textgreek}
 \usepackage{booktabs}
+\usepackage{subcaption}
+\graphicspath{{./report_images/}}
 
 
 \title{Making a CPM of Collective Migration\\[0.3em] \large Report on Assignment 1C}
@@ -28,7 +30,8 @@
 
 \section{Introduction}
 
-Collective cell migration concerns the movement of a group of cells in response to environmental or chemical cues, and is an emergent property of many interacting individual cells. In this phenomenon, cells in the back of a group can push the front cells to move quicker than they otherwise would have. Cells in the back can place pixels inside cells that are in front of them, thereby putting the front cells 'under volume'. This results in the front cells placing new pixels in front of them, resulting in faster cell movement. We can explore how individual cells interacting with their environment give rise to such collective behavior, by using the Cellular Potts Model (CPM).
+Collective cell migration concerns the movement of a group of cells in response to environmental or chemical cues, and is an 
+emergent property of many interacting individual cells. In this phenomenon, cells in the back of a group can push the front cells to move quicker than they otherwise would have. Cells in the back can place pixels inside cells that are in front of them, thereby putting the front cells 'under volume'. This results in the front cells placing new pixels in front of them, resulting in faster cell movement. We can explore how individual cells interacting with their environment give rise to such collective behavior, by using the Cellular Potts Model (CPM).
 
 Obstacles represent some environmental constraints that affect collective cell migration by guiding the movement of cells or disrupting it. By varying the number of obstacles, changes in the collective cell migration can be observed. Investigating these effects helps reveal the underlying mechanisms that guide cell and group behaviors. This experiment aims to explore how obstacles change the collective migration behavior of cells by observing simulations with 0, 9, 25, and 49 obstacles.
 
@@ -64,7 +67,7 @@ Number of cells & 80 & 0, 9, 25, 49 \\
 Obstacle padding  & -- & 10 \\
 \hline
 \end{tabular}
-\caption{CPM parameters for moving cells and obstacles.}
+\caption{Baseline CPM parameters for moving cells and obstacles.}
 \end{table}
 
 \begin{table}[h!]
@@ -87,7 +90,7 @@ Number of cells & 80 & 0, 9, 25, 49 \\
 Obstacle padding  & -- & 10 \\
 \hline
 \end{tabular}
-\caption{CPM parameters for moving cells and obstacles.}
+\caption{Adjusted CPM parameters for moving cells and obstacles.}
 \end{table}
 
 
@@ -97,6 +100,44 @@ To get quantitative data, a Python script was used to calculate the average spee
 
 \section{Results}
 Observing the simulations with and without obstacles showed clear differences. Without obstacles, cells were initialized randomly and started moving around. Several moments later, smaller groups of cells start emerging. After some time, these smaller groups merged together and formed larger groups, all moving coherently in the same direction. This is depicted in Figure 1. 
+
+\begin{figure}[htbp]
+    \centering
+    % Subfigure 1
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{0_80_0.png}
+        \caption{0 Obstacles}
+        \label{fig:img1}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{0_80_0.png}
+        \caption{9 Obstacles}
+        \label{fig:img2}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{0_80_0.png}
+        \caption{25 Obstacles}
+        \label{fig:img3}
+    \end{subfigure}
+    \hfill
+    % Subfigure 4
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{0_80_0.png}
+        \caption{49 Obstacles}
+        \label{fig:img4}
+    \end{subfigure}
+    
+    \caption{80 Cells in an environment with different amount of obstacles with baseline parameters.}
+    \label{fig:overall_label}
+\end{figure}
 
 Introducing obstacles changes the cell behavior. At 9 obstacles, only a minor change in cell behavior can be observed. When a cell encounters an obstacle, it easily avoids it, and the underlying cell behavior does not change. Increasing the number of obstacles to 25 limits the collective cell migration scale. This density of obstacles prevents the formation of larger groups and restricts their movement. Now, obstacles are forced to migrate in one of 4 directions.
 
@@ -115,7 +156,7 @@ Slowest cell avg speed & 0.0239 & 0.0044 & 0.0198 & 0.0026\\
 Avg distance across all cells & 82.95 & 81.36 & 77.47 & 71.76\\
 \hline
 \end{tabular}
-\caption{Speed result analysis of CPM with parameters from table 1}
+\caption{Speed and distance results (pixels/step) of CPM with baseline parameters.}
 \end{table}
 
 \begin{table}[h!]
@@ -131,7 +172,7 @@ Slowest cell avg speed & 0.1005 & 0.0616 & 0.0917 & 0.0677\\
 Avg distance across all cells & 279.12 & 262.96 & 261.54 & 240.95\\
 \hline
 \end{tabular}
-\caption{Speed result analysis of CPM with parameters from table 2}
+\caption{Speed distance results (pixels/step) of CPM with adjusted parameters.}
 \end{table}
 
 
