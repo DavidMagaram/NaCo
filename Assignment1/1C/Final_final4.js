@@ -4,7 +4,7 @@
 //   node Final_final4.js --cells 120 --obstacles 16
 //   node Final_final4.js --cells 50 --obstacles 25
 
-let CPM = require("./artistoo_minimal/build/artistoo-cjs.js")
+let CPM = require("./Experiments/artistoo_minimal/build/artistoo-cjs.js")
 
 // Parse command line arguments
 let args = process.argv.slice(2)
