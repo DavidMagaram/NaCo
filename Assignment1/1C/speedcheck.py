@@ -31,7 +31,11 @@ def make_gif(cells, obstacles):
     ], check=True, capture_output=True)
     return gif_file
 
-def analyze_speeds(log_file):
+def torus_diff(d, L):
+    """Minimum image convention: wrap displacements to [-L/2, L/2]."""
+    return ((d + L / 2) % L) - L / 2
+
+def analyze_speeds(log_file, field_size=(200, 200)):
     """Analyze cell speeds from a simulation log. Returns a DataFrame of per-cell stats."""
     df = pd.read_csv(log_file, sep='\t', names=['time', 'cellID', 'cellType', 'x', 'y'])
     # Filter to only active/moving cells (cellType 1), exclude background (0) and obstacles (2)
@@ -40,8 +44,8 @@ def analyze_speeds(log_file):
     speeds = []
     for cell_id, group in df.groupby('cellID'):
         group = group.sort_values('time')
-        dx = group['x'].diff()
-        dy = group['y'].diff()
+        dx = torus_diff(group['x'].diff(), field_size[0])
+        dy = torus_diff(group['y'].diff(), field_size[1])
         dt = group['time'].diff()
         displacement = np.sqrt(dx**2 + dy**2)
         speed = displacement / dt
