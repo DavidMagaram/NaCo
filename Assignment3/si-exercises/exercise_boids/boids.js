@@ -289,6 +289,12 @@ class Particle {
 		// alignment, cohesion, and separation directions. 
 		// Make sure to update the properties this.dir and this.pos accordingly.
 		// What happens when the new position lies across the field boundary? 
+		let direction = this.addVectors(this.addVectors(align, cohesion), separation);
+		 direction = this.addVectors(direction, this.dir); 
+		 this.dir = this.normalizeVector(direction); // Normalize the direction
+
+		let newPosition = this.addVectors(this.pos, this.multiplyVector(this.dir, this.speed));
+		this.pos = this.S.wrap(newPosition); // Wrap around boundaries
 		
 		this.pos = this.pos
 		this.dir = this.dir 	
@@ -296,7 +302,6 @@ class Particle {
 	}
 	
 }
-
 
 
 function initialize(){
