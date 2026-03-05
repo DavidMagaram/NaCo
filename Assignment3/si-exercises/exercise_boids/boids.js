@@ -255,24 +255,49 @@ class Particle {
 	// should return a unit vector in average neighbor direction for neighbors within 
 	// distance neighborRadius 
 	alignmentVector( neighborRadius ){
-		
-		return this.dir
-	
+		const neighbors = this.S.neighbours( this, neighborRadius )
+		if( neighbors.length === 0 ) return this.dir.slice()
+
+		let avg = [0, 0]
+		for( let n of neighbors ){
+			avg = this.addVectors( avg, n.dir )
+		}
+		return this.normalizeVector( avg )
 	}
 	
 	// should return a unit vector in the direction from current position to the 
 	// average position of neighbors within distance neighborRadius 
 	cohesionVector( neighborRadius ){
-		
-		return this.dir
-	
+		const neighbors = this.S.neighbours( this, neighborRadius )
+		if( neighbors.length === 0 ) return this.dir.slice()
+
+		let avgPos = [0, 0]
+		for( let n of neighbors ){
+			// wrap neighbor position relative to self to handle toroidal boundary
+			const wrappedPos = this.S.wrap( n.pos, this.pos )
+			avgPos = this.addVectors( avgPos, wrappedPos )
+		}
+		avgPos = avgPos.map( x => x / neighbors.length )
+
+		const toCenter = this.subtractVectors( avgPos, this.pos )
+		return this.normalizeVector( toCenter )
 	}
 	
 	// as cohesionVector, but now return the opposite direction for the given 
 	separationVector( neighborRadius ){
-		
-		return this.dir 
-		
+		const neighbors = this.S.neighbours( this, neighborRadius )
+		if( neighbors.length === 0 ) return this.dir.slice()
+
+		let avgPos = [0, 0]
+		for( let n of neighbors ){
+			const wrappedPos = this.S.wrap( n.pos, this.pos )
+			avgPos = this.addVectors( avgPos, wrappedPos )
+		}
+		avgPos = avgPos.map( x => x / neighbors.length )
+
+		// opposite direction: away from the average neighbor position
+		const awayFromCenter = this.subtractVectors( this.pos, avgPos )
+		return this.normalizeVector( awayFromCenter )
 	}
 	
 	updateVector(){
@@ -285,18 +310,16 @@ class Particle {
 		const cohesion = this.multiplyVector(this.cohesionVector( this.S.conf.outerRadius ), cohesion_weight )
 		const separation = this.multiplyVector( this.separationVector(this.S.conf.innerRadius ), separation_weight )
 		
-		// Add your code to combine the particle's current this.dir with the (weighted)
-		// alignment, cohesion, and separation directions. 
-		// Make sure to update the properties this.dir and this.pos accordingly.
-		// What happens when the new position lies across the field boundary? 
-		let direction = this.addVectors(this.addVectors(align, cohesion), separation) // add directions 
-		this.dir = this.normalizeVector(direction)
+		// Combine current direction with weighted alignment, cohesion, separation
+		let direction = this.dir.slice()
+		direction = this.addVectors( direction, align )
+		direction = this.addVectors( direction, cohesion )
+		direction = this.addVectors( direction, separation )
+		this.dir = this.normalizeVector( direction )
 
+		// Move forward at constant speed, then wrap at boundaries
 		const move = this.multiplyVector( this.dir, this.speed )
-		this.pos = this.S.wrap( this.addVectors( this.pos, move)) // wrap boundaries...
-		
-		this.pos = this.pos
-		this.dir = this.dir 	
+		this.pos = this.S.wrap( this.addVectors( this.pos, move ) )
 		
 	}
 	
