@@ -18,9 +18,13 @@
 \begin{document}
 \maketitle
 
-\section{3.1}
+\section{Part A}
+\subsection{Reproducing quantization}
+\subsection{Finding optimal color palette}
 
-\section{3.2}
+\subsection{Results}
+
+\section{Part B}
 Follow the README to see how to get images and quantitative data. 
 
 Alignment --> Each boid tries to match the vector (speed and direction) of the other boids around it.
@@ -56,11 +60,44 @@ Visual range --> The distance within which a boid can see other boids and be inf
 \end{table}
 
 \subsection{Results}
+
+\begin{table}[h!]
+    \centering
+    \label{tab:params}
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300} \\
+        \hline
+        Order parameter & X & X & X & X \\
+        $Radius_{\text{outer}}$ & X & X & X & X \\
+        \hline
+    \end{tabular}
+    \caption{Quantitative results.}
+\end{table}
+
+
 \subsection{Visualization}
 \subsection{Quantitative data}
 
+\subsection{Experimental design}
 
-
+\begin{table}[h!]
+    \centering
+    \label{tab:params}
+    \begin{tabular}{lccc}
+        \hline
+        \textbf{Parameter} & \textbf{Value}\\
+        \hline
+        $Radius_{\text{inner}}$ & 10 \\
+        $Radius_{\text{outer}}$ & 25 \\
+        Alignment weight & 1 \\
+        Coherence weight & 1 \\
+        Separation weight & 1 \\
+        Number of boids & 200 \\
+        \hline
+    \end{tabular}
+    \caption{Parameters.}
+\end{table}
 
 
 
