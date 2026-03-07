@@ -227,7 +227,7 @@ class Scene {
 		}
 
 		this.data.push(snapshot)
-		console.log("t:", this.time, "order:", this.computeOrderParameter(), "nn-distance:", this.computeNearestNeighborDistance()) 
+		console.log(this.time, this.computeOrderParameter(), this.computeNearestNeighborDistance()) // Time, Order, NN-distance
 		//console.log("t:", this.time, "nn-distance:", this.computeNearestNeighborDistance()) 
 		// CTRL+SHIFT+J to see console log in browser. You will see:
 		// T: X order: # nn-distance: #
@@ -238,7 +238,8 @@ class Scene {
 		
 	}
 
-	// added for order parameter
+	// average normalized velocity of the Boids
+	// Self-organization of boids
 	computeOrderParameter(){
 
 		let sum = [0,0]
@@ -258,8 +259,9 @@ class Scene {
 	}
 
 
-
-	computeNearestNeighborDistance(){
+	// Average nearest neighbor distance
+	//  should tell you when individuals get separated from the swarm and/or when individuals get too close to each other
+	computeNearestNeighborDistance(){ 
 
 		let distances = []
 

@@ -101,7 +101,7 @@ try to separate, align or cohere to itself: The implementation excludes the boid
         $Radius_{\text{inner}}$ & 10 \\
         $Radius_{\text{outer}}$ & 25 \\
         Alignment weight & 1 \\
-        Coherence weight & 1 \\
+        Coherence weight & 1, 0.5 \\
         Separation weight & 1 \\
         Number of boids & 200 \\
         \hline
@@ -132,12 +132,29 @@ try to separate, align or cohere to itself: The implementation excludes the boid
         \toprule
         \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300}\\
         \midrule
-        Order parameter & 0.0347 & 0.0340 & 0.0324 & 0.0300\\
-        $Radius_{\text{outer}}$ & 0.0075 & 0.0094 & 0.0070 & 0.0107\\
+        Order parameter & 0.0208 & 0.0753 & 0.105 & 0.616\\
+        Nearest-neighbor distance & 13.956 & 5.925 & 4.278 & 3.405\\
         \bottomrule
     \end{tabular}
-    \caption{Quantitative results.}
+    \caption{Quantitative results for default parameters.}
 \end{table}
+
+
+
+\begin{table}[h!]
+    \centering
+    \label{tab:baseline}
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300}\\
+        \midrule
+        Order parameter & 0.096 & 0.509 & 0.751 & 0.695 \\
+        Nearest-neighbor distance & 14.466 & 9.076 & 8.053 & 7.506\\
+        \bottomrule
+    \end{tabular}
+    \caption{Quantitative results for alternate parameters.}
+\end{table}
+
 
 
 It is possible to reach high alignment in 300 steps with these parameters. 
