@@ -57,6 +57,7 @@
 
 
 \section{Part B}
+\subsection{Introduction}
 Follow the README to see how to get images and quantitative data. 
 
 Alignment --> Each boid tries to match the vector (speed and direction) of the other boids around it.
@@ -86,7 +87,7 @@ excludes the boid itself from its own neighborhood when calculating the update r
 try to separate, align or cohere to itself: The implementation excludes the boid itself from its own neighborhood when calculating the update rules. This is done by ensuring that when iterating through the neighboring boids, the current boid is not included in the calculations for separation, alignment, and cohesion. (if( p.id == x.id ) continue)
 
 
-\subsection{Parameter values}
+\subsection{Methods}
 
 
 
@@ -139,16 +140,14 @@ try to separate, align or cohere to itself: The implementation excludes the boid
 \end{table}
 
 
-
-
-\subsection{Visualization}
+It is possible to reach high alignment in 300 steps with these parameters. 
 
 The visualizations in Figure 1 show the positions of the boids at different time steps. Four snapshots were taken at time steps 0, 100, 200, and 300, and are separated into an initial state, final state, and two intermediate states.
 
 
 Red color represents the inner radius, while the black bar coming out of it indicates in which direction each boid is facing. The outer radius is shown as a gray circle and is each boids' interaction range. 
 
-200 boids were initialized randomly at a 200x200 field with wrapped boundaries. Boids then move around, updating their positions and orientations based on the alignment, coherence, and separation rules. Boids interact with each other by coming in each other interaction range, forming flocks as they align and cohere with each other, while also maintaining a certain distance to avoid collisions. Over time, larger flocks form as boids and smaller flocks join together. However, as snown in Figure 1d, not all boids are able to find a flock by time step 300 and remain isolated until they bump into another boid or flock.
+200 boids were initialized randomly at a 400x400 field with wrapped boundaries. Boids then move around, updating their positions and orientations based on the alignment, coherence, and separation rules. Boids interact with each other by coming in each other interaction range, forming flocks as they align and cohere with each other, while also maintaining a certain distance to avoid collisions. Over time, larger flocks form as boids and smaller flocks join together. However, as snown in Figure 1d, not all boids are able to find a flock by time step 300 and remain isolated until they bump into another boid or flock.
 
 
 
@@ -197,9 +196,6 @@ Over time, we can observe the formation of flocks as the boids align and cohere 
 
 
 
-
-
-\subsection{Quantitative data}
 
 
 

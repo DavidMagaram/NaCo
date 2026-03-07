@@ -89,6 +89,8 @@ class Scene {
 		this.swarm = []
 		this.makeSwarm()
 		this.time = 0
+
+		this.data = []   // added for data
 	}
 	
 	reset(){
@@ -211,7 +213,78 @@ class Scene {
 		for( let p of this.swarm ){
 			p.updateVector()
 		}
+		// Added here as well
+		// record simulation data
+		let snapshot = []
+
+		for( let p of this.swarm ){
+			snapshot.push({
+				x: p.pos[0],
+				y: p.pos[1],
+				dx: p.dir[0],
+				dy: p.dir[1]
+			})
+		}
+
+		this.data.push(snapshot)
+		console.log("t:", this.time, "order:", this.computeOrderParameter(), "nn-distance:", this.computeNearestNeighborDistance()) 
+		//console.log("t:", this.time, "nn-distance:", this.computeNearestNeighborDistance()) 
+		// CTRL+SHIFT+J to see console log in browser. You will see:
+		// T: X order: # nn-distance: #
+
+		// This is for the 2 metrics for quantitative analysis
+
 		this.time++
+		
+	}
+
+	// added for order parameter
+	computeOrderParameter(){
+
+		let sum = [0,0]
+
+		for( let p of this.swarm ){
+
+			const dir = p.dir
+			const mag = Math.sqrt(dir[0]*dir[0] + dir[1]*dir[1])
+
+			sum[0] += dir[0] / mag
+			sum[1] += dir[1] / mag
+		}
+
+		const magnitude = Math.sqrt(sum[0]*sum[0] + sum[1]*sum[1])
+
+		return magnitude / this.swarm.length
+	}
+
+
+
+	computeNearestNeighborDistance(){
+
+		let distances = []
+
+		for( let p of this.swarm ){
+
+			let minDist = Infinity
+
+			for( let q of this.swarm ){
+
+				if( p.id == q.id ) continue
+
+				const d = this.dist(p.pos, q.pos)
+
+				if( d < minDist ){
+					minDist = d
+				}
+			}
+
+			distances.push(minDist)
+		}
+
+		// average
+		let sum = distances.reduce((a,b)=>a+b,0)
+
+		return sum / distances.length
 	}
 }
 
