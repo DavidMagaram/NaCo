@@ -1,6 +1,5 @@
 \documentclass{article}
 \usepackage[english]{babel}
-\usepackage[toc,page]{appendix}
 \usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
 \usepackage{enumitem}
 \usepackage{amsmath}
@@ -10,6 +9,11 @@
 \usepackage{graphicx}
 \usepackage{multirow}
 \usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage[toc,page]{appendix}
+\graphicspath{{./report_images/}}
 
 \title{Title\\[0.3em] \large Report on Assignment 3}
 \author{Aaron Bussche \and Jason Kasdiran \and David Magaram}
@@ -24,6 +28,34 @@
 
 \subsection{Results}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \section{Part B}
 Follow the README to see how to get images and quantitative data. 
 
@@ -36,6 +68,23 @@ Coherence --> Each boid tries to move towards the center of mass of the other bo
 Separation --> Each boid tries to keep a certain distance from the other boids around it to not run into them. If boids get too close, they will steer away. Separation controls how much they try to keep this distance.
 
 Visual range --> The distance within which a boid can see other boids and be influenced by them. If the visual range is too small, the boids will not be able to see enough other boids to form a cohesive flock. If it is too large, they may be influenced by too many boids and not form a cohesive flock.
+
+Explain how the implementation satisfies all the requirements - fixed speed, 
+
+
+
+
+The model keeps Boid speeds fixed; agents should update their direction but move at a constant speed v which
+is a parameter of your model. (const move = this.multiplyVector(this.dir, this.speed))
+
+Explicitly considers what should happen at the boundary of your simulation field: The boundary is wrapped. When a boid exits from one side, it reappears on the opposite side. 
+
+uses two interaction radii: one for separation, and one for cohesion/alignment. (Ask yourself: which
+one should be smaller and why?): The inner radius is used for separation, while the outer radius is used for cohesion and alignment. The inner radius should be smaller than the outer radius because separation requires a closer distance to trigger the behavior, while cohesion and alignment can occur at a larger distance.
+
+excludes the boid itself from its own neighborhood when calculating the update rules, so it does not
+try to separate, align or cohere to itself: The implementation excludes the boid itself from its own neighborhood when calculating the update rules. This is done by ensuring that when iterating through the neighboring boids, the current boid is not included in the calculations for separation, alignment, and cohesion. (if( p.id == x.id ) continue)
+
 
 \subsection{Parameter values}
 
@@ -59,27 +108,125 @@ Visual range --> The distance within which a boid can see other boids and be inf
     \caption{Parameters.}
 \end{table}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 \subsection{Results}
+
 
 \begin{table}[h!]
     \centering
-    \label{tab:params}
-    \begin{tabular}{lccc}
-        \hline
-        \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300} \\
-        \hline
-        Order parameter & X & X & X & X \\
-        $Radius_{\text{outer}}$ & X & X & X & X \\
-        \hline
+    \label{tab:baseline}
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300}\\
+        \midrule
+        Order parameter & 0.0347 & 0.0340 & 0.0324 & 0.0300\\
+        $Radius_{\text{outer}}$ & 0.0075 & 0.0094 & 0.0070 & 0.0107\\
+        \bottomrule
     \end{tabular}
     \caption{Quantitative results.}
 \end{table}
 
 
+
+
 \subsection{Visualization}
+
+The visualizations in Figure 1 show the positions of the boids at different time steps. Four snapshots were taken at time steps 0, 100, 200, and 300, and are separated into an initial state, final state, and two intermediate states.
+
+
+Red color represents the inner radius, while the black bar coming out of it indicates in which direction each boid is facing. The outer radius is shown as a gray circle and is each boids' interaction range. 
+
+200 boids were initialized randomly at a 200x200 field with wrapped boundaries. Boids then move around, updating their positions and orientations based on the alignment, coherence, and separation rules. Boids interact with each other by coming in each other interaction range, forming flocks as they align and cohere with each other, while also maintaining a certain distance to avoid collisions. Over time, larger flocks form as boids and smaller flocks join together. However, as snown in Figure 1d, not all boids are able to find a flock by time step 300 and remain isolated until they bump into another boid or flock.
+
+
+
+The boids are distributed across the simulation field, and their positions and orientations change over time as they interact with each other based on the alignment, coherence, and separation rules.
+
+
+Over time, we can observe the formation of flocks as the boids align and cohere with each other. The separation behavior can also be seen as boids maintain a certain distance from each other to avoid collisions.
+
+
+\begin{figure}[H]
+    \centering
+    % Subfigure 1
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image0.png}
+        \caption{Time: 0 steps}
+        \label{fig:img1a}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image100.png}
+        \caption{Time: 100 steps}
+        \label{fig:img1b}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image200.png}
+        \caption{Time: 200 steps}
+        \label{fig:img1c}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image300.png}
+        \caption{Time: 300 steps}
+        \label{fig:img1d}
+    \end{subfigure}
+    \hfill
+    \caption{Visualizations of boids at four different time steps.}
+\end{figure}
+
+
+
+
+
+
 \subsection{Quantitative data}
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 \subsection{Experimental design}
+
+The Table 3 below displays all the parameter configurations that were explored in order to investigate the effect of different parameters on the behavior of the system. These parameters were chosen because they allow for the exploration of all interesting configurations of the system. 
+
+By exploring different parameter configurations, interesting behaviors can be observed. 
+By setting the coherence weight to 0, boids no longer strive to move towards the center of mass of their neighbors, instead, they align with their neighbors and keep a certain distance from them. This leads to an interesting behavior where boids form large nets that span the entire simulation field. Because of that, after a short while all boids start moving in the same direction. By increasing the outer radius, this can be sped up as boids are initialized with larger interaction radius and start forming large nets sooner. On the other hand, if the inner radius is increased to be more than half the value of the outer radius, this uniform behavior is disturbed. 
+Ultimately, coherence weight plays a role in the sizes of the flocks that are formed, where higher values lead to larger flocks and lower values lead to tighter flocks.
+
+
+
+
+
 
 \begin{table}[h!]
     \centering
@@ -88,12 +235,12 @@ Visual range --> The distance within which a boid can see other boids and be inf
         \hline
         \textbf{Parameter} & \textbf{Value}\\
         \hline
-        $Radius_{\text{inner}}$ & 10 \\
-        $Radius_{\text{outer}}$ & 25 \\
-        Alignment weight & 1 \\
-        Coherence weight & 1 \\
-        Separation weight & 1 \\
-        Number of boids & 200 \\
+        $Radius_{\text{inner}}$ & 10, 40, 70, 100 \\
+        $Radius_{\text{outer}}$ & 25, 50, 75, 100 \\
+        Alignment weight & 0, 0.5, 1 \\
+        Coherence weight & 0, 0.5, 1 \\
+        Separation weight & 0, 0.5, 1 \\
+        Number of boids & 100, 200, 300 \\
         \hline
     \end{tabular}
     \caption{Parameters.}
