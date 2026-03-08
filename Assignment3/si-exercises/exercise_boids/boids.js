@@ -2,7 +2,7 @@ let canvas, S
 let conf = {
 	w : 400,
 	h : 400,
-	N : 200, // Num of boids
+	N : 150, // Num of boids
 	zoom : 1,
 	innerRadius : 10, // This and below: Can adjust with sliders
 	outerRadius : 25,
