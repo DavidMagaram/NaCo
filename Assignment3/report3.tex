@@ -58,19 +58,34 @@
 
 \section{Part B}
 \subsection{Introduction}
-Follow the README to see how to get images and quantitative data. 
 
-Alignment --> Each boid tries to match the vector (speed and direction) of the other boids around it.
+
+What is swarm intelligence? What the Boids model simulates?
+
+
+
+* Swarm intelligence is a collective behavior that emerges from interactions between many simple agents. Agents such as fish and birds can exhibit complex behaviors like flocking, forming bird flocks, fish schools, and insect swarms. Because each individual follws a set of simple rules, this can lead to complex emerging group behaviors. 
+* Craig Reynolds' Boids model is one of the most popular models of swarm intelligence (source?). It is based on 3 simples agent rules: alignment, cohesion, and separation. 
+* The goal of this project is to implement the Boids model and explore the swarm behavior and how different parameters affect it. 
+
+
+
+Alignment - Each boid tries to match the vector (speed and direction) of the other boids around it.
 Coherence controls how quickly they try to match vectors. 
 
 
-Coherence --> Each boid tries to move towards the center of mass of the other boids around it. Coherence controls how quickly they try to move towards the center of mass.
+Coherence - Each boid tries to move towards the center of mass of the other boids around it. Coherence controls how quickly they try to move towards the center of mass.
 
-Separation --> Each boid tries to keep a certain distance from the other boids around it to not run into them. If boids get too close, they will steer away. Separation controls how much they try to keep this distance.
+Separation - Each boid tries to keep a certain distance from the other boids around it to not run into them. If boids get too close, they will steer away. Separation controls how much they try to keep this distance.
 
-Visual range --> The distance within which a boid can see other boids and be influenced by them. If the visual range is too small, the boids will not be able to see enough other boids to form a cohesive flock. If it is too large, they may be influenced by too many boids and not form a cohesive flock.
 
-Explain how the implementation satisfies all the requirements - fixed speed, 
+
+
+
+
+Visual range - The distance within which a boid can see other boids and be influenced by them. If the visual range is too small, the boids will not be able to see enough other boids to form a cohesive flock. If it is too large, they may be influenced by too many boids and not form a cohesive flock.
+
+Explain how the implementation satisfies all the requirements - fixed speed...
 
 
 
@@ -89,7 +104,10 @@ try to separate, align or cohere to itself: The implementation excludes the boid
 
 \subsection{Methods}
 
+How the simulation works. Parameters used. Metrics measured.
 
+
+The JavaScript framework was used to implement the two-dimensional Boids model. The model was defined on a square grid of 400x400 pixels with wrapped dimensions. 200 boids were randomly initialized, each moving at a constant speed. The position and direction of each boid were updated at each time step based on the three rules, and the used parameters in this project are displayed in Table~\ref{tab:params}.
 
 \begin{table}[h!]
     \centering
@@ -125,6 +143,11 @@ try to separate, align or cohere to itself: The implementation excludes the boid
 \subsection{Results}
 
 
+Visuals. Quantitative results. Parameter experiments.
+
+Is there swarm alignment? How does alignment change over time? How do boids maintain spacing? How do parameters influence behavior?
+
+
 \begin{table}[h!]
     \centering
     \label{tab:baseline}
@@ -156,6 +179,8 @@ try to separate, align or cohere to itself: The implementation excludes the boid
 \end{table}
 
 
+
+It is important to note that due to the random initializations the results can greatly vary between runs. 
 
 It is possible to reach high alignment in 300 steps with these parameters. 
 
@@ -207,28 +232,33 @@ Over time, we can observe the formation of flocks as the boids align and cohere 
         \label{fig:img1d}
     \end{subfigure}
     \hfill
-    \caption{Visualizations of boids at four different time steps.}
+    \caption{Visualizations of boids at four different time steps using default parameters.}
+\end{figure}
+
+
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{order_time.png}
+        \caption{Order over time}
+        \label{fig:img1a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=\linewidth]{nn_time.png}
+        \caption{Nearest-neighbor distance over time}
+        \label{fig:img1b}
+    \end{subfigure}
+    \caption{Plots of quantitative results over time.}
 \end{figure}
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-\subsection{Experimental design}
 
 The Table 3 below displays all the parameter configurations that were explored in order to investigate the effect of different parameters on the behavior of the system. These parameters were chosen because they allow for the exploration of all interesting configurations of the system. 
 
@@ -258,6 +288,11 @@ Ultimately, coherence weight plays a role in the sizes of the flocks that are fo
     \end{tabular}
     \caption{Parameters.}
 \end{table}
+
+\subsection{Discussion}
+
+Why behaviors emerge. How the parameters affect the behaviors. What are the limitations of the model? How to improve it?
+
 
 
 
