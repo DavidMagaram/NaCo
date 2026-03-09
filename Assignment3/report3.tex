@@ -387,19 +387,109 @@ We are confident that this project's code implementation is correct as adjusting
 \subsection{Conclusion}
 
 In this experiment, the Boids model for swarm intelligence was implemented and analyzed both visually and quantitatively. The results show that alignment increases over time and it is possible to reach high alignment within 300 time steps. Moreover, the decrease of nearest-neighbor distance indicates that boids form flocks that gradually increase in size. 
+
+This experiment reproduced the Boids model for swarm intelligence and demonstrated that simple interaction rules can give rise to complex emergent behavior.  
+
+
 \newpage
 \section{Appendix Part A}
 \subsection{Preliminary Concepts}
-Color quantization on the picture of peppers given a color palette.
+% \begin{figure}
+%     \centering
+%     \includegraphics[width=\textwidth]{image_quantized.png}
+%     \caption{Color quantization on the peppers image given a color palette.}
+%     \label{fig:imgpq}
+% \end{figure}
+\begin{figure}[H]
+    \centering
+    % Subfigure 1
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image.png}
+        \caption{Original}
+        \label{fig:imgaa}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{palette.png}
+        \caption{Palette}
+        \label{fig:imgab}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{image_quantized.png}
+        \caption{Quantized}
+        \label{fig:imgac}
+    \end{subfigure}
+    \hfill
+    \caption{Color quantization on the peppers image given a color palette.}
+    \label{fig:imgzzz}
+\end{figure}
 
-Color quantization on a colorful picture using the same color palette from figure 1.
+\begin{figure}[H]
+    \centering
+    % Subfigure 1
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{colourful_image.png}
+        \caption{Original}
+        \label{fig:imgaa}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{palette.png}
+        \caption{Palette}
+        \label{fig:imgab}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{color_quantized_palette.png}
+        \caption{Quantized}
+        \label{fig:imgac}
+    \end{subfigure}
+    \hfill
+    \caption{Color quantization on a colorful picture using the same color palette from figure~\ref{fig:imgzzz}.}
+    \label{fig:imgzza}
+\end{figure}
 
-Color quantization using K-Means and finding the optimal color palette (centroids).
-
-Color palette from figure 3.
+\begin{figure}[H]
+    \centering
+    % Subfigure 1
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{colourful_image.png}
+        \caption{Original}
+        \label{fig:imgaa}
+    \end{subfigure}
+    \hfill
+    % Subfigure 2
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{optimum_palette.png}
+        \caption{Palette}
+        \label{fig:imgab}
+    \end{subfigure}
+    \hfill
+    % Subfigure 3
+    \begin{subfigure}[b]{0.24\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{color_quantized_.png}
+        \caption{Quantized}
+        \label{fig:imgac}
+    \end{subfigure}
+    \hfill
+    \caption{Color quantization on a colorful picture using the same color palette from figure~\ref{fig:imgzzz}.}
+    \label{fig:imgzza}
+\end{figure}
 
 \subsection{Results}
-This experiment reproduced the Boids model for swarm intelligence and demonstrated that simple interaction rules can give rise to complex emergent behavior.  
-
 
 \end{document}
