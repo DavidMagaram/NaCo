@@ -40,7 +40,7 @@ To quantize an image using a given palette, we implemented a custom function to 
 input image array. For each pixel, it computes the squared Euclidean distance between the pixel's RGB vector 
 and each of the $N$ candidate color vectors in the palette. The original pixel is then replaced by the closest
 color in the given palette. Testing this function on the provided image and our own image using the pre-defined 
-4-color palette successfully reproduced the correct target quantization (Appendix 1).
+4-color palette successfully reproduced the correct target quantization (Appendix 3.1).
 
 To find an optimal color palette for an image we appraoched it as a clustering problem and used the popular 
 K-Means clustering algorithm. In this clustering context:
@@ -394,12 +394,6 @@ This experiment reproduced the Boids model for swarm intelligence and demonstrat
 \newpage
 \section{Appendix Part A}
 \subsection{Preliminary Concepts}
-% \begin{figure}
-%     \centering
-%     \includegraphics[width=\textwidth]{image_quantized.png}
-%     \caption{Color quantization on the peppers image given a color palette.}
-%     \label{fig:imgpq}
-% \end{figure}
 \begin{figure}[H]
     \centering
     % Subfigure 1
@@ -491,5 +485,52 @@ This experiment reproduced the Boids model for swarm intelligence and demonstrat
 \end{figure}
 
 \subsection{Results}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pso_v_kmeans_pepper.png}
+    \caption{PSO and K-Means color quantization using 4 colors on the Peppers image.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pso_v_kmeans_pepper_8.png}
+    \caption{PSO and K-Means color quantization using 8 colors on the Peppers image.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pso_v_kmeans_color.png}
+    \caption{PSO and K-Means color quantization using 4 colors on the Colorful image.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pso_v_kmeans_color_8.png}
+    \caption{PSO and K-Means color quantization using 8 colors on the Colorful image.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pso_v_kmeans_piart.png}
+    \caption{PSO and K-Means color quantization using 4 colors on the Sunrise Pixel Art.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pso_v_kmeans_piart_8.png}
+    \caption{PSO and K-Means color quantization using 8 colors on the Sunrise Pixel Art.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pso_v_kmeans_small.png}
+    \caption{PSO and K-Means color quantization using 4 colors on the Very Small image.}
+\end{figure}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{pso_v_kmeans_small_8.png}
+    \caption{PSO and K-Means color quantization using 8 colors on the Very Small image.}
+\end{figure}
 
 \end{document}
