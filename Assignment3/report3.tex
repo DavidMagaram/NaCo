@@ -280,6 +280,22 @@ Ultimately, coherence weight plays a role in the sizes of the flocks that are fo
     \label{tab:paramss}
 \end{table}
 
+
+\begin{table}[h!]
+    \centering
+    \begin{tabular}{lccccccc}
+        \toprule
+        \textbf{Criterion} & \textbf{$R_{\text{in}}$} & \textbf{$R_{\text{out}}$} & \textbf{Align} & \textbf{Cohes.} & \textbf{Sep.} & \textbf{Order} & \textbf{NN-dist} \\
+        \midrule
+        Best Order    & 20 & 40 & 1    & 0 & 0 & 0.999 & 14.36 \\
+        Best NN-dist  & 20 & 40 & 0.66 & 1 & 0 & 0.305 & 0.03  \\
+        Best Ratio    & 5  & 40 & 0.33 & 1 & 0 & 0.625 & 0.05  \\
+        \bottomrule
+    \end{tabular}
+    \caption{Best parameter configurations at $t=300$ across 384 configurations (N=150, 3 repeats each). Best Order maximizes alignment, Best NN-dist minimizes average nearest-neighbor distance, and Best Ratio maximizes Order/NN-dist.}
+    \label{tab:param_ranking}
+\end{table}
+
 \subsection{Discussion}
 
 Why behaviors emerge. How the parameters affect the behaviors. What are the limitations of the model? How to improve it?
