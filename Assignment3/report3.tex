@@ -16,7 +16,7 @@
 \graphicspath{{./report_images/}}
 
 
-\title{Title\\[0.3em] \large Report on Assignment 3}
+\title{Natural Computing\\[0.3em] \large Report on Assignment 3}
 \author{Aaron Bussche \and Jason Kasdiran \and David Magaram}
 \date{Group 28}
 
@@ -34,46 +34,17 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 \section{Part B}
 \subsection{Introduction}
 
 
 
-The Boids model from Craig Reynolds is one of the most popular models of swarm intelligence and group behavior. It uses boids, which are bird like objects, that follow 3 simple rules: alignment, cohesion, and separation. These simple rules govenr the interactions between individual boids, which gives rise to a more complex emergent behaviors such as flocking. This is also known as swarm intelligence. Swarm intelligence is some collective behavior that emerges when individual agents interact with each other. This can lead to flocking, fish schools, and insect swarms. 
-The goal of this project is to implement the Boids model and explore how the swarm behavior emergest from simple rules and how modifying the parameters affect it. 
+The Boids model from Craig Reynolds is one of the most popular models of swarm intelligence and group behavior. It uses boids, which are bird like objects, that follow 3 simple rules: alignment, cohesion, and separation. These simple rules govern the interactions between individual boids, which gives rise to a more complex emergent behaviors such as flocking. This is also known as swarm intelligence. Swarm intelligence is some collective behavior that emerges when individual agents interact with each other. This can lead to flocking, fish schools, and insect swarms. 
+The goal of this project is to implement the Boids model and explore how the swarm behavior emerges from simple rules and how modifying the parameters affect it.
 
 
 
-
-
-
-
-
-
---- Just some info --- 
+--- Just some info ---
 
 
 Explain how the implementation satisfies all the requirements - fixed speed...
@@ -84,17 +55,23 @@ Explain how the implementation satisfies all the requirements - fixed speed...
 The model keeps Boid speeds fixed; agents should update their direction but move at a constant speed v which
 is a parameter of your model. (const move = this.multiplyVector(this.dir, this.speed))
 
-Explicitly considers what should happen at the boundary of your simulation field: The boundary is wrapped. When a boid exits from one side, it reappears on the opposite side. 
+Explicitly considers what should happen at the boundary of your simulation field: The boundary is wrapped. When a boid exits from one side, it reappears on the opposite side.
 
 uses two interaction radii: one for separation, and one for cohesion/alignment. (Ask yourself: which one should be smaller and why?): The inner radius is used for separation, while the outer radius is used for cohesion and alignment. The inner radius should be smaller than the outer radius because separation requires a closer distance to trigger the behavior, while cohesion and alignment can occur at a larger distance.
 
 excludes the boid itself from its own neighborhood when calculating the update rules, so it does not try to separate, align or cohere to itself: The implementation excludes the boid itself from its own neighborhood when calculating the update rules. This is done by ensuring that when iterating through the neighboring boids, the current boid is not included in the calculations for separation, alignment, and cohesion. (if( p.id == x.id ) continue)
 
 
+
+
+
+
+
+
 \subsection{Methods}
 
 
-The JavaScript framework was used to implement the two-dimensional Boids model. The model was defined on a square grid of 400x400 pixels with wrapped dimensions. 150 boids were randomly initialized, each moving at a constant speed. The position and direction of each boid were updated at each time step based on the three rules. The simulation was ran for 300 time steps and the used parameters in this project are displayed in Table~\ref{tab:params} below.
+The JavaScript framework was used to implement the two-dimensional Boids model. The model was defined on a square grid of 400x400 pixels with wrapped dimensions. 150 boids were randomly initialized, each moving at a constant speed. The position and direction of each boid were updated at each time step based on the three rules. The simulation was ran for 300 time steps and the used parameters in this project are displayed in Table \ref{table:parameters} below.
 
 Boids follow three simple interaction rules: alignment, cohesion, and separation. Alignment controls how each boid moves towards the average direction of the other boids nearby. Similarly, cohesion controls how quickly each boid tries to move towards the average position of the other boids around. Separation dictates how much boids try to keep a certain distance from each other to avoid collision. Together, these rules dictate how boids interact with each other. However, other than these 3 basic behavior rules, each boid has an inner and outer radius. The outer radius is associated with cohesion and alignment, while the inner radius is linked to separation. The outer radius is the boids' visual and interaction range. It is the distance within which the boid can see other boids and interact with them, and is visualized as a gray circle surrounding the boid. The inner radius, depicted by a red circle around the boid, prevents collision and is the opposite of the interaction range. If a boid enters another boids inner radius, they are repelled away, controlled by the separation weight. Obviously, the outer radius should be larger than the inner radius so cohesion and alignment can occur. 
 
@@ -103,7 +80,6 @@ Boids follow three simple interaction rules: alignment, cohesion, and separation
 
 \begin{table}[h!]
     \centering
-    \label{tab:params}
     \begin{tabular}{lccc}
         \hline
         \textbf{Parameter} & \textbf{Value}\\
@@ -117,9 +93,8 @@ Boids follow three simple interaction rules: alignment, cohesion, and separation
         \hline
     \end{tabular}
     \caption{Parameters.}
+    \label{table:parameters}
 \end{table}
-
-
 
 
 To analyze the swarm, the order and nearest-neighbor quantitative metrics were used. Order parameter is the average normalized velocity of the Boids. Order parameter tells us to what degree the swarms align in their directions, and the output is squashed between 0 and 1, 0 meaning completely random directions and 1 meaning perfect alignment. The nearest-neighbor distance is the average nearest-neighbor distance across all boids. It measures the total average distance across all boids and can tell us when individual boids get
@@ -144,7 +119,6 @@ Is there swarm alignment? How does alignment change over time? How do boids main
 
 \begin{table}[h!]
     \centering
-    \label{tab:baseline}
     \begin{tabular}{lccccc}
         \toprule
         \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300}\\
@@ -154,13 +128,13 @@ Is there swarm alignment? How does alignment change over time? How do boids main
         \bottomrule
     \end{tabular}
     \caption{Quantitative results for default parameters.}
+    \label{tab:baseline}
 \end{table}
 
 
 
 \begin{table}[h!]
     \centering
-    \label{tab:baselinee}
     \begin{tabular}{lccccc}
         \toprule
         \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300}\\
@@ -170,6 +144,7 @@ Is there swarm alignment? How does alignment change over time? How do boids main
         \bottomrule
     \end{tabular}
     \caption{Quantitative results for alternate parameters.}
+    \label{tab:baselinee}
 \end{table}
 
 
@@ -183,7 +158,7 @@ The visualizations in Figure 1 show the positions of the boids at different time
 
 Red color represents the inner radius, while the black bar coming out of it indicates in which direction each boid is facing. The outer radius is shown as a gray circle and is each boids' interaction range. 
 
-200 boids were initialized randomly at a 400x400 field with wrapped boundaries. Boids then move around, updating their positions and orientations based on the alignment, coherence, and separation rules. Boids interact with each other by coming in each other interaction range, forming flocks as they align and cohere with each other, while also maintaining a certain distance to avoid collisions. Over time, larger flocks form as boids and smaller flocks join together. However, as snown in Figure 1d, not all boids are able to find a flock by time step 300 and remain isolated until they bump into another boid or flock.
+150 boids were initialized randomly on a 400x400 field with wrapped boundaries. Boids then move around, updating their positions and orientations based on the alignment, coherence, and separation rules. Boids interact with each other by coming in each other interaction range, forming flocks as they align and cohere with each other, while also maintaining a certain distance to avoid collisions. Over time, larger flocks form as boids and smaller flocks join together. However, as shown in Figure 1d, not all boids are able to find a flock by time step 300 and remain isolated until they bump into another boid or flock.
 
 
 
@@ -237,14 +212,12 @@ Over time, we can observe the formation of flocks as the boids align and cohere 
         \centering
         \includegraphics[width=\linewidth]{order_time.png}
         \caption{Order over time}
-        \label{fig:img1a}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{nn_time.png}
         \caption{Nearest-neighbor distance over time}
-        \label{fig:img1b}
     \end{subfigure}
     \caption{Plots of quantitative results over time.}
 \end{figure}
@@ -267,7 +240,6 @@ Ultimately, coherence weight plays a role in the sizes of the flocks that are fo
 
 \begin{table}[h!]
     \centering
-    \label{tab:paramss}
     \begin{tabular}{lccc}
         \hline
         \textbf{Parameter} & \textbf{Value}\\
@@ -280,7 +252,8 @@ Ultimately, coherence weight plays a role in the sizes of the flocks that are fo
         Number of boids & 100, 200, 300 \\
         \hline
     \end{tabular}
-    \caption{Parameters.}
+    \caption{Explored parameter configurations.}
+    \label{tab:paramss}
 \end{table}
 
 \subsection{Discussion}
@@ -288,7 +261,6 @@ Ultimately, coherence weight plays a role in the sizes of the flocks that are fo
 Why behaviors emerge. How the parameters affect the behaviors. What are the limitations of the model? How to improve it?
 
 Be sure to come to a final conclusion and discuss some potential limitations as well.
-
 
 
 \subsection{Conclusion}
