@@ -125,9 +125,9 @@ The goal of this project is to implement the Boids model and explore how the swa
 \subsection{Methods}
 
 
-The JavaScript framework was used to implement the two-dimensional Boids model. The model was defined on a square grid of 400x400 pixels with wrapped dimensions. 150 boids were randomly initialized, each moving at a constant speed. The position and direction of each boid were updated at each time step based on the three rules, and the current boid was not included in the calculations. The simulation was ran for 300 time steps and the used parameters in this project are displayed in Table \ref{table:parameters} below. 
+The JavaScript framework was used to implement the two-dimensional Boids model. The model was defined on a square grid of 400x400 pixels with wrapped dimensions. 150 boids were randomly initialized, each moving at a constant speed. The position and direction of each boid were updated at each time step based on the three rules, while the current boid was not included in the calculations. The simulation was ran for 300 time steps and the used parameters in this project are displayed in Table \ref{table:parameters} below. 
 
-Boids follow three simple interaction rules: alignment, cohesion, and separation. Alignment controls how each boid moves towards the average direction of the other boids nearby. Similarly, cohesion controls how quickly each boid tries to move towards the average position of the other boids around. Separation dictates how much boids try to keep a certain distance from each other to avoid collision. Together, these rules dictate how boids interact with each other. However, other than these 3 basic behavior rules, each boid has an inner and outer radius. The outer radius is associated with cohesion and alignment, while the inner radius is linked to separation. The outer radius is the boids' visual and interaction range. It is the distance within which the boid can see other boids and interact with them, and is visualized as a gray circle surrounding the boid. The inner radius, depicted by a red circle around the boid, prevents collision and is the opposite of the interaction range. If a boid enters another boids inner radius, they are repelled away, controlled by the separation weight. For obvious reasons, the outer radius should be larger than the inner radius so cohesion and alignment can occur.
+Boids follow three simple interaction rules: alignment, cohesion, and separation. Alignment controls how each boid moves towards the average direction of the other boids nearby. Similarly, cohesion controls how quickly each boid tries to move towards the average position of the other boids around. Separation dictates how much boids try to keep a certain distance from each other to avoid collision. Together, these rules dictate how boids interact with each other. However, other than these 3 basic behavior rules, each boid has an inner and outer radius. The outer radius is associated with cohesion and alignment, while the inner radius is linked to separation. The outer radius is the boids' visual and interaction range. It is the distance within which the boid can see other boids and interact with them, and is visualized in Figure 1 as a gray circle surrounding the boid. The inner radius, depicted by a red circle around the boid shown in Figure 1, prevents collision and is the opposite of the interaction range. If a boid enters another boids inner radius, they are repelled away, controlled by the separation weight. For obvious reasons, the outer radius should be larger than the inner radius so cohesion and alignment can occur.
 
 
 
@@ -150,7 +150,7 @@ Boids follow three simple interaction rules: alignment, cohesion, and separation
 \end{table}
 
 
-To analyze the swarm, the order and nearest-neighbor quantitative metrics were used. Order parameter is the average normalized velocity of the Boids. Order parameter tells us to what degree the swarms align in their directions, and the output is squashed between 0 and 1, 0 meaning completely random directions and 1 meaning perfect alignment. 
+To analyze the swarm, the order parameter and nearest-neighbor distance quantitative metrics were used. Order parameter is the average normalized velocity of the Boids. Order parameter tells us to what degree the swarms align in their directions, and the output is squashed between 0 and 1, 0 meaning completely random directions and 1 meaning perfect alignment. 
 
 
 
@@ -194,20 +194,11 @@ d_i = \min_{\substack{j = 1 \\ j \neq i}}^{N_B} \left\lVert \mathbf{x}_i - \math
 \subsection{Results}
 
 
-Visuals. Quantitative results. Parameter experiments.
-
-Is there swarm alignment? How does alignment change over time? How do boids maintain spacing? How do parameters influence behavior?
 
 
 
-It is important to note that due to the random initializations the results can greatly vary between runs. 
 
-It is possible to reach high alignment in 300 steps with these parameters. 
-
-The visualizations in Figure 1 show the positions of the boids at different time steps. Four snapshots were taken at time steps 0, 100, 200, and 300, and are separated into an initial state, final state, and two intermediate states.
-
-
-Red color represents the inner radius, while the black bar coming out of it indicates in which direction each boid is facing. The outer radius is shown as a gray circle and is each boids' interaction range. 
+The visualizations in Figure 1 show the positions of the boids at different time steps. Four snapshots were taken at time steps 0, 100, 200, and 300, and are separated into an initial state, final state, and two intermediate states. Red color represents the inner radius, while the black bar coming out of it indicates in which direction each boid is facing. The outer radius is shown as a gray circle and is each boids' interaction range. 
 
 150 boids were initialized randomly on a 400x400 field with wrapped boundaries. Boids then move around, updating their positions and orientations based on the alignment, coherence, and separation rules. Boids interact with each other by coming in each other interaction range, forming flocks as they align and cohere with each other, while also maintaining a certain distance to avoid collisions. Over time, larger flocks form as boids and smaller flocks join together. However, as shown in Figure 1d, not all boids are able to find a flock by time step 300 and remain isolated until they bump into another boid or flock.
 
@@ -258,7 +249,7 @@ Over time, we can observe the formation of flocks as the boids align and cohere 
 
 
 
-Table 2 accompanies the visualizations from Figure 1 and displays the order and nearest-neighbor distance values obtained at the initial, intermediate, and final states. For further analysis, Figure 2 plots display the order parameter and nearest-neighbor distance values against time. A pattern can be observed where order grows and nearest-neighbor shrinks as time steps increase. This is expected as smaller flocks that formed during the initial phase wander around and ultimately bump into each other with others, merging and creating a large unified flock.  
+Table 2 accompanies the visualizations from Figure 1 and displays the order parameter and nearest-neighbor distance values obtained at the initial, intermediate, and final states. For further analysis, Figure 2 plots display the order parameter and nearest-neighbor distance values against time. A pattern can be observed where order parameter grows and nearest-neighbor distance shrinks as time steps increase. This is expected as smaller flocks that formed during the initial phase wander around until they bump into each other, merging and creating a large unified flock.  
  
 
 \begin{table}[H]
@@ -285,7 +276,7 @@ Table 2 accompanies the visualizations from Figure 1 and displays the order and 
     \begin{subfigure}[b]{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{order_time.png}
-        \caption{Order over time}
+        \caption{Order parameter over time}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.45\textwidth}
@@ -300,6 +291,7 @@ Table 2 accompanies the visualizations from Figure 1 and displays the order and 
 
 
 
+A parameter sweep was conducted with the parameter configurations displayed in Table 3. In total, 384 different configurations were explored and the top 32 were tested further to help with noise. Two top configurations were chosen, one with the highest order parameter, and another with the highest NN-distance and ratio. The parameters the top 2 configurations used are displayed in Table 4. From the results in Table \ref{tab:param_ranking} it appears that to maximize order, a large outer radius and high alignment weight are important, while cohesion should be disabled. To minimize nearest-neighbor distance, both alignment and cohesion should be set to their maximum values. The best NN-distance and best order/NN ratio are achieved at the same configuration (align=1, cohesion=1, outerR=40), which maximizes NN distance while having mediocre order results. All best results had separation=0.
 
 
 \begin{table}[H]
@@ -335,32 +327,26 @@ Table 2 accompanies the visualizations from Figure 1 and displays the order and 
     \label{tab:param_ranking}
 \end{table}
 
-From the results of Table \ref{tab:param_ranking} it appears that to maximise order, a large outer radius and high alignment weight are important, while cohesion should be disabled. To minimise nearest-neighbour distance, both alignment and cohesion should be set to their maximum values. The best NN-distance and best order/NN ratio are achieved at the same configuration (align=1, cohesion=1, outerR=40), which maximises NN distance while having mediocre order results. All best results had separation=0.
 
 
 \subsection{Discussion}
 
-Why behaviors emerge. How the parameters affect the behaviors. What are the limitations of the model? How to improve it?
 
-Be sure to come to a final conclusion and discuss some potential limitations as well.
+The results show that complex swarm behavior can emerge from simple interaction rules. We observed that the boids flock quite well even at the default parameters. The order parameter and NN-distance usually only get really good at the 'end stage' when there is just one combined flock of all the boids. How fast this end stage is achieved (and how tightly the boids are packed in the flock and how perfectly aligned they are) depends on the parameter choices, but for most sensible parameter choices this eventually happens. Examples for which this does not hold would be having $0$ alignment and cohesion or having a high separation and an $R_{\text{in}} > R_{\text{out}}$. There likely is a specific threshold plane that divides convergent behavior from divergent one, but we did not test this out in detail.
 
-Assuming this project's code implementation is correct, adjusting the parameters gives expected results. 
-For example, increasing the outer radius gives high cohesion and very short time because boids have a much larger interaction rate. On the other hand, the inner radius should generally be smaller than the outer radius for interactions to happen. A rule of thumb is to have the outer radius be at least twice the size of the inner radius.
-Low alignment weight causes the boids to spin around.
-Low separation weight results in low order parameter values as boids do not create flocks but enter each other, making their flock's total interaction radius much smaller. 
+By conducting the parameter sweep, we found the best parameters for how to maximize the Order and minimize the NN-distance, which were consistently extreme values ($R_{\text{out}}$ as big as possible, alignment=1, separation=0, etc.). This made us question the purpose of maximizing for these results in the first place: If we want a model with all boids in the same exact place and facing the exact same direction, that is not how nature works, and nature is what we are trying to model. It therefore might be more interesting to find out what parameters perfectly mirror bird behavior.
+
+Other than that, several interesting noteworthy behaviors were observed during the exploration of different parameter configurations. For example, when a low alignment weight with medium separation weight were used, it caused the boids to continuously spin around. Also, low separation weight causes the boids to enter each other, becoming one. Additionally, increasing the outer radius gives high cohesion and very short time because boids have a much larger interaction rate. On the other hand, the inner radius should generally be smaller than the outer radius for interactions to happen. A rule of thumb is to have the outer radius be at least twice the size of the inner radius.
 
 
-///
-
-We observed that the boids flock quite well even at the default parameters. ... The order and NN-dist usually only get really good at the 'end stage' when there is just one combined flock of all the boids. How fast this end stage is achieved (and how tightly the boids are packed in the flock and how perfectly alligned they are) depends on the parameter choices, but for most sensible parameter choices this eventually happens. Examples for which this does not hold would be having $0$ alignment and cohesion or having a high separation and an $R_{\text{in}} > R_{\text{out}}$. There likely is a specific threshold plane that divides convergent behavior from divergent one, but we did not test this out in detail.
-
-By conducting the parameter sweep, we found the best parameters for how to maximise the Order and minimise the NN-dist, which were consistently extreme values ($R_{\text{out}}$ as big as possible, alignment=1, separation=0, etc.). This made us question the purpose of maximising for these results in the first place: If we want a model with all boids in the same exact place and facing the exact same direction, that is not how nature works, and nature is what we are trying to model. It therefore might be more interesting to find out what parameters perfectly mirror bird behavior.
-
+We are confident that this project's code implementation is correct as adjusting the parameters gives the desired results, however, it is possible that some bugs and artifacts remain that corrupting our findings. Additionally, it is important to note that due to the random initializations the results can greatly vary between runs. It is recommended that future studies make sure the code implementation is correct and without any issues. Also, averaging the obtained quantitative metric scores across many runs is advised for more stable results. 
 
 
 \subsection{Conclusion}
 
+In this experiment, the Boids model for swarm intelligence was implemented and analyzed both visually and quantitatively. The results show that alignment increases over time and it is possible to reach high alignment within 300 time steps. Moreover, the decrease of nearest-neighbor distance indicates that boids form flocks that gradually increase in size. 
 
+This experiment reproduced the Boids model for swarm intelligence and demonstrated that simple interaction rules can give rise to complex emergent behavior.  
 
 
 \end{document}
