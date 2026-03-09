@@ -97,7 +97,7 @@ excludes the boid itself from its own neighborhood when calculating the update r
 
 The JavaScript framework was used to implement the two-dimensional Boids model. The model was defined on a square grid of 400x400 pixels with wrapped dimensions. 150 boids were randomly initialized, each moving at a constant speed. The position and direction of each boid were updated at each time step based on the three rules. The simulation was ran for 300 time steps and the used parameters in this project are displayed in Table \ref{table:parameters} below.
 
-Boids follow three simple interaction rules: alignment, cohesion, and separation. Alignment controls how each boid moves towards the average direction of the other boids nearby. Similarly, cohesion controls how quickly each boid tries to move towards the average position of the other boids around. Separation dictates how much boids try to keep a certain distance from each other to avoid collision. Together, these rules dictate how boids interact with each other. However, other than these 3 basic behavior rules, each boid has an inner and outer radius. The outer radius is associated with cohesion and alignment, while the inner radius is linked to separation. The outer radius is the boids' visual and interaction range. It is the distance within which the boid can see other boids and interact with them, and is visualized as a gray circle surrounding the boid. The inner radius, depicted by a red circle around the boid, prevents collision and is the opposite of the interaction range. If a boid enters another boids inner radius, they are repelled away, controlled by the separation weight. Obviously, the outer radius should be larger than the inner radius so cohesion and alignment can occur. 
+Boids follow three simple interaction rules: alignment, cohesion, and separation. Alignment controls how each boid moves towards the average direction of the other boids nearby. Similarly, cohesion controls how quickly each boid tries to move towards the average position of the other boids around. Separation dictates how much boids try to keep a certain distance from each other to avoid collision. Together, these rules dictate how boids interact with each other. However, other than these 3 basic behavior rules, each boid has an inner and outer radius. The outer radius is associated with cohesion and alignment, while the inner radius is linked to separation. The outer radius is the boids' visual and interaction range. It is the distance within which the boid can see other boids and interact with them, and is visualized as a gray circle surrounding the boid. The inner radius, depicted by a red circle around the boid, prevents collision and is the opposite of the interaction range. If a boid enters another boids inner radius, they are repelled away, controlled by the separation weight. For obvious reasons, the outer radius should be larger than the inner radius so cohesion and alignment can occur. 
 
 
 
@@ -121,7 +121,18 @@ Boids follow three simple interaction rules: alignment, cohesion, and separation
 \end{table}
 
 
-To analyze the swarm, the order and nearest-neighbor quantitative metrics were used. Order parameter is the average normalized velocity of the Boids. Order parameter tells us to what degree the swarms align in their directions, and the output is squashed between 0 and 1, 0 meaning completely random directions and 1 meaning perfect alignment. The nearest-neighbor distance is the average nearest-neighbor distance across all boids. It measures the total average distance across all boids and can tell us when individual boids get
+To analyze the swarm, the order and nearest-neighbor quantitative metrics were used. Order parameter is the average normalized velocity of the Boids. Order parameter tells us to what degree the swarms align in their directions, and the output is squashed between 0 and 1, 0 meaning completely random directions and 1 meaning perfect alignment. 
+
+
+
+\[
+O = \frac{1}{N_B} \left\lVert \sum_{i=1}^{N_B} \frac{\vec{v}_i}{\lVert \vec{v}_i \rVert} \right\rVert
+\]
+
+
+
+
+The nearest-neighbor distance is the average nearest-neighbor distance across all boids. It measures the total average distance across all boids and can tell us when individual boids get
 separated from the swarm or when individuals get too close to each other.
 
 
@@ -251,7 +262,7 @@ Over time, we can observe the formation of flocks as the boids align and cohere 
 
 
 
-The Table 3 below displays all the parameter configurations that were explored in order to investigate the effect of different parameters on the behavior of the system. These parameters were chosen because they allow for the exploration of all interesting configurations of the system. 
+Table 3 below displays all the parameter configurations that were explored in order to investigate the effect of different parameters on the behavior of the system. These parameters were chosen because they allow for the exploration of all interesting configurations of the system. 
 
 By exploring different parameter configurations, interesting behaviors can be observed. 
 By setting the coherence weight to 0, boids no longer strive to move towards the center of mass of their neighbors, instead, they align with their neighbors and keep a certain distance from them. This leads to an interesting behavior where boids form large nets that span the entire simulation field. Because of that, after a short while all boids start moving in the same direction. By increasing the outer radius, this can be sped up as boids are initialized with larger interaction radius and start forming large nets sooner. On the other hand, if the inner radius is increased to be more than half the value of the outer radius, this uniform behavior is disturbed. 
@@ -301,6 +312,11 @@ Ultimately, coherence weight plays a role in the sizes of the flocks that are fo
 Why behaviors emerge. How the parameters affect the behaviors. What are the limitations of the model? How to improve it?
 
 Be sure to come to a final conclusion and discuss some potential limitations as well.
+
+Assuming this project's code implementation is correct, adjusting the parameters gives expected results. 
+For example, increasing the outer radius gives high cohesion and very short time because boids have a much larger interaction rate. On the other hand, the inner radius should generally be smaller than the outer radius for interactions to happen. A rule of thumb is to have the outer radius be at least twice the size of the inner radius.
+Low alignment weight causes the boids to spin around.
+Low separation weight results in low order parameter values as boids do not create flocks but enter each other, making their flock's total interaction radius much smaller. 
 
 
 \subsection{Conclusion}
