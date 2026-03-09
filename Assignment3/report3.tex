@@ -66,49 +66,91 @@ image to calculate the Mean Squared Error (MSE). The PSO algorithm stores the st
 the global best particle at each iteration, allowing the swarm to minimize the MSE over time.
 
 \subsection{Experimental Setup}
-The PSO clustering algorithm was implemented and evaluated on three test images: "peppers", "colorful", 
-and "very small". Because the PSO algorithm can take very long to evaluate fitness on large datasets, 
-the "colorful" image was resized from $1328 \times 2000$ to a smaller resolution of $85 \times 128$ 
-prior to running the optimizer.
+The PSO clustering algorithm was implemented and evaluated on four test images: "peppers", "colorful", 
+"sunrise pixel art", and "very small". Because the PSO algorithm can take very long to evaluate fitness 
+on large datasets, the "colorful" image was resized from $1328 \times 2000$ to a smaller resolution of 
+$85 \times 128$ prior to running the optimizer.
 
-The experimental parameters were fixed for all test cases. The target color palette size was set to 
-$N = 4$ colors. The PSO swarm consisted of 30 particles, and the algorithm was executed for a maximum 
-of 100 iterations. To benchmark our implementation, the standard K-Means algorithm (via \texttt{sklearn.cluster.KMeans}) 
-was applied to the same images with $K=4$. Both algorithms were quantitatively compared based on the 
+For the optimum target color palette we tested 2 different sizes. We tested $N = \{4,8\}$ colors color 
+palette. The PSO swarm consisted of 30 particles, and the algorithm was executed for a maximum of 100 
+iterations. To benchmark our implementation, the standard K-Means algorithm (via \texttt{sklearn.cluster.KMeans}) 
+was applied to the same images with $K= \{4,8\}$. Both algorithms were quantitatively compared based on the 
 final MSE of the quantized image.
 
 \subsection{Results}
-The PSO implementation successfully quantized all three images to a 4-color palette and optimization 
-curves were generated to show the convergence over 100 iterations. The final Mean Squared Error (MSE) 
-values comparing PSO and K-Means are summarized below:
+The PSO implementation successfully quantized all four images to a $N$-color palette. In the appendix we 
+make side by side comparisons of the original, the PSO quantized and K-Means quantized images. Table~\ref{tab:finalmse} presents the final 
+MSE values for PSO and K-Means across all images and both palette sizes. 
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lcc|ccc}
+        \toprule
+        \textbf{Image} & \textbf{PSO $N=4$} & \textbf{K-Means $K=4$} & \textbf{PSO $N=8$} & \textbf{K-Means $K=8$}\\
+        \midrule
+        Peppers & \textbf{524.25} & 524.26 & 251.34 & \textbf{222.87}\\
+        Colorful & 1373.19 & \textbf{1358.31} & 728.12 & \textbf{693.26}\\
+        Pixel Art & 757.08 & \textbf{742.91} & 169.50 & \textbf{160.44}\\
+        Very Small & \textbf{4324.48} & 4565.67 & 365.11 & \textbf{244.93}\\
+        \bottomrule
+    \end{tabular}
+    \caption{Final MSE values comparing PSO and K-Means with $N$ colors color palette}
+    \label{tab:finalmse}
+\end{table}
+For $N=4$ colors, PSO matched or outperformed K-Means slightly on the Peppers and Very Small images, while K-Means 
+achieved a lower MSE on the Colorful and Pixel Art images. With $N=8$ colors, K-Means consistently achieved a lower 
+MSE on all images except Peppers where PSO was marginally better. Table~\ref{tab:pso48} shows 
+how the PSO global best MSE evolved across 100 iterations on the Peppers image.
 
-\begin{itemize}
-    \item \textbf{Peppers:} PSO achieved a final MSE of 524.25, slightly outperforming K-Means, which 
-    achieved an MSE of 524.26.
-    \item \textbf{colorful:} K-Means performed better with an MSE of 1358.31, while PSO settled at a 
-    final MSE of 1373.19.
-    \item \textbf{Very Small:} PSO significantly outperformed K-Means, reaching a final MSE of 4324.48 
-    compared to the K-Means MSE of 4565.67.
-\end{itemize}
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccc}
+        \toprule
+        \textbf{Iteration} & \textbf{PSO $N=4$} & \textbf{PSO $N=8$}\\
+        \midrule
+        10 & 603.20 & 327.29\\
+        20 & 571.08 & 298.02\\
+        30 & 543.23 & 283.06\\
+        40 & 537.82 & 264.56\\
+        50 & 530.71 & 257.80\\
+        60 & 526.01 & 255.29\\
+        70 & 524.75 & 252.35\\
+        80 & 524.36 & 252.16\\
+        90 & 524.26 & 251.73\\
+        100 & 524.25 & 251.34\\
+        \bottomrule
+    \end{tabular}
+    \caption{MSE values at every 10 iterations of PSO on the Peppers image.}
+    \label{tab:pso48}
+\end{table}
+The convergence behaviour shown in Table~\ref{tab:pso48} indicates that PSO reduces MSE rapidly in the early 
+iterations (iterations 10–50) and then slows considerably as the swarm approaches the global best. By 
+iteration 90, the improvement became insignificant, suggesting the algorithm had effectively converged 
+before the 100-iteration limit was reached.
 
-The historical states of the global best particle showed that PSO achieved the most dramatic reductions 
-in MSE during the first 30 to 40 iterations, after which the curves converges.
 
 \subsection{Discussion}
 The results confirm that Particle Swarm Optimization can successfully be applied to color quantization 
-and is capable of finding optimal, or near-optimal, color palettes. On two of the three tested images 
-("peppers" and "very small"), the PSO method discovered a color palette that performed better than the 
-K-Means baseline. This highlights the advantage of PSO as a global search algorithm; it avoids the heavy 
-reliance on strict initial centroid placements that K-Means suffers from.
+and is capable of finding optimal, or near-optimal, color palettes. Overall, K-Means achieves a lower 
+or equal MSE compared to PSO in the majority of cases. This is expected, as K-Means is guaranteed to 
+converge to a local optimum through exact centroid reassignment, while PSO is a stochastic method with 
+no such guarantee. The exception is the Very Small image at $N=4$, where PSO outperformed K-Means by 
+a significant margin, likely due to K-Means being sensitive to poor initialization on small 
+datasets, where PSO's broader exploration is beneficial. In contrast, for the Pixel Art image, which 
+contains smooth gradients and many varying hues, K-Means produces a noticeably better quantization. 
+This suggests that K-Means benefits from images with complex, continuously distributed color spaces, 
+where its exact centroid updates efficiently capture fine color variation, while PSO's exploratory 
+search offers an advantage when the color space is sparse and initialization-sensitive.
 
-However, the experiment also illustrated some known limitations of standard PSO. The fact that K-Means 
-performed better on the "colorful" image demonstrates that PSO can still easily get stuck in local 
-optima during the clustering search space. Additionally, PSO is highly computationally demanding and 
-slow to converge. Evaluating the fitness of 30 particles over 100 iterations requires exhaustively 
-assigning every image pixel to its nearest centroid thousands of times, which justified our need to 
-downscale images to reduce runtime. Ultimately, while PSO is an effective optimization strategy for 
-clustering, simpler alternatives like K-Means are often much faster and sufficiently accurate for typical 
-applications.
+A key practical limitation of PSO is its computational cost. The Colorful image had to be downsampled 
+to $85 \times 128$ pixels before running PSO, while K-Means could handle the full resolution efficiently. 
+Additionally, PSO's stochastic nature introduces run-to-run variability, and the hyperparameters were not 
+systematically tuned, meaning results could vary with different configurations.
+
+\subsection{Conclusion}
+PSO proved to be a viable approach to color quantization, converging consistently across all tested 
+images. However, K-Means generally produced lower MSE values, particularly for larger palettes, due 
+to its exact and efficient centroid optimization. PSO showed competitive performance mainly in cases 
+where K-Means is prone to poor initialization.
 
 
 \section{Part B}
@@ -353,7 +395,18 @@ Low separation weight results in low order parameter values as boids do not crea
 
 \subsection{Conclusion}
 
+\newpage
+\section{Appendix Part A}
+\subsection{Preliminary Concepts}
+Color quantization on the picture of peppers given a color palette.
 
+Color quantization on a colorful picture using the same color palette from figure 1.
+
+Color quantization using K-Means and finding the optimal color palette (centroids).
+
+Color palette from figure 3.
+
+\subsection{Results}
 
 
 \end{document}
