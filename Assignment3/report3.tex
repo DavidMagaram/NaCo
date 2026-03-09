@@ -68,37 +68,13 @@ The goal of this project is to implement the Boids model and explore how the swa
 
 
 
---- Just some info ---
-
-
-Explain how the implementation satisfies all the requirements - fixed speed...
-
-
-
-
-The model keeps Boid speeds fixed; agents should update their direction but move at a constant speed v which
-is a parameter of your model. (const move = this.multiplyVector(this.dir, this.speed))
-
-Explicitly considers what should happen at the boundary of your simulation field: The boundary is wrapped. When a boid exits from one side, it reappears on the opposite side.
-
-uses two interaction radii: one for separation, and one for cohesion/alignment. (Ask yourself: which one should be smaller and why?): The inner radius is used for separation, while the outer radius is used for cohesion and alignment. The inner radius should be smaller than the outer radius because separation requires a closer distance to trigger the behavior, while cohesion and alignment can occur at a larger distance.
-
-excludes the boid itself from its own neighborhood when calculating the update rules, so it does not try to separate, align or cohere to itself: The implementation excludes the boid itself from its own neighborhood when calculating the update rules. This is done by ensuring that when iterating through the neighboring boids, the current boid is not included in the calculations for separation, alignment, and cohesion. (if( p.id == x.id ) continue)
-
-
-
-
-
-
-
 
 \subsection{Methods}
 
 
-The JavaScript framework was used to implement the two-dimensional Boids model. The model was defined on a square grid of 400x400 pixels with wrapped dimensions. 150 boids were randomly initialized, each moving at a constant speed. The position and direction of each boid were updated at each time step based on the three rules. The simulation was ran for 300 time steps and the used parameters in this project are displayed in Table \ref{table:parameters} below.
+The JavaScript framework was used to implement the two-dimensional Boids model. The model was defined on a square grid of 400x400 pixels with wrapped dimensions. 150 boids were randomly initialized, each moving at a constant speed. The position and direction of each boid were updated at each time step based on the three rules, and the current boid was not included in the calculations. The simulation was ran for 300 time steps and the used parameters in this project are displayed in Table \ref{table:parameters} below. 
 
-Boids follow three simple interaction rules: alignment, cohesion, and separation. Alignment controls how each boid moves towards the average direction of the other boids nearby. Similarly, cohesion controls how quickly each boid tries to move towards the average position of the other boids around. Separation dictates how much boids try to keep a certain distance from each other to avoid collision. Together, these rules dictate how boids interact with each other. However, other than these 3 basic behavior rules, each boid has an inner and outer radius. The outer radius is associated with cohesion and alignment, while the inner radius is linked to separation. The outer radius is the boids' visual and interaction range. It is the distance within which the boid can see other boids and interact with them, and is visualized as a gray circle surrounding the boid. The inner radius, depicted by a red circle around the boid, prevents collision and is the opposite of the interaction range. If a boid enters another boids inner radius, they are repelled away, controlled by the separation weight. For obvious reasons, the outer radius should be larger than the inner radius so cohesion and alignment can occur. 
-
+Boids follow three simple interaction rules: alignment, cohesion, and separation. Alignment controls how each boid moves towards the average direction of the other boids nearby. Similarly, cohesion controls how quickly each boid tries to move towards the average position of the other boids around. Separation dictates how much boids try to keep a certain distance from each other to avoid collision. Together, these rules dictate how boids interact with each other. However, other than these 3 basic behavior rules, each boid has an inner and outer radius. The outer radius is associated with cohesion and alignment, while the inner radius is linked to separation. The outer radius is the boids' visual and interaction range. It is the distance within which the boid can see other boids and interact with them, and is visualized as a gray circle surrounding the boid. The inner radius, depicted by a red circle around the boid, prevents collision and is the opposite of the interaction range. If a boid enters another boids inner radius, they are repelled away, controlled by the separation weight. For obvious reasons, the outer radius should be larger than the inner radius so cohesion and alignment can occur.
 
 
 
@@ -170,37 +146,6 @@ Visuals. Quantitative results. Parameter experiments.
 Is there swarm alignment? How does alignment change over time? How do boids maintain spacing? How do parameters influence behavior?
 
 
-\begin{table}[H]
-    \centering
-    \begin{tabular}{lccccc}
-        \toprule
-        \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300}\\
-        \midrule
-        Order parameter & 0.0208 & 0.0753 & 0.105 & 0.616\\
-        Nearest-neighbor distance & 13.956 & 5.925 & 4.278 & 3.405\\
-        \bottomrule
-    \end{tabular}
-    \caption{Quantitative results for default parameters.}
-    \label{tab:baseline}
-\end{table}
-
-
-
-\begin{table}[H]
-    \centering
-    \begin{tabular}{lccccc}
-        \toprule
-        \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300}\\
-        \midrule
-        Order parameter & 0.096 & 0.509 & 0.751 & 0.695 \\
-        Nearest-neighbor distance & 14.466 & 9.076 & 8.053 & 7.506\\
-        \bottomrule
-    \end{tabular}
-    \caption{Quantitative results for alternate parameters.}
-    \label{tab:baselinee}
-\end{table}
-
-
 
 It is important to note that due to the random initializations the results can greatly vary between runs. 
 
@@ -259,6 +204,29 @@ Over time, we can observe the formation of flocks as the boids align and cohere 
 
 
 
+
+Table 2 accompanies the visualizations from Figure 1 and displays the order and nearest-neighbor distance values obtained at the initial, intermediate, and final states. For further analysis, Figure 2 plots display the order parameter and nearest-neighbor distance values against time. A pattern can be observed where order grows and nearest-neighbor shrinks as time steps increase. This is expected as smaller flocks that formed during the initial phase wander around and ultimately bump into each other with others, merging and creating a large unified flock.  
+ 
+
+\begin{table}[H]
+    \centering
+    \begin{tabular}{lccccc}
+        \toprule
+        \textbf{Time} & \textbf{0} & \textbf{100} & \textbf{200} & \textbf{300}\\
+        \midrule
+        Order parameter & 0.0208 & 0.0753 & 0.105 & 0.616\\
+        Nearest-neighbor distance & 13.956 & 5.925 & 4.278 & 3.405\\
+        \bottomrule
+    \end{tabular}
+    \caption{Quantitative results for default parameters.}
+    \label{tab:baseline}
+\end{table}
+
+
+
+
+
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.45\textwidth}
@@ -275,16 +243,6 @@ Over time, we can observe the formation of flocks as the boids align and cohere 
     \caption{Plots of quantitative results over time.}
 \end{figure}
 
-
-
-
-
-
-Table 3 below displays all the parameter configurations that were explored in order to investigate the effect of different parameters on the behavior of the system. These parameters were chosen because they allow for the exploration of all interesting configurations of the system. 
-
-By exploring different parameter configurations, interesting behaviors can be observed. 
-By setting the coherence weight to 0, boids no longer strive to move towards the center of mass of their neighbors, instead, they align with their neighbors and keep a certain distance from them. This leads to an interesting behavior where boids form large nets that span the entire simulation field. Because of that, after a short while all boids start moving in the same direction. By increasing the outer radius, this can be sped up as boids are initialized with larger interaction radius and start forming large nets sooner. On the other hand, if the inner radius is increased to be more than half the value of the outer radius, this uniform behavior is disturbed. 
-Ultimately, coherence weight plays a role in the sizes of the flocks that are formed, where higher values lead to larger flocks and lower values lead to tighter flocks.
 
 
 
