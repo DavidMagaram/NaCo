@@ -137,6 +137,24 @@ separated from the swarm or when individuals get too close to each other.
 
 
 
+\[
+d_i = \min_{\substack{j = 1 \\ j \neq i}}^{N_B} \left\lVert \mathbf{x}_i - \mathbf{x}_j \right\rVert
+\]
+
+
+
+
+
+\[
+\bar{d} = \frac{1}{N_B} \sum_{i=1}^{N_B} d_i
+        = \frac{1}{N_B} \sum_{i=1}^{N_B}
+          \min_{\substack{j = 1 \\ j \neq i}}^{N_B}
+          \left\lVert \mathbf{x}_i - \mathbf{x}_j \right\rVert
+\]
+
+
+
+
 
 
 
