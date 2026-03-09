@@ -316,27 +316,26 @@ Table 2 accompanies the visualizations from Figure 1 and displays the order and 
         Number of boids & 150 \\
         \hline
     \end{tabular}
-    \caption{Explored parameter configurations.}
+    \caption{Explored parameter configurations, 384 total. Each were run 3 times with the results averaged. In Table \ref{tab:param_ranking}, the most promising 32 were tested more thoroughly to combat noise.}
     \label{tab:paramss}
 \end{table}
 
 
 \begin{table}[H]
     \centering
-    \begin{tabular}{lcccc|cc}
+    \begin{tabular}{lccc|cc}
         \toprule
-        \textbf{Criterion} & \textbf{$R_{\text{in}}$} & \textbf{$R_{\text{out}}$} & \textbf{Align} & \textbf{Cohes.} & \textbf{Order} & \textbf{NN-dist} \\
+        \textbf{Criterion} & \textbf{$R_{\text{out}}$} & \textbf{Align} & \textbf{Cohes.} & \textbf{Order} & \textbf{NN-dist} \\
         \midrule
-        Best Order    & 20 & 40 & 1    & 0 & 0.999 & 14.36 \\
-        Best NN-dist  & 20 & 40 & 0.66 & 1 & 0.305 & 0.03  \\
-        Best Ratio    & 5  & 40 & 0.33 & 1 & 0.625 & 0.05  \\
+        Best Order              & 40 & 1 & 0 & 0.991 & 13.11 \\
+        Best NN-dist \& Ratio   & 40 & 1 & 1 & 0.446 & 0.10  \\
         \bottomrule
     \end{tabular}
-    \caption{Parameter configurations that maximize each criterion at $t=300$, selected from 384 configurations (N=150, separation=0, averaged from 3 repeats each). Order and NN-dist columns show the resulting metrics.}
+    \caption{Parameter configurations that maximize each criterion at $t=300$, selected from 32 configurations (N=150, averaged over 25 repeats). Order and NN-dist columns show the resulting metrics. All best results had separation=0, rendering $R_{\text{in}}$ irrelevant, so for better clarity these parameters are omitted from the table.}
     \label{tab:param_ranking}
 \end{table}
 
-From the results of Table \ref{tab:param_ranking} it appears that to maximise order, it is important that the boids have a big outer sight radius and a high alignment parameter value. To minimise Nearest-Neighbour-distance, they need a high cohesion value, though unexpectedly the inner radius was still quite large at $20$. Lastly, the best ratio of order/NN-distance was achived with a low inner radius and a smaller alignment value of $0.33$, and largely by lowering the NN-distance, not by maximising the Order.
+From the results of Table \ref{tab:param_ranking} it appears that to maximise order, a large outer radius and high alignment weight are important, while cohesion should be disabled. To minimise nearest-neighbour distance, both alignment and cohesion should be set to their maximum values. The best NN-distance and best order/NN ratio are achieved at the same configuration (align=1, cohesion=1, outerR=40), which maximises NN distance while having mediocre order results. All best results had separation=0.
 
 
 \subsection{Discussion}
@@ -349,6 +348,14 @@ Assuming this project's code implementation is correct, adjusting the parameters
 For example, increasing the outer radius gives high cohesion and very short time because boids have a much larger interaction rate. On the other hand, the inner radius should generally be smaller than the outer radius for interactions to happen. A rule of thumb is to have the outer radius be at least twice the size of the inner radius.
 Low alignment weight causes the boids to spin around.
 Low separation weight results in low order parameter values as boids do not create flocks but enter each other, making their flock's total interaction radius much smaller. 
+
+
+///
+
+We observed that the boids flock quite well even at the default parameters. ... The order and NN-dist usually only get really good at the 'end stage' when there is just one combined flock of all the boids. How fast this end stage is achieved (and how tightly the boids are packed in the flock and how perfectly alligned they are) depends on the parameter choices, but for most sensible parameter choices this eventually happens. Examples for which this does not hold would be having $0$ alignment and cohesion or having a high separation and an $R_{\text{in}} > R_{\text{out}}$. There likely is a specific threshold plane that divides convergent behavior from divergent one, but we did not test this out in detail.
+
+By conducting the parameter sweep, we found the best parameters for how to maximise the Order and minimise the NN-dist, which were consistently extreme values ($R_{\text{out}}$ as big as possible, alignment=1, separation=0, etc.). This made us question the purpose of maximising for these results in the first place: If we want a model with all boids in the same exact place and facing the exact same direction, that is not how nature works, and nature is what we are trying to model. It therefore might be more interesting to find out what parameters perfectly mirror bird behavior.
+
 
 
 \subsection{Conclusion}
