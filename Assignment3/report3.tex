@@ -102,7 +102,7 @@ Boids follow three simple interaction rules: alignment, cohesion, and separation
 
 
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{lccc}
         \hline
@@ -170,7 +170,7 @@ Visuals. Quantitative results. Parameter experiments.
 Is there swarm alignment? How does alignment change over time? How do boids maintain spacing? How do parameters influence behavior?
 
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{lccccc}
         \toprule
@@ -186,7 +186,7 @@ Is there swarm alignment? How does alignment change over time? How do boids main
 
 
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{lccccc}
         \toprule
@@ -291,7 +291,7 @@ Ultimately, coherence weight plays a role in the sizes of the flocks that are fo
 
 
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
     \begin{tabular}{lccc}
         \hline
@@ -310,20 +310,23 @@ Ultimately, coherence weight plays a role in the sizes of the flocks that are fo
 \end{table}
 
 
-\begin{table}[h!]
+\begin{table}[H]
     \centering
-    \begin{tabular}{lccccccc}
+    \begin{tabular}{lcccc|cc}
         \toprule
-        \textbf{Criterion} & \textbf{$R_{\text{in}}$} & \textbf{$R_{\text{out}}$} & \textbf{Align} & \textbf{Cohes.} & \textbf{Sep.} & \textbf{Order} & \textbf{NN-dist} \\
+        \textbf{Criterion} & \textbf{$R_{\text{in}}$} & \textbf{$R_{\text{out}}$} & \textbf{Align} & \textbf{Cohes.} & \textbf{Order} & \textbf{NN-dist} \\
         \midrule
-        Best Order    & 20 & 40 & 1    & 0 & 0 & 0.999 & 14.36 \\
-        Best NN-dist  & 20 & 40 & 0.66 & 1 & 0 & 0.305 & 0.03  \\
-        Best Ratio    & 5  & 40 & 0.33 & 1 & 0 & 0.625 & 0.05  \\
+        Best Order    & 20 & 40 & 1    & 0 & 0.999 & 14.36 \\
+        Best NN-dist  & 20 & 40 & 0.66 & 1 & 0.305 & 0.03  \\
+        Best Ratio    & 5  & 40 & 0.33 & 1 & 0.625 & 0.05  \\
         \bottomrule
     \end{tabular}
-    \caption{Best parameter configurations at $t=300$ across 384 configurations (N=150, 3 repeats each). Best Order maximizes alignment, Best NN-dist minimizes average nearest-neighbor distance, and Best Ratio maximizes Order/NN-dist.}
+    \caption{Parameter configurations that maximize each criterion at $t=300$, selected from 384 configurations (N=150, separation=0, averaged from 3 repeats each). Order and NN-dist columns show the resulting metrics.}
     \label{tab:param_ranking}
 \end{table}
+
+From the results of Table \ref{tab:param_ranking} it appears that to maximise order, it is important that the boids have a big outer sight radius and a high alignment parameter value. To minimise Nearest-Neighbour-distance, they need a high cohesion value, though unexpectedly the inner radius was still quite large at $20$. Lastly, the best ratio of order/NN-distance was achived with a low inner radius and a smaller alignment value of $0.33$, and largely by lowering the NN-distance, not by maximising the Order.
+
 
 \subsection{Discussion}
 
