@@ -16,7 +16,7 @@
 \graphicspath{{./report_images/}}
 
 
-\title{Natural Computing\\[0.3em] \large Report on Assignment 3}
+\title{Swarm Intelligence\\[0.3em] \large Natural Computing}
 \author{Aaron Bussche \and Jason Kasdiran \and David Magaram}
 \date{Group 28}
 
@@ -24,10 +24,34 @@
 \maketitle
 
 \section{Part A}
-\subsection{Reproducing quantization}
-\subsection{Finding optimal color palette}
+\subsection{Introduction}
+An image can be compressed by reducing the number of distinct colors in it; a process called color quantization[cite: 206]. The objective of finding the optimal color palette for a given image can be seen as a continuous clustering problem[cite: 215, 216]. In this study, we tackle the color quantization problem using Particle Swarm Optimization (PSO)[cite: 207, 208]. While "vanilla" PSO is a metaheuristic capable of solving continuous optimization problems, we implement it here to iteratively optimize image color palettes[cite: 208, 225]. We then evaluate its performance by comparing the resulting quantization against a popular clustering method, K-Means[cite: 222, 223].
+
+\subsection{Methods}
+To map the color quantization problem to PSO, each particle in the swarm represents a candidate solution, which in this case is a list of $N$ cluster centroids[cite: 218, 308]. Mathematically, a particle's position is defined as $x_i = (m_{i1}, \dots, m_{iN})$, where each centroid $m$ corresponds to a color in the palette[cite: 309]. 
+
+We measure the quality or "fitness" of a particle by computing an evaluation function $f(x_i, Z)$ over the image dataset $Z$ containing $M$ pixel points[cite: 310, 311]. During the evaluation, each pixel $z_j$ is assigned to the nearest centroid $m$[cite: 312]. The implementation maps the input image to the color palette by finding the minimum Euclidean distance between each pixel and the candidate colors, outputting the reconstructed image to calculate the Mean Squared Error (MSE). The PSO algorithm stores the state of the particles and the global best particle at each iteration, allowing the swarm to minimize the MSE over time[cite: 220].
+
+\subsection{Experimental Setup}
+The PSO clustering algorithm was implemented and evaluated on three test images: "peppers", "colourful", and "very small". Because the PSO algorithm can take very long to evaluate fitness on large datasets, the "colourful" image was resized to a smaller resolution of $85 \times 128$ prior to running the optimizer.
+
+The experimental parameters were fixed for all test cases. The target color palette size was set to $N = 4$ colors. The PSO swarm consisted of 30 particles, and the algorithm was executed for a maximum of 100 iterations. To benchmark our implementation, the standard K-Means algorithm (via \texttt{sklearn.cluster.KMeans}) was applied to the same images with $K=4$. Both algorithms were quantitatively compared based on the final MSE of the quantized image.
 
 \subsection{Results}
+The PSO implementation successfully quantized all three images to a 4-color palette and optimization curves were generated to show the convergence over 100 iterations. The final Mean Squared Error (MSE) values comparing PSO and K-Means are summarized below:
+
+\begin{itemize}
+    \item \textbf{Peppers:} PSO achieved a final MSE of 524.25, slightly outperforming K-Means, which achieved an MSE of 524.26.
+    \item \textbf{Colourful:} K-Means performed better with an MSE of 1358.31, while PSO settled at a final MSE of 1373.19.
+    \item \textbf{Very Small:} PSO significantly outperformed K-Means, reaching a final MSE of 4324.48 compared to the K-Means MSE of 4565.67.
+\end{itemize}
+
+The logged historical states of the global best particle showed that PSO achieved the most dramatic reductions in MSE during the first 30 to 40 iterations, after which the convergence curves largely leveled off.
+
+\subsection{Discussion}
+The results confirm that Particle Swarm Optimization can successfully be applied to color quantization and is capable of finding optimal, or near-optimal, color palettes. On two of the three tested images ("peppers" and "very small"), the PSO method discovered a color palette that performed better than the K-Means baseline. This highlights the advantage of PSO as a global search algorithm; it avoids the heavy reliance on strict initial centroid placements that K-Means suffers from[cite: 292, 296].
+
+However, the experiment also illustrated some known limitations of "Vanilla" PSO[cite: 225]. The fact that K-Means performed better on the "colourful" image demonstrates that PSO can still easily get stuck in local optima during the clustering search space. Additionally, PSO is highly computationally demanding and slow to converge[cite: 226]. Evaluating the fitness of 30 particles over 100 iterations requires exhaustively assigning every image pixel to its nearest centroid thousands of times, which justified our need to downscale images to reduce runtime. Ultimately, while PSO is an effective optimization strategy for clustering, simpler alternatives like K-Means are often much faster and sufficiently accurate for typical applications[cite: 225].
 
 
 
