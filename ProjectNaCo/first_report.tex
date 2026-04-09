@@ -1,0 +1,56 @@
+\documentclass[10pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{nameref}
+\usepackage{hyperref}
+\title{Project Proposal NC}
+\author{NC team 28}
+\begin{document}
+	\maketitle
+
+\section{Context}	
+	
+Write a 2-page project proposal, in pdf, with the following elements:
+– A (tentative) title for your project
+– A problem statement with the background, relevance, and a concrete description of the problem you are
+solving (use exercise B.1 as input)
+– A section "related work" describing the relation of your project to other work in this area (use exercise B.2 as
+input)
+– A section "Approach" describing which methods you will use, why they are appropriate, which resources
+you need, and where/how you will obtain those (use exercise B.3)
+– A section "Planning" where you describe which milestones you want to finish when (use exercise B.4).
+Note that many of these elements will likely end up in your final report as well, so it is worth investing some
+time in this! Your final proposal should be concrete enough that it allows you to get started on the project.
+Hand in your proposal on Brightspace per the deadline listed there.	
+	
+	
+\subsection*{first pitch draft:}
+
+Can evolution break a Neural Cellular Automaton?
+Neural Cellular Automata are small shared-weight networks that grow images from a single pixel and heal themselves after damage. They're often presented as strikingly robust. Randazzo et al. (2021) and Cavuoti et al. (2022) showed you can reprogram them with white-box, gradient-based attackers that have full access to the network's weights, for example making the lizard lose its tail, or turn red. Can an attacker that can only query the NCA, using evolutionary methods, still damage it, and how far does that get us compared to the gradient-based ceiling?
+
+We retrain Mordvintsev's Growing NCA from Greydanus's 150-line PyTorch reimplementation (about an hour on a Colab GPU), then reuse Randazzo et al.'s exact attack surface: a perturbation applied to cell states. Instead of optimizing that perturbation with gradient descent, we evolve it with CMA-ES, where fitness is how far the NCA's final image drifts from its clean target. We compare against random perturbations of matched magnitude as a sanity floor. An eventual comparison against the gradient-based attack (PGD, reproducing Randazzo et al.) comes later.
+
+Evolutionary black-box attacks are a standard technique on normal image classifiers, but nobody has pointed them at NCAs. Every published NCA attack uses gradients. Every published NCA robustness claim is correspondingly based on a stronger and less "natural" threat model than the one we're testing.
+If we can break the self-fixing NCAs with evolutionary methods, they may not be as robust as claimed. If we can't, then they might be kinda safe from more "realistic" attacks.
+
+Prototype: one evolved attacker vs. a random baseline on a single target. Later we can use more targets, more runs, and the gradient attack for the full comparison.
+
+
+\section{Actual paper starts here, put your stuff:}
+
+	
+\subsection*{Problem Statement}
+
+\subsection*{Related Work}
+
+\subsection*{Approach}
+
+\subsection*{Planning}
+
+
+
+
+
+\end{document}
