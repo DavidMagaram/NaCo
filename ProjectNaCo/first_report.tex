@@ -19,11 +19,11 @@
 \usepackage[T1]{fontenc}
 \usepackage{todonotes}
 \title{Project Proposal: Black-Box Evolutionary Attacks on Growing, Regenerating Neural Cellular Automata}
-\author{Group 28 - Jason Kasdiran, David Magaram, Aaron Bussche}
+\author{Aaron Bussche \and  David Magaram\\[0.3em] Group 28 \and Jason Kasdiran}
 \begin{document}
 	\maketitle
 
-\listoftodos
+% \listoftodos
 
 
 \subsection*{Problem Statement}
@@ -56,7 +56,7 @@ In terms of resources, this project is fairly lightweight by neural ML standards
 	
 
 
-\todo[inline]{Review Planning}
+% \todo[inline]{Review Planning}
 \subsection*{Planning}
 To ensure steady progress and meet the project deadlines, we have structured our timeline into weekly milestones.
 \begin{itemize}
@@ -70,8 +70,7 @@ To ensure steady progress and meet the project deadlines, we have structured our
 	\item \textbf{April 20 -- April 27; Gradient Baseline \& Tuning:} Port the white-box gradient-based attack from Randazzo et al.'s publicly available TensorFlow notebook to our PyTorch setup. Concurrently, tune the CMA-ES hyperparameters (population size,
 	initial variance) for optimal targeted attack performance.
 	\item \textbf{April 27 -- May 22; Experiments \& Data Collection:} Run the core comparative experiments across all three conditions 
-	(CMA-ES vs. Gradient vs. Random). Extend the experiments to include those in the optional list (e.g., ...). 
-	\todo[inline]{list optional experiments as  examples}
+	(CMA-ES vs. Gradient vs. Random); and if possible, carry out the additional experiments, as mentioned earlier.
 	Collect quantitative data, specifically tracking efficiency curves (number of queries/forward passes versus the resulting L2 distance from the targeted "broken" state).
 	\item \textbf{May 22 -- June 5; Finalizing Experiments \& Paper Drafting:} Continue with list of Experiments. Draft the Results, Discussion, and Conclusion sections of the paper. 
 	\subitem \textit{Milestone: Project reaching maturity with a first draft by May 29.}
