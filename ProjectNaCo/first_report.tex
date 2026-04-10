@@ -4,6 +4,7 @@
 \usepackage{xcolor}
 \usepackage{nameref}
 \usepackage{hyperref}
+\usepackage{url}
 \title{Project Proposal NC}
 \author{NC team 28}
 \begin{document}
@@ -56,6 +57,18 @@ If evolutionary search can meaningfully reprogram the NCA under this restricted 
 
 \subsection*{Related Work}
 
+Mordvintsev et al. \cite{mordvintsev2020growing} introduced a growing Neural Cellular Automata (NCA) model which shows that small, shared-weight networks can grow images from a single center pixel. Additionally, by using sample pool training strategy and subjecting models to damage during training, the models become robust and show self-healing properties as the learned local update rules can regenerate damaged parts. Due to its robustness, NCA is being used to protect against adversarial attacks. For example, Xu et al.  \cite{xu2024adanca} inserted NCA between the middle layers of vision transformers in order to serve as an armor against adversarial attacks. In our project, we build on top of the growing NCA model. While the authors test their model's resilence to pixel deletions, we want to investigate how robust the model is against adversarial perturbations applied to the hidden cell states.  
+% In our project, we build on top of the growing NCA model and aim to explore its resilience against deliberate black-box attacks. 
+
+Existing research has explored how strong NCAs are against white-box attacks where attackers have full access to the model's internal weights. A study by Randazzo et al.  \cite{randazzo2021adversarial} investigates such vulnerabilities of NCAs to white-box attacks and their results show that while growing cellular automata (CA) are more resistant to injections, they can still be reprogrammed using global state perturbations where mathematical transformations are applied to every cell's state at every step. Similarly, Cavuoti et al.  \cite{cavuoti2022adversarial} shows that a small number of adversarial cells that are injected into the image can drastically change its properties. Our approach also aims to explore the resilience of NCA, but instead of using gradient-descent approach we use a black-box evolutionary strategy that more closely resembles real-life attacks. 
+
+
+Covariance Matrix Adaptation Evolution Strategy (CMA-ES), introduced by Hansen \cite{hansen2001cmaes}, is 
+particularly useful for black-box attacks. CMA-ES is an algorithm for non-linear, non-convex black-box optimization. It works by storing a population of candidates and iteratively shifting the population towards the patterns that cause the most significant damage to the output of the NCA. This way, new potential vulnerabilities can be revealed by evolving the perturbations over many generations. While evolutionary black-box attacks are commonly used for evaluating traditional image classifiers, they have not yet been used as an adversarial tool to disrupt CA. We will apply this general-purpose evolutionary method as the attacker in our project. By using CMA-ES, we test if evolutionary methods can find the same weaknesses as gradient methods. 
+
+
+
+
 \subsection*{Approach}
 
 \begin{itemize}
@@ -79,5 +92,44 @@ If evolutionary search can meaningfully reprogram the NCA under this restricted 
 \subsection*{Planning}
 
 
+
+
+\begin{thebibliography}{9}
+
+\bibitem{mordvintsev2020growing}
+A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin,
+``Growing neural cellular automata,''
+\textit{Distill}, vol.~5, no.~2, e23, 2020.
+[Online]. Available: \url{https://distill.pub/2020/growing-ca}
+doi: \texttt{10.23915/distill.00023}.
+
+
+\bibitem{xu2024adanca}
+Y.~Xu, T.~Zhang, and S.~Süsstrunk,
+``AdaNCA: Neural cellular automata as adaptors for more robust vision transformer,''
+\textit{Advances in Neural Information Processing Systems}, vol.~37, pp.~25709--25746, 2024.
+
+
+\bibitem{randazzo2021adversarial}
+E.~Randazzo, A.~Mordvintsev, E.~Niklasson, and M.~Levin,
+``Adversarial reprogramming of neural cellular automata,''
+\textit{Distill}, vol.~6, no.~5, e00027-004, 2021.
+[Online]. Available: \url{https://distill.pub/selforg/2021/adversarial}
+doi: \texttt{10.23915/distill.00027.004}.
+
+
+\bibitem{cavuoti2022adversarial}
+L.~Cavuoti, F.~Sacco, E.~Randazzo, and M.~Levin,
+``Adversarial takeover of neural cellular automata,''
+in \textit{Artificial Life Conference Proceedings 34}, 2022, p.~38.
+MIT Press.
+
+
+\bibitem{hansen2001cmaes}
+N.~Hansen and A.~Ostermeier,
+``Completely derandomized self-adaptation in evolution strategies,''
+\textit{Evolutionary Computation}, vol.~9, no.~2, pp.~159--195, 2001.
+
+\end{thebibliography}
 
 \end{document}
