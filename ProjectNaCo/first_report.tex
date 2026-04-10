@@ -19,55 +19,13 @@
 \usepackage[T1]{fontenc}
 \usepackage{todonotes}
 \title{Project Proposal: Black-Box Evolutionary Attacks on Growing, Regenerating Neural Cellular Automata}
-\author{NC team 28}
+\author{Group 28 - Jason Kasdiran, David Magaram, Aaron Bussche}
 \begin{document}
 	\maketitle
 
 \listoftodos
 
-\section{Context}	
-	
-Write a 2-page project proposal, in pdf, with the following elements:
-– A (tentative) title for your project
-– A problem statement with the background, relevance, and a concrete description of the problem you are
-solving (use exercise B.1 as input)
-– A section "related work" describing the relation of your project to other work in this area (use exercise B.2 as
-input)
-– A section "Approach" describing which methods you will use, why they are appropriate, which resources
-you need, and where/how you will obtain those (use exercise B.3)
-– A section "Planning" where you describe which milestones you want to finish when (use exercise B.4).
-Note that many of these elements will likely end up in your final report as well, so it is worth investing some
-time in this! Your final proposal should be concrete enough that it allows you to get started on the project.
-Hand in your proposal on Brightspace per the deadline listed there.	
-	
-	
-\subsection*{improved first pitch draft:}
 
-Neural Cellular Automata (NCAs) are small shared-weight networks that grow images from a single seed pixel and heal themselves after damage, and are often presented as very robust. Randazzo et al. (2021) and Cavuoti et al. (2022) showed you can still reprogram a trained Growing NCA,for instance making the target lizard lose its tail or turn red, using white-box, gradient-based attackers that have full access to the network's weights and backpropagate through its rollout.
-
-Every published NCA attack uses gradients. Every published NCA robustness claim is correspondingly based on a stronger and less "natural" threat model than what an adversary in, say, a biological or bioengineering setting would plausibly have. We ask whether a query-only, black-box attacker using evolutionary search can reproduce the same targeted reprogramming attacks, and how close it gets to the gradient-based ceiling.
-
-Concretely, we do not modify the NCA's weights and we do not perturb pixels directly. Following Randazzo et al., the attack surface is a 16×16 state-perturbation matrix, applied identically to every cell's 16-dimensional state vector (4 visible RGBA channels plus 12 hidden communication channels) at every timestep of the simulation. A 64×64 grid therefore has roughly 65,000 state values being transformed by the same 256 attack parameters each step. This compact, attack surface is exactly the type where CMA-ES could perform well (which doesn't perform well over ~1000 parameters).
-
-Our attacker sees only the visible RGB output at the end of the rollout, but never the weights, never the hidden channels, never any gradient information. Fitness is the L2 distance between that final image and a specific target image (e.g. a tailless lizard), so the attacker has to steer the NCA toward a chosen broken configuration. This matches Randazzo et al.'s targeted setup and makes the comparison of optimizers possible and also compare with random noise.
-
-If evolutionary search can meaningfully reprogram the NCA under this restricted threat model, the robustness of Growing NCAs could be weaker than the literature implies. If it can't, the gap between white-box and black-box attacks on NCAs is a nice safety margin and shows they are robust against more 'realistic, or natural' attacks.
-
-\subsection*{Things we can/should do if comparing attack types/optimizers isn't enough}
-
-\begin{itemize}
-\item Untargeted ("destroy only") attack as a second condition: $fitness =$ maximize L2 from clean target, should be easy
-\item Adversarial training / arms race — take the attacks CMA-ES finds, add them to the damage distribution during NCA training. Does the NCA become robust to evolved attacks? Much bigger scope, only if we really have time
-\item Show efficiency curves of ES vs Gradient-based (should probably def do this, track it while we go). Compare needed number of queries for each optimizer etc.
-\item Try more than the default target image, easy
-\item see if perturbations persist or get replaced with time once we stop attacking, easy
-
-\end{itemize}
-
-\newpage
-\section{Actual paper starts here, put your stuff:}
-
-	
 \subsection*{Problem Statement}
 
 Neural Cellular Automata (NCAs) are small, shared-weight networks that grow images from a single seed pixel and can regenerate after damage, making them a promising model for robust, self-organizing systems. Their perceived robustness has led to NCAs being deployed as a defensive component in larger architectures: Xu et al. \cite{xu2024adanca} use NCA layers as plug-and-play adaptors inside Vision Transformers to make them more resistant against adversarial samples. Whether NCAs themselves can be subverted is therefore not just of theoretical interest but relevant to the security of systems that rely on them.
