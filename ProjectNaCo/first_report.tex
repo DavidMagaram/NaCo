@@ -109,22 +109,23 @@ particularly useful for black-box attacks. CMA-ES is an algorithm for non-linear
 \subsection*{Planning}
 To ensure steady progress and meet the project deadlines, we have structured our timeline into weekly milestones.
 \begin{itemize}
-	\item \textbf{April 10 -- April 17; Basis:} Set up the development environment and the Greydanus PyTorch NCA implementation. 
+	\item \textbf{April 10 -- April 15; Basis:} Set up the development environment and the Greydanus PyTorch NCA implementation. 
 	Successfully train a standard Growing NCA on a target image (e.g., the lizard), verify its self-organizing properties, 
 	and save the model weights.
-	\item \textbf{April 17 -- April 24; Prototyping:} Implement the attack surface logic (the $16 \times 16$ state-perturbation matrix). 
+	\item \textbf{April 15 -- April 20; Prototyping:} Implement the attack surface logic (the $16 \times 16$ state-perturbation matrix). 
 	Implement the "Random Noise" baseline attacker. Integrate a basic CMA-ES loop to prove the end-to-end pipeline works (from 
 	perturbation generation $\rightarrow$ NCA rollout $\rightarrow$ L2 fitness evaluation). 
 	\subitem \textit{Milestone: Working Prototype comparing Random Noise by April 20.}
-	\item \textbf{April 24 -- May 1; Gradient Baseline \& Tuning:} Re-implement the white-box gradient-based attack from Randazzo et al. 
+	\item \textbf{April 20 -- April 27; Gradient Baseline \& Tuning:} Re-implement the white-box gradient-based attack from Randazzo et al. 
 	(or a standard Projected Gradient Descent on the perturbation matrix). Concurrently, tune the CMA-ES hyperparameters (population size, 
 	initial variance) for optimal targeted attack performance.
-	\item \textbf{May 8 -- May 22; Experiments \& Data Collection:} Run the core comparative experiments across all three conditions 
-	(CMA-ES vs. Gradient vs. Random). Collect quantitative data, specifically tracking efficiency curves (number of queries/forward passes 
-	versus the resulting L2 distance from the targeted "broken" state).
-	\item \textbf{May 22 -- June 5; Continue Experiments \& Paper Drafting:} Continue with list of Experiments. Draft the Results, Discussion, and Conclusion sections of the paper. 
+	\item \textbf{April 27 -- May 22; Experiments \& Data Collection:} Run the core comparative experiments across all three conditions 
+	(CMA-ES vs. Gradient vs. Random). Extend the experiments to include those in the optional list (e.g., ...). 
+	\todo[inline]{list optional experiments as  examples}
+	Collect quantitative data, specifically tracking efficiency curves (number of queries/forward passes versus the resulting L2 distance from the targeted "broken" state).
+	\item \textbf{May 22 -- June 5; Finalizing Experiments \& Paper Drafting:} Continue with list of Experiments. Draft the Results, Discussion, and Conclusion sections of the paper. 
 	\subitem \textit{Milestone: Project reaching maturity with a first draft by May 29.}
-	\item \textbf{June 5 -- June 12; Finalizing \& Minor Tests:} Run minor, final experiments. Format the final paper, review against the grading criteria, and submit.
+	\item \textbf{June 5 -- June 12; Finalizing:} Format the final paper, review against the grading criteria, and submit.
 \end{itemize}
 
 
