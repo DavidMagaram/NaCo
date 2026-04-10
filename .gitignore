@@ -28,6 +28,7 @@ Assignment2/_minted-report/default.pygstyle
 *.out
 *.gz
 *.json
+*.tdo
 # *.png
 Assignment1/1C/img
 .idea/

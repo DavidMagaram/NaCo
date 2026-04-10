@@ -1,14 +1,29 @@
-\documentclass[10pt,a4paper]{article}
-\usepackage[T1]{fontenc}
+\documentclass{article}
+\usepackage[english]{babel}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{enumitem}
+\usepackage{amsmath}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{minted}
+\usepackage{float}
 \usepackage{graphicx}
+\usepackage{multirow}
+\usepackage{subcaption}
+\usepackage{booktabs}
+\usepackage[utf8]{inputenc}
+\usepackage{textgreek}
+\usepackage[toc,page]{appendix}
 \usepackage{xcolor}
 \usepackage{nameref}
-\usepackage{hyperref}
 \usepackage{url}
+\usepackage[T1]{fontenc}
+\usepackage{todonotes}
 \title{Project Proposal NC}
 \author{NC team 28}
 \begin{document}
 	\maketitle
+
+\listoftodos
 
 \section{Context}	
 	
@@ -50,6 +65,7 @@ If evolutionary search can meaningfully reprogram the NCA under this restricted 
 
 \end{itemize}
 
+\newpage
 \section{Actual paper starts here, put your stuff:}
 
 	
@@ -89,6 +105,7 @@ particularly useful for black-box attacks. CMA-ES is an algorithm for non-linear
 	
 \end{itemize}
 
+\todo[inline]{Review Planning}
 \subsection*{Planning}
 To ensure steady progress and meet the project deadlines, we have structured our timeline into weekly milestones.
 \begin{itemize}
@@ -105,9 +122,9 @@ To ensure steady progress and meet the project deadlines, we have structured our
 	\item \textbf{May 8 -- May 22; Experiments \& Data Collection:} Run the core comparative experiments across all three conditions 
 	(CMA-ES vs. Gradient vs. Random). Collect quantitative data, specifically tracking efficiency curves (number of queries/forward passes 
 	versus the resulting L2 distance from the targeted "broken" state).
-	\item \textbf{May 22 -- June 1; Continue Experiments \& Paper Drafting:} Continue with list of Experiments. Draft the Results, Discussion, and Conclusion sections of the paper. 
-	\subitem \textit{Milestone: Project reaching maturity with a complete first draft by June 1.}
-	\item \textbf{June 1 -- June 8; Finalizing \& Minor Tests:} Run any lingering minor experiments. Format the final paper, review against the grading criteria, and submit.
+	\item \textbf{May 22 -- June 5; Continue Experiments \& Paper Drafting:} Continue with list of Experiments. Draft the Results, Discussion, and Conclusion sections of the paper. 
+	\subitem \textit{Milestone: Project reaching maturity with a first draft by May 29.}
+	\item \textbf{June 5 -- June 12; Finalizing \& Minor Tests:} Run minor, final experiments. Format the final paper, review against the grading criteria, and submit.
 \end{itemize}
 
 
