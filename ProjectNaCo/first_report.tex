@@ -18,7 +18,7 @@
 \usepackage{url}
 \usepackage[T1]{fontenc}
 \usepackage{todonotes}
-\title{Project Proposal NC}
+\title{Project Proposal: Black-Box Evolutionary Attacks on Growing, Regenerating Neural Cellular Automata}
 \author{NC team 28}
 \begin{document}
 	\maketitle
@@ -58,7 +58,6 @@ If evolutionary search can meaningfully reprogram the NCA under this restricted 
 \begin{itemize}
 \item Untargeted ("destroy only") attack as a second condition: $fitness =$ maximize L2 from clean target, should be easy
 \item Adversarial training / arms race — take the attacks CMA-ES finds, add them to the damage distribution during NCA training. Does the NCA become robust to evolved attacks? Much bigger scope, only if we really have time
-\item Vary the attacker's observation window for CMA-ES: RBG only, RGBA, all 16 channels including hidden (not realistic threat model but could be interesting), pretty easy
 \item Show efficiency curves of ES vs Gradient-based (should probably def do this, track it while we go). Compare needed number of queries for each optimizer etc.
 \item Try more than the default target image, easy
 \item see if perturbations persist or get replaced with time once we stop attacking, easy
@@ -71,12 +70,14 @@ If evolutionary search can meaningfully reprogram the NCA under this restricted 
 	
 \subsection*{Problem Statement}
 
+
+
 \subsection*{Related Work}
 
 Mordvintsev et al. \cite{mordvintsev2020growing} introduced a growing Neural Cellular Automata (NCA) model which shows that small, shared-weight networks can grow images from a single center pixel. Additionally, by using sample pool training strategy and subjecting models to damage during training, the models become robust and show self-healing properties as the learned local update rules can regenerate damaged parts. Due to its robustness, NCA is being used to protect against adversarial attacks. For example, Xu et al.  \cite{xu2024adanca} inserted NCA between the middle layers of vision transformers in order to serve as an armor against adversarial attacks. In our project, we build on top of the growing NCA model. While the authors test their model's resilence to pixel deletions, we want to investigate how robust the model is against adversarial perturbations applied to the hidden cell states.  
 % In our project, we build on top of the growing NCA model and aim to explore its resilience against deliberate black-box attacks. 
 
-Existing research has explored how strong NCAs are against white-box attacks where attackers have full access to the model's internal weights. A study by Randazzo et al.  \cite{randazzo2021adversarial} investigates such vulnerabilities of NCAs to white-box attacks and their results show that while growing cellular automata (CA) are more resistant to injections, they can still be reprogrammed using global state perturbations where mathematical transformations are applied to every cell's state at every step. Similarly, Cavuoti et al.  \cite{cavuoti2022adversarial} shows that a small number of adversarial cells that are injected into the image can drastically change its properties. Our approach also aims to explore the resilience of NCA, but instead of using gradient-descent approach we use a black-box evolutionary strategy that more closely resembles real-life attacks. 
+Existing research has explored how strong NCAs are against white-box attacks where attackers have full access to the model's internal weights. A study by Randazzo et al. \cite{randazzo2021adversarial} investigates such vulnerabilities of NCAs to white-box attacks and their results show that while growing cellular automata (CA) are more resistant to injections, they can still be reprogrammed using global state perturbations where mathematical transformations are applied to every cell's state at every step. Similarly, Cavuoti et al.  \cite{cavuoti2022adversarial} shows that a small number of adversarial cells that are injected into the image can drastically change its properties. Our approach also aims to explore the resilience of NCA, but instead of using gradient-descent approach we use a black-box evolutionary strategy that more closely resembles real-life attacks. 
 
 
 Covariance Matrix Adaptation Evolution Strategy (CMA-ES), introduced by Hansen \cite{hansen2001cmaes}, is 
@@ -87,23 +88,14 @@ particularly useful for black-box attacks. CMA-ES is an algorithm for non-linear
 
 \subsection*{Approach}
 
-\begin{itemize}
+
+For this research, we will first train a regenerating NCA, as first introduced by Mordvintsev et al. \cite{mordvintsev2020growing}, using the PyTorch re-implementation of Greydanus \cite{greydanus2022growing}. Using the trained weights, we will then try to attack and subvert the model to output alternative images, such as a red lizard instead of a green one. This approach is analogous to the paper by Randazzo et al. \cite{randazzo2021adversarial}, but instead using an evolutionary algorithm, CMA-ES, and as a black-box approach without access to the model weights. Using this approach is more realistic for real-life attacks, where adversaries would likely not have access to the model weights, plus it is naturally inspired and might give us some intuition for how natural selection in nature caused lifeforms to adapt to priorly unmapped biological niches. Most interestingly for the field, it would teach us more about how robust regenerating NCA's really are when faced with black-box attacks. Attacks are, such as with Randazzo et al. \cite{randazzo2021adversarial}, applied using a 16×16 state-perturbation matrix.
+
+We will compare the attacks using the CMA-ES algorithm to a random baseline of the same intensity, and, likely after the prototype phase, to the white-box gradient-based attack from Randazzo et al. \cite{randazzo2021adversarial}, whose code is publicly available as a TensorFlow notebook and which we will adapt to our PyTorch setup. We will run qualitative experiments on feasibility, divergence, efficiency curves, and more. Given that we have sufficient time, we will likely conduct additional experiments, such as destructive fitness goals/loss function of maximizing L2 from clean target, different target images, whether the perturbations persist after the attack ends, and perhaps even if we can boost the robustness of the NCA further by training it to resist evolved attacks.
+
+In terms of resources, this project is fairly lightweight by neural ML standards and should work with Google Colab or personal machines, which we readily have access to. We can use the existing PyTorch NCA implementation by Greydanus and the target images from Mordvintsev et al.'s paper. For the gradient-based baseline, Randazzo et al. have shared their attack code as a TensorFlow notebook, which we will port to PyTorch to keep everything in a single framework.
 	
-	\item Train the standard NCA in Greydanus implementation, save weights
-	\item Implement CMA-ES attacker
-	\item Implement Random pertubations of same strength
-	\item Probably hand in the first prototype comparing those
-	\item Re-implement the attack from the Randazzo paper
-	\item Also compare those
-	\item Implement more from the optional list
-	\item Write paper
-	\item ???
-	\item profit
-	
-	
-	
-	
-\end{itemize}
+
 
 \todo[inline]{Review Planning}
 \subsection*{Planning}
@@ -116,8 +108,7 @@ To ensure steady progress and meet the project deadlines, we have structured our
 	Implement the "Random Noise" baseline attacker. Integrate a basic CMA-ES loop to prove the end-to-end pipeline works (from 
 	perturbation generation $\rightarrow$ NCA rollout $\rightarrow$ L2 fitness evaluation). 
 	\subitem \textit{Milestone: Working Prototype comparing Random Noise by April 20.}
-	\item \textbf{April 20 -- April 27; Gradient Baseline \& Tuning:} Re-implement the white-box gradient-based attack from Randazzo et al. 
-	(or a standard Projected Gradient Descent on the perturbation matrix). Concurrently, tune the CMA-ES hyperparameters (population size, 
+	\item \textbf{April 20 -- April 27; Gradient Baseline \& Tuning:} Port the white-box gradient-based attack from Randazzo et al.'s publicly available TensorFlow notebook to our PyTorch setup. Concurrently, tune the CMA-ES hyperparameters (population size,
 	initial variance) for optimal targeted attack performance.
 	\item \textbf{April 27 -- May 22; Experiments \& Data Collection:} Run the core comparative experiments across all three conditions 
 	(CMA-ES vs. Gradient vs. Random). Extend the experiments to include those in the optional list (e.g., ...). 
@@ -129,7 +120,7 @@ To ensure steady progress and meet the project deadlines, we have structured our
 \end{itemize}
 
 
-
+\newpage
 \begin{thebibliography}{9}
 
 \bibitem{mordvintsev2020growing}
@@ -165,6 +156,14 @@ MIT Press.
 N.~Hansen and A.~Ostermeier,
 ``Completely derandomized self-adaptation in evolution strategies,''
 \textit{Evolutionary Computation}, vol.~9, no.~2, pp.~159--195, 2001.
+
+
+\bibitem{greydanus2022growing}
+S.~Greydanus,
+``Studying growth with neural cellular automata,''
+blog post and PyTorch implementation, 2022.
+[Online]. Available: \url{https://greydanus.github.io/2022/05/24/studying-growth}
+
 
 \end{thebibliography}
 
