@@ -36,15 +36,27 @@ Assignment 4...
 \appendix
 \section*{Appendix}
 \subsection*{Part A}
-
+\subsection{A1}
 Add table and pie chart images.
 
 What can you conclude about the effects of fitness scaling on selection pressure?
 
-- Adding constants raises all fitness all values by that amount. So it smooths out all the values. For example, when we compare f2 (which only squares X) and f4 (which squares X and adds 20), we can see that the probabilities of f4 are closer together. Probabilities are increased and reduced, so there is not such a gap between them, which also reduces selection pressure. 
+- Adding constants raises all fitness all values by that amount. So it smooths out all the values. For example, when we compare f2 (which only squares X) and f4 (which squares X and adds 20), we can see that the probabilities of f4 are closer together. Probabilities are increased and reduced, so there is a much smaller gap between them, which also reduces selection pressure. 
 - Multiplying by a constant does not change the selection probabilities. If we compare f2 and f3, we can see that the probabilities stay the same even if we scale it. So scaling fitness does not have an effect on the selection pressure.
 
+\subsection{A2}
+A2:
+Does the algorithm find the optimum?
+Yes. It is able to reach fitness 100, meaning all 100 bits were successfully set to 1. 
 
+What do you see?
+The version without selection is stuck at around 50 and never converges. The version with selection keeps steadily climbing, ultimately reaching 100.
+
+Can you conclude anything on the difference between these two versions based on the above results? If yes, why? If not, what should you do to make a fair comparison? 
+No. We would need multiple runs as EAs are stochastic and each run produces different results because of initialization and random mutation. To make it fair, we should run each version multiple times and use averages. 
+
+Is there a difference in performance?
+Yes. It is apparent that there is a difference in performance between the versions. Across all the runs, the version with selection always converges to fitness 100 while the version without selection is always near 50 through all the 1500 generations. The algorithm has no memory of good solutions and cannot improve. 
 
 
 \end{document}
