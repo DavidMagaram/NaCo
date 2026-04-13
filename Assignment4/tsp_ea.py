@@ -286,7 +286,8 @@ def run_ma(dist_matrix, N=100, G_max=500, K=5, p_c=0.8, mu=0.3,
 def run_ea_timed(dist_matrix, time_budget, N=100, K=5, p_c=0.8, mu=0.3):
     """
     Run EA until wall-clock time budget (seconds) is exhausted.
-    Returns best_distance_history (per generation), best_tour, generations_run.
+    Returns best_distance_history, best_tour, generations_run, time_history.
+    time_history[i] is the elapsed seconds at generation i.
     """
     import time
 
@@ -300,6 +301,7 @@ def run_ea_timed(dist_matrix, time_budget, N=100, K=5, p_c=0.8, mu=0.3):
     best_distance_history = [best_distance]
 
     start = time.time()
+    time_history = [0.0]
     gen = 0
     while time.time() - start < time_budget:
         gen += 1
@@ -322,14 +324,16 @@ def run_ea_timed(dist_matrix, time_budget, N=100, K=5, p_c=0.8, mu=0.3):
             best_distance = fitnesses[gen_best_idx]
             best_tour = population[gen_best_idx][:]
         best_distance_history.append(best_distance)
+        time_history.append(time.time() - start)
 
-    return best_distance_history, best_tour, gen
+    return best_distance_history, best_tour, gen, time_history
 
 
 def run_ma_timed(dist_matrix, time_budget, N=100, K=5, p_c=0.8, mu=0.3):
     """
     Run MA until wall-clock time budget (seconds) is exhausted.
-    Returns best_distance_history (per generation), best_tour, generations_run.
+    Returns best_distance_history, best_tour, generations_run, time_history.
+    time_history[i] is the elapsed seconds at generation i.
     """
     import time
 
@@ -348,6 +352,7 @@ def run_ma_timed(dist_matrix, time_budget, N=100, K=5, p_c=0.8, mu=0.3):
     best_tour = population[best_idx][:]
     best_distance = fitnesses[best_idx]
     best_distance_history = [best_distance]
+    time_history = [time.time() - start]
 
     gen = 0
     while time.time() - start < time_budget:
@@ -372,5 +377,6 @@ def run_ma_timed(dist_matrix, time_budget, N=100, K=5, p_c=0.8, mu=0.3):
             best_distance = fitnesses[gen_best_idx]
             best_tour = population[gen_best_idx][:]
         best_distance_history.append(best_distance)
+        time_history.append(time.time() - start)
 
-    return best_distance_history, best_tour, gen
+    return best_distance_history, best_tour, gen, time_history
