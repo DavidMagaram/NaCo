@@ -36,9 +36,21 @@ By investigating the traveling salesman problem and string search, this project 
 
 
 \section*{Methods}
-This project will implement a genetic algorithm (GA) for string search and memetic algorithm (MA) for traveling salesman problem. 
+This project will implement a genetic algorithm (GA) for string search and memetic algorithm (MA) for traveling salesman problem. This section describes the experimental setup and design choices. 
 \subsection*{String search}
-A string search genetic algorithm was implemented and the used parameters are displayed in Table 1.
+A string search genetic algorithm was implemented and the used parameters are displayed in Table 1. "NaturalComputing" was used as the target string with a length L = 16, comprising of both lowercase and uppercase letters from an alphabet $|\Sigma|$. Since fitness is the number of characters that match the target, the maximum fitness is 16. 
+
+
+The algorithm aims to match the target string by evolving a population of N = 200 individuals. 
+Each generation follows a few simple steps. First, during the tournament selection phase, a random subset K is drawn from the population N and the fittest string is kept for reproduction. 
+
+Larger K values mean more potentially high-fitness strings, which can lead to the selection of only the best performers, working as a filter against weaker candidates. While it usually leads to faster convergence, it can also reduce diversity as the entire population will mimic the strongest strings. 
+
+Then, each pair undergoes single-point crossover with a probability $p_c$ = 1, producing 2 new offsprings. Crossover selects a random index and swaps the parent's characters beyond that cutoff. Additionally, every character of the offspring has a small mutation rate $\mu$ to randomly become one of the letters from the alphabet $|\Sigma|$.
+Finally, the entire parent generation is replaced with the new offspring generation.
+
+
+
 
 \begin{table}[h]
 \centering
@@ -47,14 +59,14 @@ A string search genetic algorithm was implemented and the used parameters are di
 \hline
 \textbf{Parameter} & \textbf{Value} \\
 \hline
-$L$ & 16 \\ %NaturalComputing
+String length $L$ & 16 \\ %NaturalComputing
 Alphabet $|\Sigma|$ & 52 \\
-$N$ & 200 \\
-$K$ & $\{2, 5\}$ \\
-$p_c$ & 1.0 \\
-$\mu$ & $\{0,\; 1/L,\; 3/L\}$ + sweep \\
+Population size $N$ & 200 \\
+Tournament selection $K$ & $\{2, 5\}$ \\
+Crossover probability $p_c$ & 1 \\
+Mutation rate $\mu$ & $\{0,\; 1/L,\; 3/L\}$ + sweep \\
 Runs & 10 \\
-$G_{\max}$ & 100 \\
+Max generations $G_{\max}$ & 100 \\
 \hline
 \end{tabular}
 \end{table}
