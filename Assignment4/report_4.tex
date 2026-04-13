@@ -26,7 +26,7 @@
 % \listoftodos
 
 
-\subsection*{Introduction}
+\section*{Introduction}
 
 Evolutionary algorithms (EA) are a population-based optimization method. They are based on natural selection and work by exploring new solution areas and refining good already found solutions, where candidate solutions are improved by mutating and crossover.
 
@@ -35,10 +35,33 @@ By investigating the traveling salesman problem and string search, this project 
 
 
 
-\subsection*{Methods}
+\section*{Methods}
+This project will implement a genetic algorithm (GA) for string search and memetic algorithm (MA) for traveling salesman problem. 
+\subsection*{String search}
+A string search genetic algorithm was implemented and the used parameters are displayed in Table 1.
 
+\begin{table}[h]
+\centering
+\caption{String Search GA Parameters}
+\begin{tabular}{ll}
+\hline
+\textbf{Parameter} & \textbf{Value} \\
+\hline
+$L$ & 16 \\ %NaturalComputing
+Alphabet $|\Sigma|$ & 52 \\
+$N$ & 200 \\
+$K$ & $\{2, 5\}$ \\
+$p_c$ & 1.0 \\
+$\mu$ & $\{0,\; 1/L,\; 3/L\}$ + sweep \\
+Runs & 10 \\
+$G_{\max}$ & 100 \\
+\hline
+\end{tabular}
+\end{table}
 
-\subsection*{Results}
+\subsection*{Traveling salesman problem}
+
+\section*{Results}
 
 
 \subsubsection*{B1}
