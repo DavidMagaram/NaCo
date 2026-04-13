@@ -46,26 +46,26 @@ By investigating the traveling salesman problem and string search, this project 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{b1_output}
-	\caption{}
+	\includegraphics[width=0.7\linewidth]{b1_output1}
+	\caption{Results of running the GA 10 times with baseline values}
 	\label{fig:b1output}
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{b1_output2}
-	\caption{}
+	\includegraphics[width=0.7\linewidth]{b1_output2} 
+	\caption{Three different mutation rates with K=2. Of these mutation rates, the GA manages to find the target only with mu=1/L before getting cut off at 200 Generations}
 	\label{fig:b1output2}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output3}
-	\caption{}
+	\caption{Measuring the diversity of the runs in two different ways, with Shannon entrophy and Hamming distance. Both show that mu=0 leads to no diversity, mu=3/L leads to high diversity through randomness while mu=1/L manages to strike a middle ground (and reach the target).}
 	\label{fig:b1output3}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output4}
-	\caption{}
+	\caption{Higher tournament size increases selection pressure. We repeat the mu sweep to see how this interacts with mutation rate. K=5 leads to results faster \& can also converge with mu=2/L, though mu=1/L remains optimal.}
 	\label{fig:b1output4}
 \end{figure}
 
@@ -82,31 +82,34 @@ By investigating the traveling salesman problem and string search, this project 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b2_output1}
-	\caption{}
+	\caption{Both of the datasets show MA reaching better results in fewer generations, and in total.}
 	\label{fig:b2output1}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b2_output2}
-	\caption{}
+	\caption{In this comparison, MA clearly beats EA in distance and consistency.}
 	\label{fig:b2output2}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b2_output3}
-	\caption{}
+	\caption{Per generation, MA takes much more compute \& longer than EA. It is therefore not fair to compare them in this way.}
 	\label{fig:b2output3}
 \end{figure}
+
+We considered comparing them on number of operations, but the operations of MA are only in its neighbourhood, so comparing them directly with whole generations of EA would again be unfair. We therefore decided to compare wall-clock time that, while influenceable by all kinds of factors and therefore not overly scientific, provides a good baseline for real-use performance, especially if averaged over 10 runs each.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b2_output4}
-	\caption{}
+	\caption{If compared instead on wall-clock time, MA still converges on better values, but EA's curve also flattens to near its best result in a comparable time as MA. While EA goes through more than 11-thousand generations in this time, MA only reaches around 190.}
 	\label{fig:b2output4}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b2_output5}
-	\caption{}
+	\caption{While the gap has shrunk considerably from comparing by number of generations, MA still provides better and more consistent results than EA.}
 	\label{fig:b2output5}
 \end{figure}
 
