@@ -79,7 +79,7 @@ Max generations $G_{\max}$ & 200 \\
 
 For the TSP, both a simple evolutionary algorithm (EA) and a memetic algorithm (MA) were implemented. Each solution is encoded as a permutation of city indices representing a tour. The simple EA uses ordered crossover (OX): a random contiguous segment is copied from one parent and the remaining cities are filled in the order they appear in the second parent. Mutation is applied via swap mutation, where two randomly selected positions in the tour are exchanged. Tournament selection ($K = 5$) is used to select parents, and generational replacement with no elitism is applied.
 
-The memetic algorithm extends the EA by applying 2-opt local search to each individual after mutation. The 2-opt procedure iteratively reverses sub-sequences of the tour to eliminate crossing edges, repeating until no improving swap can be found. This Lamarckian approach allows individuals to locally optimize their fitness before evaluation, which typically accelerates convergence. Both algorithms were evaluated on the custom 51-city dataset and on the TSPLIB benchmark instance \textit{eil51}.
+The memetic algorithm extends the EA by applying 2-opt local search to each individual after mutation. The 2-opt procedure iteratively reverses sub-sequences of the tour to eliminate crossing edges, repeating until no improving swap can be found. This Lamarckian approach allows individuals to locally optimize their fitness before evaluation, which typically accelerates convergence. Both algorithms were evaluated on the TSPLIB benchmark instance \textit{eil51} and on the 50-city dataset from the Symmetric Traveling Salesman Problem benchmark instances available at http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/.
 
 Table 3 displays the used parameters. These parameters were chosen based on the previous exercise and further adjusted based on testing. The crossover probability was lowered to 0.8. This is high enough to help produce new better solutions, but not too high as to break already good solutions. Moreover, mutation was set to 0.3 to explore the area around solutions, and tournament selection was set to 5 as it accelerates convergence and works fairly well. Overall, these parameter settings provide balance between exploration and exploitation. 
 
@@ -96,7 +96,7 @@ Mutation rate $\mu$ & 0.3 \\
 Local search & 2-opt \\
 Runs & 10 \\
 Max generations $G_{\max}$ & 200 \\
-Datasets & eil51 (TSPLIB), Custom 51-city instance\\
+Datasets & eil51 (TSPLIB), 50-city instance\\
 Stopping criterion & Fixed generations / wall-clock budget \\
 2-opt termination & Until no improving 2-swap remains \\
 \hline
