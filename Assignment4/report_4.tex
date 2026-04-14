@@ -32,7 +32,7 @@ Evolutionary algorithms (EA) are a population-based optimization method. They ar
 
 By investigating the traveling salesman problem and string search, this project explores how different parameter configurations influence convergence speed, population diversity, and algorithm performance. It also aims to explore how mutation rate and selection pressure shape the exploration-exploitation trade-off in these settings, and whether a 2-opt local search can outperform a standard EA algorithm on the traveling salesman problem under fair settings.
 
-
+\todo[inline]{Maybe add that they can work in discrete spaces/without gradient}
 
 
 \section*{Methods}
@@ -112,50 +112,70 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 
 
 \subsubsection*{B1}
-\todo[inline]{Report quantitative results numerically as well, not only as curves: mean $\pm$ std of $t_{\text{finish}}$ across the 10 runs for each condition, and number of runs that reached the target vs were censored at $G_{\max}$. A small summary table will directly answer B.1 Q1--Q2 and Q6.}
 
 
 In this section, we aim to answer whether and how the mutation rate $\mu$ trades convergence speed against diversity, and how the tournament size $K$ impacts this. We first run the GA 10 times with the baseline values given by the exercise ($K=2$, $\mu=1/L$, $N=200$) and then experiment with varying the values of $\mu$ and later $K$.
 
-\begin{figure}[H]
+
+
+
+\begin{figure}[H]                                                                         
 	\centering
-	\includegraphics[width=0.7\linewidth]{b1_output1}
-	\caption{Results of running the GA 10 times with baseline values ($K=2$, $\mu=1/L$, $N=200$). The blue line shoes the median over 10 samples, while the light blue shaded area shows the confidence interval.}
-	\label{fig:b1output}
+	\begin{minipage}{0.48\linewidth}                                                      
+		\centering                                                                        
+		\includegraphics[width=\linewidth]{b1_output1}
+		\caption{Results of running the GA 10 times with baseline values ($K=2$, $\mu=1/L$, $N=200$). Blue line: median over 10 samples; shaded area: confidence interval.}
+		\label{fig:b1output}           
+	\end{minipage}\hfill                                                                  
+	\begin{minipage}{0.48\linewidth}                                                      
+		\centering                     
+		\includegraphics[width=\linewidth]{b1_output2}                                    
+		\caption{Three different mutation rates with $K=2$. Only $\mu=1/L$ finds the target before the 200-generation cutoff.}                                                 
+		\label{fig:b1output2}
+	\end{minipage}                                                                        
 \end{figure}
 
-With the baseline values, the algorithm finds the correct results within 86 generations for all 10 samples, but usually earlier \ref{fig:b1output}. The average generation count till $t_{\text{finish}}$ is 61.9.
-
-
-\todo[inline]{Caption is too terse. Spell out axes, the baseline ($K=2$, $\mu=1/L$, $N=200$), what the bands/lines represent (mean best fitness with shaded $\pm$ std across 10 runs?), and the take-home (``all 10 runs find the target within $\sim\!X$ generations''). Same applies to every other figure below --- captions should be self-contained.}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{b1_output2} 
-	\caption{Three different mutation rates with K=2. Of these mutation rates, the GA manages to find the target only with mu=1/L before getting cut off at 200 Generations}
-	\label{fig:b1output2}
-\end{figure}
-
+With the baseline values, the algorithm finds correct results within 86 generations for all 10 samples, but usually earlier (Figure \ref{fig:b1output}). The average generation count till $t_{\text{finish}}$ is 61.9. When changing $\mu$ to $0$ or $3/L$, but keeping the other parameters equal, solutions are not found within 200 generations (Figure \ref{fig:b1output2}).
 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{b1_output3}
-	\caption{Measuring the diversity of the runs in two different ways, with Shannon entropy and Hamming distance. Both show that mu=0 leads to no diversity, mu=3/L leads to high diversity through randomness while mu=1/L manages to strike a middle ground (and reach the target).}
-	\label{fig:b1output3}
-\todo[inline]{Fix typo ``entrophy'' $\to$ ``entropy''. Specify what ``diversity'' is on the y-axis (mean pairwise Hamming distance / mean position-wise Shannon entropy in nats or bits?). Clarify whether this is averaged over the 10 runs and whether the band is std or min/max.}
+	\begin{minipage}[b]{0.55\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{b1_output3}
+		\captionof{figure}{Measuring the diversity of runs in two different ways, with mean position-wise Shannon entropy and pairwise Hamming distance between strings over 10 runs.}
+		\label{fig:b1output3}
+	\end{minipage}\hfill
+	\begin{minipage}[b]{0.42\linewidth}
+		\centering
+		\footnotesize
+		\setlength{\tabcolsep}{3pt}
+		\begin{tabular}{ll}
+			\toprule
+			$\mu=0$ & $\mu=3/L$ \\
+			\midrule
+			\texttt{BaturalCrmputing} [14] & \texttt{NatusYOiHxpgJijg} [7] \\
+			\texttt{BaturalCrmputing} [14] & \texttt{UttKhaaYojputioh} [7] \\
+			\texttt{BaturalCSmputing} [14] & \texttt{iattIYvCojpgOTIg} [6] \\
+			\texttt{BaturalCrmputing} [14] & \texttt{iattIBYCojpgVbnk} [6] \\
+			\bottomrule
+		\end{tabular}
+		\captionof{table}{Top 4 individuals at generation 100 ($K=2$, fitness in brackets). The $\mu=1/L$ case is omitted because the population has already converged on the target.}
+		\label{tab:b1_qualitative}
+	\end{minipage}
 \end{figure}
+
+Measuring the diversity of runs with different values of $\mu$, both Shannon entropy and and Hamming distance show that mu=0 leads to low diversity, mu=3/L leads to very high diversity, while mu=1/L manages to strike a middle ground (and reach the target) (Figure \ref{fig:b1output3}). In the qualitative results, we can observe that $\mu=0$ collapses to near-identical copies stuck at a local optimum; $\mu=3/L$ stays far from the target \texttt{NaturalComputing} with very different strings (Table \ref{tab:b1_qualitative}).
+
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output4}
-	\caption{Higher tournament size increases selection pressure. We repeat the mu sweep to see how this interacts with mutation rate. K=5 leads to results faster \& can also converge with mu=2/L, though mu=1/L remains optimal.}
+	\caption{Joint graph exploring different $\mu$ for both $K=2$ and $K=5$. Runs are capped at 200 generations.}
 	\label{fig:b1output4}
 \end{figure}
-\todo[inline]{MISSING FIGURE for B.1 Q5: a plot of $\mu$ vs $t_{\text{finish}}$ over $\sim$10 $\mu$ values from 0 to $10/L$, with the optimum annotated. The parameter table already promises this sweep --- deliver the figure and state the optimal $\mu$ in prose (e.g. ``$\mu^\star \approx 1/L$ for $K=2$, shifting toward $\approx 2/L$ for $K=5$'').}
-\todo[inline]{Add a short ``B1 take-away'' paragraph after the figures: (1) optimal $\mu \approx 1/L$; (2) too low $\mu$ $\to$ premature convergence (diversity collapse visible in Fig.~\ref{fig:b1output3}); (3) too high $\mu$ $\to$ random walk, never converges; (4) higher $K$ shifts tolerable $\mu$ upward (more selection pressure compensates for more noise). This directly answers B.1 Q4 and Q6.}
 
-
-
-
+We repeat the mu sweep of Figure \ref{fig:b1output2}, varying $K$ and $\mu$ more to see how a higher $K$ interacts with mutation rate. K=5 leads to results faster and can also converge with mu=2/L, though mu=1/L remains optimal. As higher tournament size increases selection pressure, it can deal with more noise. For 
 
 
 \subsubsection*{B2}
