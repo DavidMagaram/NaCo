@@ -23,20 +23,23 @@
 \begin{document}
 	\maketitle
 
-% \listoftodos
+\listoftodos
+\todo[inline]{GLOBAL: target grade 8+. Rubric-driven checklist below. Remove todos before submit.}
 
 
 \section*{Introduction}
+\todo[inline]{Introduction is too thin. State an explicit research question: ``How do mutation rate and selection pressure shape the exploration--exploitation trade-off in a string-search GA, and does adding 2-opt local search (MA) outperform a plain EA on TSP under a \emph{fair} (wall-clock) comparison?'' Also: one sentence on why the exploration/exploitation trade-off matters, and one sentence previewing the main finding (so the reader knows where the report is going).}
 
 Evolutionary algorithms (EA) are a population-based optimization method. They are based on natural selection and work by exploring new solution areas and refining good already found solutions, where candidate solutions are improved by mutating and crossover.
 
-By investigating the traveling salesman problem and string search, this project explores how different parameter configurations influence convergence speed, population diversity, and algorithm performance.  
+By investigating the traveling salesman problem and string search, this project explores how different parameter configurations influence convergence speed, population diversity, and algorithm performance.
 
 
 
 
 \section*{Methods}
-This project will implement a genetic algorithm (GA) for string search and memetic algorithm (MA) for traveling salesman problem. This section describes the experimental setup and design choices. 
+\todo[inline]{Add a ``Reproducibility'' paragraph at the end of Methods: language/version (Python X.Y), RNG seeding strategy, how many runs, where the code lives (repo URL or zip), and how to reproduce each figure (e.g. ``run \texttt{python b1\_run.py --config b1.yaml} to regenerate Fig.~\ref{fig:b1output}''). Assignment explicitly requires this.}
+This project will implement a genetic algorithm (GA) for string search and memetic algorithm (MA) for traveling salesman problem. This section describes the experimental setup and design choices.
 \subsection*{String search}
 A string search genetic algorithm was implemented and the used parameters are displayed in Table 1. "NaturalComputing" was used as the target string with a length L = 16, comprising of both lowercase and uppercase letters from an alphabet $|\Sigma|$. Since fitness is the number of characters that match the target, the maximum fitness is 16. 
 
@@ -49,7 +52,9 @@ Larger K values mean more potentially high-fitness strings, which can lead to th
 Then, each pair undergoes single-point crossover with a probability $p_c$ = 1, producing 2 new offsprings. Crossover selects a random index and swaps the parent's characters beyond that cutoff. Additionally, every character of the offspring has a small mutation rate $\mu$ to randomly become one of the letters from the alphabet $|\Sigma|$.
 Finally, the entire parent generation is replaced with the new offspring generation.
 
-
+All algorithms were run single-threaded on a desktop system with a AMD Ryzen 5800x processor.
+\todo[inline]{Add one sentence explicitly stating the diversity measures used (Hamming mean pairwise distance on a subsample; position-wise Shannon entropy $H_i = -\sum_j f_{ij}\log f_{ij}$ averaged over positions), as required by the assignment appendix. Currently this is only visible via figure captions.}
+\todo[inline]{State the stopping criterion precisely: ``A run is recorded as $t_{\text{finish}} = G_{\max}$ (right-censored) when the target is not reached.'' This matters for how the beeswarms should be read at $\mu=0$ and $\mu=3/L$.}
 
 
 \begin{table}[h]
@@ -70,8 +75,11 @@ Max generations $G_{\max}$ & 100 \\
 \hline
 \end{tabular}
 \end{table}
+\todo[inline]{Caption of this table is fine. BUT: the report mentions $G_{\max}=200$ in Fig.~\ref{fig:b1output2}'s caption while the parameter table says $G_{\max}=100$. Pick one and make them consistent, or explicitly note that the cap differs between experiments and why.}
 
 \subsection*{Traveling Salesman Problem}
+\todo[inline]{Justify the chosen parameters ($N=100$, $K=5$, $p_c=0.8$, $\mu=0.3$): one sentence citing the lecture defaults or a quick pilot run. The rubric explicitly asks whether methods are justified.}
+\todo[inline]{Describe the custom 50-city instance (how generated --- uniform random in a unit square? seed?) and which TSPLIB instance was used (eil51). Currently unclear --- a reader cannot reproduce without the code.}
 
 For the TSP, both a simple evolutionary algorithm (EA) and a memetic algorithm (MA) were implemented. Each solution is encoded as a permutation of city indices representing a tour. The simple EA uses ordered crossover (OX): a random contiguous segment is copied from one parent and the remaining cities are filled in the order they appear in the second parent. Mutation is applied via swap mutation, where two randomly selected positions in the tour are exchanged. Tournament selection ($K = 5$) is used to select parents, and generational replacement with no elitism is applied.
 
@@ -81,6 +89,7 @@ The memetic algorithm extends the EA by applying 2-opt local search to each indi
 \begin{table}[h]
 \centering
 \caption{String Search GA Parameters}
+\todo[inline]{FIX CAPTION: should be ``TSP EA/MA Parameters'', not ``String Search GA Parameters'' --- copy-paste error. Also fix dataset typo ``eli51'' $\to$ ``eil51''.}
 \begin{tabular}{ll}
 \hline
 \textbf{Parameter} & \textbf{Value} \\
@@ -95,12 +104,16 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 \hline
 \end{tabular}
 \end{table}
+\todo[inline]{Add a row for the stopping criterion / generation budget and for the wall-clock budget used in Fig.~\ref{fig:b2output4}/\ref{fig:b2output5}. Also state the 2-opt termination rule (``until no improving 2-swap remains'') already mentioned in prose --- good, but make it a table row too for quick reference.}
 
 
 \section*{Results}
+\todo[inline]{Results currently consists of figures with captions doing most of the work. Rubric (section B ``Description'') penalises this. For each figure, add 2--3 sentences of narrative in the main text that (a) references the figure as ``Fig.~\ref{fig:...}'', (b) states what was measured, (c) states the observation, (d) interprets it. This is the single highest-leverage change for the grade.}
 
 
 \subsubsection*{B1}
+\todo[inline]{Add a short paragraph introducing B1: what question this subsection answers (``Does the mutation rate $\mu$ trade off convergence speed against diversity, and does tournament size $K$ change the optimum?''). Currently the reader lands straight on a figure.}
+\todo[inline]{Report quantitative results numerically as well, not only as curves: mean $\pm$ std of $t_{\text{finish}}$ across the 10 runs for each condition, and number of runs that reached the target vs were censored at $G_{\max}$. A small summary table will directly answer B.1 Q1--Q2 and Q6.}
 
 
 \begin{figure}[H]
@@ -109,17 +122,20 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 	\caption{Results of running the GA 10 times with baseline values}
 	\label{fig:b1output}
 \end{figure}
+\todo[inline]{Caption is too terse. Spell out axes, the baseline ($K=2$, $\mu=1/L$, $N=200$), what the bands/lines represent (mean best fitness with shaded $\pm$ std across 10 runs?), and the take-home (``all 10 runs find the target within $\sim\!X$ generations''). Same applies to every other figure below --- captions should be self-contained.}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output2} 
 	\caption{Three different mutation rates with K=2. Of these mutation rates, the GA manages to find the target only with mu=1/L before getting cut off at 200 Generations}
 	\label{fig:b1output2}
+\todo[inline]{B.1 Q2 explicitly asks for a beeswarm of $t_{\text{finish}}$ distributions across the 10 runs per $\mu$. If this figure is a fitness curve (as the caption suggests), ADD a second panel / figure with the beeswarm of $t_{\text{finish}}$ (censored at $G_{\max}$ shown as e.g. hollow points). The assignment is specific about the plot type.}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output3}
 	\caption{Measuring the diversity of the runs in two different ways, with Shannon entrophy and Hamming distance. Both show that mu=0 leads to no diversity, mu=3/L leads to high diversity through randomness while mu=1/L manages to strike a middle ground (and reach the target).}
 	\label{fig:b1output3}
+\todo[inline]{Fix typo ``entrophy'' $\to$ ``entropy''. Specify what ``diversity'' is on the y-axis (mean pairwise Hamming distance / mean position-wise Shannon entropy in nats or bits?). Clarify whether this is averaged over the 10 runs and whether the band is std or min/max.}
 \end{figure}
 \begin{figure}[H]
 	\centering
@@ -127,6 +143,8 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 	\caption{Higher tournament size increases selection pressure. We repeat the mu sweep to see how this interacts with mutation rate. K=5 leads to results faster \& can also converge with mu=2/L, though mu=1/L remains optimal.}
 	\label{fig:b1output4}
 \end{figure}
+\todo[inline]{MISSING FIGURE for B.1 Q5: a plot of $\mu$ vs $t_{\text{finish}}$ over $\sim$10 $\mu$ values from 0 to $10/L$, with the optimum annotated. The parameter table already promises this sweep --- deliver the figure and state the optimal $\mu$ in prose (e.g. ``$\mu^\star \approx 1/L$ for $K=2$, shifting toward $\approx 2/L$ for $K=5$'').}
+\todo[inline]{Add a short ``B1 take-away'' paragraph after the figures: (1) optimal $\mu \approx 1/L$; (2) too low $\mu$ $\to$ premature convergence (diversity collapse visible in Fig.~\ref{fig:b1output3}); (3) too high $\mu$ $\to$ random walk, never converges; (4) higher $K$ shifts tolerable $\mu$ upward (more selection pressure compensates for more noise). This directly answers B.1 Q4 and Q6.}
 
 
 
@@ -134,6 +152,7 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 
 
 \subsubsection*{B2}
+\todo[inline]{Add a short intro paragraph before the figures: restate the research question (``does 2-opt local search improve TSP performance beyond the extra compute it costs?''), name the two datasets, and preview that the fair-comparison answer requires wall-clock normalisation (you already argue this below --- move the argument up so the figures land with context).}
 
 
 
@@ -143,12 +162,14 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 	\includegraphics[width=0.7\linewidth]{b2_output1}
 	\caption{Both of the datasets show MA reaching better results in fewer generations, and in total.}
 	\label{fig:b2output1}
+\todo[inline]{Caption should name the datasets on each panel, the y-axis (mean best tour length in same units as the coordinates?), and what the shaded band is. Also state the gap numerically (e.g. MA $\approx X$, EA $\approx Y$ on eil51; known optimum for eil51 is $426$, mention it).}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b2_output2}
 	\caption{In this comparison, MA clearly beats EA in distance and consistency.}
 	\label{fig:b2output2}
+\todo[inline]{``Consistency'' --- quantify. Report std or IQR of final tour length across 10 runs for each (dataset, algorithm). Consider a Mann--Whitney U test on final tour lengths to support the claim with a $p$-value; the rubric (``Validity'') rewards statistical backing of claims.}
 \end{figure}
 \begin{figure}[H]
 	\centering
@@ -175,14 +196,16 @@ Comparing the MA and simple EA on the same number of generations is not a fair b
 \end{figure}
 
 Even under a fair wall-clock comparison, the MA consistently reaches shorter and more consistent tour distances than the simple EA on both datasets. The addition of local search therefore genuinely improves performance beyond what the extra computation alone can explain: 2-opt allows individuals to escape local optima that trap the plain EA, reducing both mean tour length and variance across runs.
+\todo[inline]{This is the core conclusion of B.2 --- strengthen it with numbers: ``On eil51, MA reached mean tour length $X \pm s_X$ vs EA's $Y \pm s_Y$ within the same wall-clock budget of $T$\,s (Mann--Whitney $U$, $p < 0.01$).'' Without numbers this reads as an assertion.}
+\todo[inline]{Note the two paragraphs above (the ``We considered\ldots'' block and the ``Comparing the MA\ldots'' block) are near-duplicates of each other --- one is clearly an earlier draft. Keep the better one (the second is more polished) and delete the other.}
 
 
 
 \subsection*{Conclusion}
-
-
+\todo[inline]{EMPTY. The rubric (``Clarity'' + assignment ``take-home message'') makes this section worth real points. Write 4--6 sentences covering: (1) the main finding on B1 --- optimal $\mu \approx 1/L$ balances exploration and exploitation, and higher $K$ shifts this upward; (2) the main finding on B2 --- MA beats EA even under a fair wall-clock comparison because 2-opt escapes local optima; (3) one-sentence take-home: ``local search is worth its compute cost for TSP; for string search there is a narrow optimal mutation rate that depends on selection pressure.''}
 
 \subsection*{Discussion}
+\todo[inline]{EMPTY. Add 4--6 sentences. Must cover: (1) limitations --- wall-clock is hardware/implementation-dependent, single machine, 10 runs is modest, only two TSP instances tested, only one target string; (2) threats to validity --- 2-opt is specialized to TSP so the MA advantage may not generalize; censoring of $t_{\text{finish}}$ at $G_{\max}$ biases the mean downward; (3) future work --- test on larger TSPLIB instances, vary 2-opt intensity (full vs. $k$ steps, Baldwinian vs Lamarckian), try adaptive $\mu$. The rubric explicitly mentions ``discuss some potential limitations''.}
 
 
 \newpage
@@ -190,6 +213,7 @@ Even under a fair wall-clock comparison, the MA consistently reaches shorter and
 \section*{Appendix}
 \subsection*{Part A}
 \subsection*{A1}
+\todo[inline]{PLACEHOLDER. The assignment explicitly requires: (i) a table with $f(x)$ and selection probability for $x\in\{2,3,4\}$ for each of the four functions, and (ii) four pie charts (``wheel of fortune''), one per function. Produce both and include them here. Without them this exercise is effectively unanswered.}
 Add table and pie chart images.
 
 What can you conclude about the effects of fitness scaling on selection pressure?
@@ -198,6 +222,7 @@ Adding constants raises all fitness all values by that amount. So it smooths out
 Multiplying by a constant does not change the selection probabilities. If we compare f2 and f3, we can see that the probabilities stay the same even if we scale it. So scaling fitness does not have an effect on the selection pressure.
 
 \subsection*{A2}
+\todo[inline]{MISSING FIGURES. Assignment A.2 requires: (i) a plot of best fitness vs.\ generations over 1500 generations for the (1+1)-GA with selection (Q1); (ii) the same plot with the no-selection variant overlaid (Q2); (iii) a figure demonstrating the performance difference using multiple runs --- e.g. mean $\pm$ std across say 20 runs, or box plots of final fitness (Q4). Text answers below are fine but unsupported without these plots.}
 Does the algorithm find the optimum?
 Yes. It is able to reach fitness 100, meaning all 100 bits were successfully set to 1. 
 
