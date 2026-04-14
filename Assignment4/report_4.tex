@@ -219,7 +219,16 @@ and explore adaptive mutation rates that adjust $\mu$ dynamically as population 
 
 
 \subsection*{Conclusion}
-\todo[inline]{EMPTY. The rubric (``Clarity'' + assignment ``take-home message'') makes this section worth real points. Write 4--6 sentences covering: (1) the main finding on B1 --- optimal $\mu \approx 1/L$ balances exploration and exploitation, and higher $K$ shifts this upward; (2) the main finding on B2 --- MA beats EA even under a fair wall-clock comparison because 2-opt escapes local optima; (3) one-sentence take-home: ``local search is worth its compute cost for TSP; for string search there is a narrow optimal mutation rate that depends on selection pressure.''}
+This project shows that small changes in EA design choices have large and predictable effects on performance. For string search, the mutation 
+rate $\mu = 1/L$ is optimal as it provides enough exploration to maintain diversity and avoid premature convergence, without being so disruptive 
+that accumulated progress is lost. Increasing tournament size to $K = 5$ raises selection pressure, accelerating convergence and shifting the 
+viable mutation range upward, though the optimum remains $\mu = 1/L$. For the TSP, the memetic algorithm consistently outperforms the plain EA 
+in both solution quality and consistency, and this advantage holds even under a fair wall-clock comparison that accounts for the roughly 25 times
+higher cost per MA generation. Furthermore, 2-opt local search allows individuals to escape the local optima that cause high variability in the plain EA. 
+The take-home message is that local search is worth its computational cost for TSP, while for string search there is a narrow optimal mutation 
+rate whose precise value shifts with selection pressure. Both findings reflect the same underlying principle that effective evolutionary search 
+requires a carefully tuned balance between exploration and exploitation.
+% \todo[inline]{EMPTY. The rubric (``Clarity'' + assignment ``take-home message'') makes this section worth real points. Write 4--6 sentences covering: (1) the main finding on B1 --- optimal $\mu \approx 1/L$ balances exploration and exploitation, and higher $K$ shifts this upward; (2) the main finding on B2 --- MA beats EA even under a fair wall-clock comparison because 2-opt escapes local optima; (3) one-sentence take-home: ``local search is worth its compute cost for TSP; for string search there is a narrow optimal mutation rate that depends on selection pressure.''}
 
 
 
