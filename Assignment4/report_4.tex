@@ -114,24 +114,31 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 
 
 \subsubsection*{B1}
-\todo[inline]{Add a short paragraph introducing B1: what question this subsection answers (``Does the mutation rate $\mu$ trade off convergence speed against diversity, and does tournament size $K$ change the optimum?''). Currently the reader lands straight on a figure.}
 \todo[inline]{Report quantitative results numerically as well, not only as curves: mean $\pm$ std of $t_{\text{finish}}$ across the 10 runs for each condition, and number of runs that reached the target vs were censored at $G_{\max}$. A small summary table will directly answer B.1 Q1--Q2 and Q6.}
 
+
+In this section, we aim to answer whether and how the mutation rate $\mu$ trades convergence speed against diversity, and how the tournament size $K$ impacts this. We first run the GA 10 times with the baseline values given by the exercise ($K=2$, $\mu=1/L$, $N=200$) and then experiment with varying the values of $\mu$ and later $K$.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output1}
-	\caption{Results of running the GA 10 times with baseline values}
+	\caption{Results of running the GA 10 times with baseline values ($K=2$, $\mu=1/L$, $N=200$). The blue line shoes the median over 10 samples, while the light blue shaded area shows the confidence interval.}
 	\label{fig:b1output}
 \end{figure}
+
+With the baseline values, the algorithm finds the correct results within 86 generations for all 10 samples, but usually earlier \ref{fig:b1output}. The average generation count till $t_{\text{finish}}$ is 61.9.
+
+
 \todo[inline]{Caption is too terse. Spell out axes, the baseline ($K=2$, $\mu=1/L$, $N=200$), what the bands/lines represent (mean best fitness with shaded $\pm$ std across 10 runs?), and the take-home (``all 10 runs find the target within $\sim\!X$ generations''). Same applies to every other figure below --- captions should be self-contained.}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output2} 
 	\caption{Three different mutation rates with K=2. Of these mutation rates, the GA manages to find the target only with mu=1/L before getting cut off at 200 Generations}
 	\label{fig:b1output2}
-\todo[inline]{B.1 Q2 explicitly asks for a beeswarm of $t_{\text{finish}}$ distributions across the 10 runs per $\mu$. If this figure is a fitness curve (as the caption suggests), ADD a second panel / figure with the beeswarm of $t_{\text{finish}}$ (censored at $G_{\max}$ shown as e.g. hollow points). The assignment is specific about the plot type.}
 \end{figure}
+
+
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output3}
