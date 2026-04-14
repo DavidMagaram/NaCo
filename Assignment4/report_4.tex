@@ -59,6 +59,7 @@ All algorithms were run single-threaded on a desktop system with a AMD Ryzen 580
 
 \begin{table}[h]
 \centering
+\caption{String Search GA Parameters}
 \begin{tabular}{ll}
 \hline
 \textbf{Parameter} & \textbf{Value} \\
@@ -179,9 +180,9 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 	\label{fig:b2output3}
 \end{figure}
 
-We considered comparing them on number of operations, but the operations of MA are only in its neighborhood, so comparing them directly with whole generations of EA would again be unfair. We therefore decided to compare wall-clock time that, while influenceable by all kinds of factors and therefore not overly scientific, provides a good baseline for real-use performance, especially if averaged over 10 runs each.
+We considered comparing them on number of operations, but the operations of MA are only in its neighbourhood, so comparing them directly with whole generations of EA would again be unfair. We therefore decided to compare wall-clock time that, while influenceable by all kinds of factors and therefore not overly scientific, provides a good baseline for real-use performance, especially if averaged over 10 runs each.
 
-Comparing the MA and simple EA on the same number of generations is not a fair baseline. Each MA generation includes a full 2-opt local search over every individual in the population, making it far more computationally expensive than a single EA generation. Any advantage observed per generation could therefore reflect additional computation rather than algorithmic superiority. We considered normalizing by number of fitness evaluations, but since 2-opt operates within a solution's neighborhood its evaluation count is not directly comparable to a full population generation in the EA. We therefore compare on wall-clock time, which — while sensitive to system-level factors — provides a practical performance baseline when averaged over 10 runs.
+Comparing the MA and simple EA on the same number of generations is not a fair baseline. Each MA generation includes a full 2-opt local search over every individual in the population, making it far more computationally expensive than a single EA generation. Any advantage observed per generation could therefore reflect additional computation rather than algorithmic superiority. We considered normalising by number of fitness evaluations, but since 2-opt operates within a solution's neighbourhood its evaluation count is not directly comparable to a full population generation in the EA. We therefore compare on wall-clock time, which — while sensitive to system-level factors — provides a practical performance baseline when averaged over 10 runs.
 
 \begin{figure}[H]
 	\centering
