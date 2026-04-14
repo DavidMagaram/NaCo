@@ -23,10 +23,6 @@
 \begin{document}
 	\maketitle
 
-\listoftodos
-\todo[inline]{GLOBAL: target grade 8+. Rubric-driven checklist below. Remove todos before submit.}
-
-
 \section*{Introduction}
 Evolutionary algorithms (EA) are a population-based optimization method. They are based on natural selection and work by exploring new solution areas and iteratively refining good already found solutions, where candidate solutions are improved by mutating and crossover. A common issue is the trade-off between exploration and exploitation. Too much exploration can lead to slow convergence, while too much exploitation can cause suboptimal solutions. Despite this, EAs are still very useful, especially for larger, more complex problems. However, their performance depends on parameter configurations such as mutation rate, population size, and selection pressure.
 
@@ -53,9 +49,8 @@ Population diversity was measured using the mean pairwise Hamming distance compu
 Furthermore, run is terminated if it reaches target string or the maximum generations $G_{max}$ = 200. In case the target is not reached, run is recorded as $t_{finish}$ = $G_{max}$.
 
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
-\caption{String Search GA Parameters}
 \begin{tabular}{ll}
 \hline
 \textbf{Parameter} & \textbf{Value} \\
@@ -81,7 +76,7 @@ The memetic algorithm extends the EA by applying 2-opt local search to each indi
 
 Table 3 displays the used parameters. These parameters were chosen based on the previous exercise and further adjusted based on testing. The crossover probability was lowered to 0.8. This is high enough to help produce new better solutions, but not too high as to break already good solutions. Moreover, mutation was set to 0.3 to explore the area around solutions, and tournament selection was set to 5 as it accelerates convergence and works fairly well. Overall, these parameter settings provide balance between exploration and exploitation.
 
-\begin{table}[h]
+\begin{table}[H]
 \centering
 \begin{tabular}{ll}
 \hline
@@ -160,7 +155,7 @@ With the baseline values, the algorithm finds correct results within 86 generati
 	\end{minipage}
 \end{figure}
 
-Measuring the diversity of runs with different values of $\mu$, both Shannon entropy and and Hamming distance show that mu=0 leads to low diversity, mu=3/L leads to very high diversity, while mu=1/L manages to strike a middle ground (and reach the target) (Figure \ref{fig:b1output3}). In the qualitative results, we can observe that $\mu=0$ collapses to near-identical copies stuck at a local optimum; $\mu=3/L$ stays far from the target \texttt{NaturalComputing} with very different strings (Table \ref{tab:b1_qualitative}).
+Measuring the diversity of runs with different values of $\mu$, both Shannon entropy and Hamming distance show that $\mu=0$ leads to low diversity, $\mu=3/L$ leads to very high diversity, while $\mu=1/L$ manages to strike a middle ground (and reach the target) (Figure \ref{fig:b1output3}). In the qualitative results, we can observe that $\mu=0$ collapses to near-identical copies stuck at a local optimum; $\mu=3/L$ stays far from the target \texttt{NaturalComputing} with very different strings (Table \ref{tab:b1_qualitative}).
 
 
 \begin{figure}[H]
@@ -170,7 +165,7 @@ Measuring the diversity of runs with different values of $\mu$, both Shannon ent
 	\label{fig:b1output4}
 \end{figure}
 
-We repeat the mu sweep of Figure \ref{fig:b1output2}, varying $K$ and $\mu$ more to see how a higher $K$ interacts with mutation rate. K=5 leads to results faster and can also converge with mu=2/L, though mu=1/L remains optimal. As higher tournament size increases selection pressure, it can deal with more noise. Other $\mu$'s than $1/L$ for $K=2$ and $1/L and 2/L$ for $K=5$ do not lead to convergences.
+We repeat the $\mu$ sweep of Figure \ref{fig:b1output2}, varying $K$ and $\mu$ more to see how a higher $K$ interacts with mutation rate. $K=5$ leads to results faster and can also converge with $\mu=2/L$, though $\mu=1/L$ remains optimal. As higher tournament size increases selection pressure, it can deal with more noise. Other $\mu$'s than $1/L$ for $K=2$ and $1/L$ and $2/L$ for $K=5$ do not lead to convergences.
 
 
 \subsubsection*{B2}
