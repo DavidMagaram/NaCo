@@ -89,6 +89,7 @@ The memetic algorithm extends the EA by applying 2-opt local search to each indi
 \centering
 \caption{String Search GA Parameters}
 \todo[inline]{FIX CAPTION: should be ``TSP EA/MA Parameters'', not ``String Search GA Parameters'' --- copy-paste error. Also fix dataset typo ``eli51'' $\to$ ``eil51''.}
+\todo[inline]{Also why 3 datasets don't we only have 2}
 \begin{tabular}{ll}
 \hline
 \textbf{Parameter} & \textbf{Value} \\
@@ -108,8 +109,6 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 
 
 \section*{Results}
-\todo[inline]{Results currently consists of figures with captions doing most of the work. Rubric (section B ``Description'') penalises this. For each figure, add 2--3 sentences of narrative in the main text that (a) references the figure as ``Fig.~\ref{fig:...}'', (b) states what was measured, (c) states the observation, (d) interprets it. This is the single highest-leverage change for the grade.}
-
 
 \subsubsection*{B1}
 
@@ -175,13 +174,13 @@ Measuring the diversity of runs with different values of $\mu$, both Shannon ent
 	\label{fig:b1output4}
 \end{figure}
 
-We repeat the mu sweep of Figure \ref{fig:b1output2}, varying $K$ and $\mu$ more to see how a higher $K$ interacts with mutation rate. K=5 leads to results faster and can also converge with mu=2/L, though mu=1/L remains optimal. As higher tournament size increases selection pressure, it can deal with more noise. For 
+We repeat the mu sweep of Figure \ref{fig:b1output2}, varying $K$ and $\mu$ more to see how a higher $K$ interacts with mutation rate. K=5 leads to results faster and can also converge with mu=2/L, though mu=1/L remains optimal. As higher tournament size increases selection pressure, it can deal with more noise. Other $\mu$'s than $1/L$ for $K=2$ and $1/L and 2/L$ for $K=5$ do not lead to convergences.
 
 
 \subsubsection*{B2}
 \todo[inline]{Add a short intro paragraph before the figures: restate the research question (``does 2-opt local search improve TSP performance beyond the extra compute it costs?''), name the two datasets, and preview that the fair-comparison answer requires wall-clock normalisation (you already argue this below --- move the argument up so the figures land with context).}
 
-
+In this section, we aim to explore whether 2-opt local search improves TSP performance beyond the extra compute it costs. We test on both 
 
 
 \begin{figure}[H]
