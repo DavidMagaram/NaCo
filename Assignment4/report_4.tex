@@ -64,7 +64,7 @@ Alphabet $|\Sigma|$ & 52 \\
 Population size $N$ & 200 \\
 Tournament selection $K$ & $\{2, 5\}$ \\
 Crossover probability $p_c$ & 1 \\
-Mutation rate $\mu$ & $\{0,\; 1/L,\; 3/L\}$ + sweep \\
+Mutation rate $\mu$ & $\{0,\; 1/L,\; 3/L\}$ + sweep from 0/L to 10/L \\
 Runs & 10 \\
 Max generations $G_{\max}$ & 100 \\
 \hline
@@ -76,6 +76,26 @@ Max generations $G_{\max}$ & 100 \\
 For the TSP, both a simple evolutionary algorithm (EA) and a memetic algorithm (MA) were implemented. Each solution is encoded as a permutation of city indices representing a tour. The simple EA uses ordered crossover (OX): a random contiguous segment is copied from one parent and the remaining cities are filled in the order they appear in the second parent. Mutation is applied via swap mutation, where two randomly selected positions in the tour are exchanged. Tournament selection ($K = 5$) is used to select parents, and generational replacement with no elitism is applied.
 
 The memetic algorithm extends the EA by applying 2-opt local search to each individual after mutation. The 2-opt procedure iteratively reverses sub-sequences of the tour to eliminate crossing edges, repeating until no improving swap can be found. This Lamarckian approach allows individuals to locally optimise their fitness before evaluation, which typically accelerates convergence. Both algorithms were evaluated on the custom 50-city dataset and on the TSPLIB benchmark instance \textit{eil51}.
+
+
+\begin{table}[h]
+\centering
+\caption{String Search GA Parameters}
+\begin{tabular}{ll}
+\hline
+\textbf{Parameter} & \textbf{Value} \\
+\hline
+Population size $N$ & 100 \\
+Tournament selection $K$ & 5 \\
+Crossover probability $p_c$ & 0.8 \\
+Mutation rate $\mu$ & 0.3 \\
+Local search & 2-opt \\
+Runs & 10 \\
+Datasets & eli51, TSPLIB, Custom 50-city instance\\
+\hline
+\end{tabular}
+\end{table}
+
 
 \section*{Results}
 
