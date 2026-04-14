@@ -202,12 +202,25 @@ Even under a fair wall-clock comparison, the MA consistently reaches shorter and
 \todo[inline]{Note the two paragraphs above (the ``We considered\ldots'' block and the ``Comparing the MA\ldots'' block) are near-duplicates of each other --- one is clearly an earlier draft. Keep the better one (the second is more polished) and delete the other.}
 
 
+\subsection*{Discussion}
+
+Several limitations of this study should be noted. All experiments were run on a single machine, and the results may differ on other 
+hardware or with a more optimised 2-opt implementation, which are all factors which may affect the wall-clock time. With only 10 runs 
+per condition the confidence intervals are modest, particularly at boundary mutation rates where success is inconsistent, and formal statistical tests (e.g.\ Wilcoxon rank-sum) would be needed to make stronger claims. 
+Only two TSP instances were tested and only one target string was used for the string search task, so the generalisability of the findings is 
+limited. Regarding threats to validity, 2-opt is a heuristic specifically tailored to tour optimisation problems, so the advantage of the 
+MA over the plain EA may not transfer to other combinatorial problems where no efficient local search is available. Additionally, censoring 
+$t_{\text{finish}}$ at $G_{\max} = 200$ when the target is not found biases mean convergence time downward, meaning the true performance gap 
+between mutation rates is likely larger than reported. Future work could test the MA on larger TSPLIB instances to assess scalability, vary 
+the intensity of local search (e.g.\ full 2-opt vs.\ a fixed number of improvement steps, or Baldwinian rather than Lamarckian learning), 
+and explore adaptive mutation rates that adjust $\mu$ dynamically as population diversity changes.
+
+% \todo[inline]{EMPTY. Add 4--6 sentences. Must cover: (1) limitations --- wall-clock is hardware/implementation-dependent, single machine, 10 runs is modest, only two TSP instances tested, only one target string; (2) threats to validity --- 2-opt is specialized to TSP so the MA advantage may not generalize; censoring of $t_{\text{finish}}$ at $G_{\max}$ biases the mean downward; (3) future work --- test on larger TSPLIB instances, vary 2-opt intensity (full vs. $k$ steps, Baldwinian vs Lamarckian), try adaptive $\mu$. The rubric explicitly mentions ``discuss some potential limitations''.}
+
 
 \subsection*{Conclusion}
 \todo[inline]{EMPTY. The rubric (``Clarity'' + assignment ``take-home message'') makes this section worth real points. Write 4--6 sentences covering: (1) the main finding on B1 --- optimal $\mu \approx 1/L$ balances exploration and exploitation, and higher $K$ shifts this upward; (2) the main finding on B2 --- MA beats EA even under a fair wall-clock comparison because 2-opt escapes local optima; (3) one-sentence take-home: ``local search is worth its compute cost for TSP; for string search there is a narrow optimal mutation rate that depends on selection pressure.''}
 
-\subsection*{Discussion}
-\todo[inline]{EMPTY. Add 4--6 sentences. Must cover: (1) limitations --- wall-clock is hardware/implementation-dependent, single machine, 10 runs is modest, only two TSP instances tested, only one target string; (2) threats to validity --- 2-opt is specialized to TSP so the MA advantage may not generalize; censoring of $t_{\text{finish}}$ at $G_{\max}$ biases the mean downward; (3) future work --- test on larger TSPLIB instances, vary 2-opt intensity (full vs. $k$ steps, Baldwinian vs Lamarckian), try adaptive $\mu$. The rubric explicitly mentions ``discuss some potential limitations''.}
 
 
 \newpage
