@@ -215,8 +215,6 @@ Even under a fair wall-clock comparison, the MA consistently reaches shorter and
 \section*{Appendix}
 \subsection*{Part A}
 \subsection*{A1}
-Add table and pie chart images.
-
 What can you conclude about the effects of fitness scaling on selection pressure?
 
 Adding constants raises all fitness all values by that amount. So it smooths out all the values. For example, when we compare f2 (which only squares X) and f4 (which squares X and adds 20), we can see that the probabilities of f4 are closer together. Probabilities are increased and reduced, so there is a much smaller gap between them, which also reduces selection pressure. 
@@ -265,4 +263,16 @@ Is there a difference in performance?
 Yes. It is apparent that there is a difference in performance between the versions. Across all the runs, the version with selection always converges to fitness 100 while the version without selection is always near 50 through all the 1500 generations. The algorithm has no memory of good solutions and cannot improve. 
 
 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{fitness_vs_generations}
+	\caption{Fitness against generations.}
+	\label{fig:fitness_vs_generations}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{fitness_vs_generations_avg}
+	\caption{Averages of fitness vs generations across multiple runs.}
+	\label{fig:fitness_vs_generations_avg}
+\end{figure}
 \end{document}
