@@ -28,11 +28,9 @@
 
 
 \section*{Introduction}
-\todo[inline]{Introduction is too thin. State an explicit research question: ``How do mutation rate and selection pressure shape the exploration--exploitation trade-off in a string-search GA, and does adding 2-opt local search (MA) outperform a plain EA on TSP under a \emph{fair} (wall-clock) comparison?'' Also: one sentence on why the exploration/exploitation trade-off matters, and one sentence previewing the main finding (so the reader knows where the report is going).}
+Evolutionary algorithms (EA) are a population-based optimization method. They are based on natural selection and work by exploring new solution areas and iteratively refining good already found solutions, where candidate solutions are improved by mutating and crossover. A common issue is the trade-off between exploration and exploitation. Too much exploration can lead to slow convergence, while too much exploitation can cause suboptimal solutions. Despite this, EAs are still very useful, especially for larger, more complex problems. However, their performance depends on parameter configurations such as mutation rate, population size, and selection pressure.
 
-Evolutionary algorithms (EA) are a population-based optimization method. They are based on natural selection and work by exploring new solution areas and refining good already found solutions, where candidate solutions are improved by mutating and crossover.
-
-By investigating the traveling salesman problem and string search, this project explores how different parameter configurations influence convergence speed, population diversity, and algorithm performance.
+By investigating the traveling salesman problem and string search, this project explores how different parameter configurations influence convergence speed, population diversity, and algorithm performance. It also aims to explore how mutation rate and selection pressure shape the exploration-exploitation trade-off in these settings, and whether a 2-opt local search can outperform a standard EA algorithm on the traveling salesman problem under fair settings.
 
 
 
@@ -278,7 +276,7 @@ function.}
 
 
 \subsection*{A2}
-\todo[inline]{MISSING FIGURES. Assignment A.2 requires: (i) a plot of best fitness vs.\ generations over 1500 generations for the (1+1)-GA with selection (Q1); (ii) the same plot with the no-selection variant overlaid (Q2); (iii) a figure demonstrating the performance difference using multiple runs --- e.g. mean $\pm$ std across say 20 runs, or box plots of final fitness (Q4). Text answers below are fine but unsupported without these plots.}
+
 Does the algorithm find the optimum?
 Yes. It is able to reach fitness 100, meaning all 100 bits were successfully set to 1. 
 
