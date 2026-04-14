@@ -39,7 +39,7 @@ By investigating the traveling salesman problem and string search, this project 
 This project will implement a genetic algorithm (GA) for string search and memetic algorithm (MA) for traveling salesman problem. This section describes the experimental setup and design choices.
 All algorithms were run single-threaded on a desktop system with a AMD Ryzen 5800x processor.
 \subsection*{String search}
-A string search genetic algorithm was implemented and the used parameters are displayed in Table 1. "NaturalComputing" was used as the target string with a length L = 16, containing both lowercase and uppercase letters from an alphabet $|\Sigma|$. Since fitness is the number of characters that match the target, the maximum fitness is 16. 
+A string search genetic algorithm was implemented and the used parameters are displayed in Table 1. "NaturalComputing" was used as the target string with a length L = 16, containing both lowercase and uppercase letters from an alphabet $|\Sigma|$. Since fitness is the number of characters that match the target, the maximum fitness is 16.
 
 The algorithm aims to match the target string by evolving a population of N = 200 individuals. 
 Each generation follows a few simple steps. First, during the tournament selection phase, a random subset K is drawn from the population N and the fittest string is kept for reproduction. 
@@ -49,7 +49,7 @@ Larger K values mean more potentially high-fitness strings, which can lead to th
 Then, each pair undergoes single-point crossover with a probability $p_c$ = 1, producing 2 new offsprings. Crossover selects a random index and swaps the parent's characters beyond that cutoff. Additionally, every character of the offspring has a small mutation rate $\mu$ to randomly become one of the letters from the alphabet $|\Sigma|$.
 Finally, the entire parent generation is replaced with the new offspring generation.
 
-Population diversity was measured using the mean pairwise Hamming distance computed on a random subsample of the population and the average position-wise Shannon entropy \[H_i = -\sum_j f_{ij} \log f_{ij},\] where $f_{ij}$ is the frequency of character j at position i. 
+Population diversity was measured using the mean pairwise Hamming distance computed on a random subsample of the population and the average position-wise Shannon entropy \[H_i = -\sum_j f_{ij} \log f_{ij},\] where $f_{ij}$ is the frequency of character j at position i.
 Furthermore, run is terminated if it reaches target string or the maximum generations $G_{max}$ = 200. In case the target is not reached, run is recorded as $t_{finish}$ = $G_{max}$.
 
 
@@ -79,7 +79,7 @@ For the TSP, both a simple evolutionary algorithm (EA) and a memetic algorithm (
 
 The memetic algorithm extends the EA by applying 2-opt local search to each individual after mutation. The 2-opt procedure iteratively reverses sub-sequences of the tour to eliminate crossing edges, repeating until no improving swap can be found. This Lamarckian approach allows individuals to locally optimize their fitness before evaluation, which typically accelerates convergence. Both algorithms were evaluated on the TSPLIB benchmark instance \textit{eil51} and on the 50-city dataset from the Symmetric Traveling Salesman Problem benchmark instances available at http://comopt.ifi.uni-heidelberg.de/software/TSPLIB95/.
 
-Table 3 displays the used parameters. These parameters were chosen based on the previous exercise and further adjusted based on testing. The crossover probability was lowered to 0.8. This is high enough to help produce new better solutions, but not too high as to break already good solutions. Moreover, mutation was set to 0.3 to explore the area around solutions, and tournament selection was set to 5 as it accelerates convergence and works fairly well. Overall, these parameter settings provide balance between exploration and exploitation. 
+Table 3 displays the used parameters. These parameters were chosen based on the previous exercise and further adjusted based on testing. The crossover probability was lowered to 0.8. This is high enough to help produce new better solutions, but not too high as to break already good solutions. Moreover, mutation was set to 0.3 to explore the area around solutions, and tournament selection was set to 5 as it accelerates convergence and works fairly well. Overall, these parameter settings provide balance between exploration and exploitation.
 
 \begin{table}[h]
 \centering
@@ -105,82 +105,134 @@ Stopping criterion & Fixed generations / wall-clock budget \\
 
 
 \section*{Results}
-\todo[inline]{Results currently consists of figures with captions doing most of the work. Rubric (section B ``Description'') penalises this. For each figure, add 2--3 sentences of narrative in the main text that (a) references the figure as ``Fig.~\ref{fig:...}'', (b) states what was measured, (c) states the observation, (d) interprets it. This is the single highest-leverage change for the grade.}
-
 
 \subsubsection*{B1}
-\todo[inline]{Report quantitative results numerically as well, not only as curves: mean $\pm$ std of $t_{\text{finish}}$ across the 10 runs for each condition, and number of runs that reached the target vs were censored at $G_{\max}$. A small summary table will directly answer B.1 Q1--Q2 and Q6.}
 
 
 In this section, we aim to answer whether and how the mutation rate $\mu$ trades convergence speed against diversity, and how the tournament size $K$ impacts this. We first run the GA 10 times with the baseline values given by the exercise ($K=2$, $\mu=1/L$, $N=200$) and then experiment with varying the values of $\mu$ and later $K$.
 
-\begin{figure}[H]
+
+
+
+\begin{figure}[H]                                                                         
 	\centering
-	\includegraphics[width=0.7\linewidth]{b1_output1}
-	\caption{Results of running the GA 10 times with baseline values ($K=2$, $\mu=1/L$, $N=200$). The blue line shoes the median over 10 samples, while the light blue shaded area shows the confidence interval.}
-	\label{fig:b1output}
+	\begin{minipage}{0.48\linewidth}                                                      
+		\centering                                                                        
+		\includegraphics[width=\linewidth]{b1_output1}
+		\caption{Results of running the GA 10 times with baseline values ($K=2$, $\mu=1/L$, $N=200$). Blue line: median over 10 samples; shaded area: confidence interval.}
+		\label{fig:b1output}           
+	\end{minipage}\hfill                                                                  
+	\begin{minipage}{0.48\linewidth}                                                      
+		\centering                     
+		\includegraphics[width=\linewidth]{b1_output2}                                    
+		\caption{Three different mutation rates with $K=2$. Only $\mu=1/L$ finds the target before the 200-generation cutoff.}                                                 
+		\label{fig:b1output2}
+	\end{minipage}                                                                        
 \end{figure}
 
-With the baseline values, the algorithm finds the correct results within 86 generations for all 10 samples, but usually earlier \ref{fig:b1output}. The average generation count till $t_{\text{finish}}$ is 61.9.
-
-
-\todo[inline]{Caption is too terse. Spell out axes, the baseline ($K=2$, $\mu=1/L$, $N=200$), what the bands/lines represent (mean best fitness with shaded $\pm$ std across 10 runs?), and the take-home (``all 10 runs find the target within $\sim\!X$ generations''). Same applies to every other figure below --- captions should be self-contained.}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{b1_output2} 
-	\caption{Three different mutation rates with K=2. Of these mutation rates, the GA manages to find the target only with mu=1/L before getting cut off at 200 Generations}
-	\label{fig:b1output2}
-\end{figure}
-
+With the baseline values, the algorithm finds correct results within 86 generations for all 10 samples, but usually earlier (Figure \ref{fig:b1output}). The average generation count till $t_{\text{finish}}$ is 61.9. When changing $\mu$ to $0$ or $3/L$, but keeping the other parameters equal, solutions are not found within 200 generations (Figure \ref{fig:b1output2}).
 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{b1_output3}
-	\caption{Measuring the diversity of the runs in two different ways, with Shannon entropy and Hamming distance. Both show that mu=0 leads to no diversity, mu=3/L leads to high diversity through randomness while mu=1/L manages to strike a middle ground (and reach the target).}
-	\label{fig:b1output3}
-\todo[inline]{Fix typo ``entrophy'' $\to$ ``entropy''. Specify what ``diversity'' is on the y-axis (mean pairwise Hamming distance / mean position-wise Shannon entropy in nats or bits?). Clarify whether this is averaged over the 10 runs and whether the band is std or min/max.}
+	\begin{minipage}[b]{0.55\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{b1_output3}
+		\captionof{figure}{Measuring the diversity of runs in two different ways, with mean position-wise Shannon entropy and pairwise Hamming distance between strings over 10 runs.}
+		\label{fig:b1output3}
+	\end{minipage}\hfill
+	\begin{minipage}[b]{0.42\linewidth}
+		\centering
+		\footnotesize
+		\setlength{\tabcolsep}{3pt}
+		\begin{tabular}{ll}
+			\toprule
+			$\mu=0$ & $\mu=3/L$ \\
+			\midrule
+			\texttt{BaturalCrmputing} [14] & \texttt{NatusYOiHxpgJijg} [7] \\
+			\texttt{BaturalCrmputing} [14] & \texttt{UttKhaaYojputioh} [7] \\
+			\texttt{BaturalCSmputing} [14] & \texttt{iattIYvCojpgOTIg} [6] \\
+			\texttt{BaturalCrmputing} [14] & \texttt{iattIBYCojpgVbnk} [6] \\
+			\bottomrule
+		\end{tabular}
+		\captionof{table}{Top 4 individuals at generation 100 ($K=2$, fitness in brackets). The $\mu=1/L$ case is omitted because the population has already converged on the target.}
+		\label{tab:b1_qualitative}
+	\end{minipage}
 \end{figure}
+
+Measuring the diversity of runs with different values of $\mu$, both Shannon entropy and and Hamming distance show that mu=0 leads to low diversity, mu=3/L leads to very high diversity, while mu=1/L manages to strike a middle ground (and reach the target) (Figure \ref{fig:b1output3}). In the qualitative results, we can observe that $\mu=0$ collapses to near-identical copies stuck at a local optimum; $\mu=3/L$ stays far from the target \texttt{NaturalComputing} with very different strings (Table \ref{tab:b1_qualitative}).
+
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.7\linewidth]{b1_output4}
-	\caption{Higher tournament size increases selection pressure. We repeat the mu sweep to see how this interacts with mutation rate. K=5 leads to results faster \& can also converge with mu=2/L, though mu=1/L remains optimal.}
+	\caption{Joint graph exploring different $\mu$ for both $K=2$ and $K=5$. Runs are capped at 200 generations.}
 	\label{fig:b1output4}
 \end{figure}
-\todo[inline]{MISSING FIGURE for B.1 Q5: a plot of $\mu$ vs $t_{\text{finish}}$ over $\sim$10 $\mu$ values from 0 to $10/L$, with the optimum annotated. The parameter table already promises this sweep --- deliver the figure and state the optimal $\mu$ in prose (e.g. ``$\mu^\star \approx 1/L$ for $K=2$, shifting toward $\approx 2/L$ for $K=5$'').}
-\todo[inline]{Add a short ``B1 take-away'' paragraph after the figures: (1) optimal $\mu \approx 1/L$; (2) too low $\mu$ $\to$ premature convergence (diversity collapse visible in Fig.~\ref{fig:b1output3}); (3) too high $\mu$ $\to$ random walk, never converges; (4) higher $K$ shifts tolerable $\mu$ upward (more selection pressure compensates for more noise). This directly answers B.1 Q4 and Q6.}
 
-
-
-
+We repeat the mu sweep of Figure \ref{fig:b1output2}, varying $K$ and $\mu$ more to see how a higher $K$ interacts with mutation rate. K=5 leads to results faster and can also converge with mu=2/L, though mu=1/L remains optimal. As higher tournament size increases selection pressure, it can deal with more noise. Other $\mu$'s than $1/L$ for $K=2$ and $1/L and 2/L$ for $K=5$ do not lead to convergences.
 
 
 \subsubsection*{B2}
 \todo[inline]{Add a short intro paragraph before the figures: restate the research question (``does 2-opt local search improve TSP performance beyond the extra compute it costs?''), name the two datasets, and preview that the fair-comparison answer requires wall-clock normalisation (you already argue this below --- move the argument up so the figures land with context).}
 
+In this section, we aim to explore whether 2-opt local search improves TSP performance beyond the extra compute it costs. We test on both the given TSP problem and the TSPLIB eli51 dataset. We first test both the EA and the MA implementations with an identical amount of generations.
 
+
+\begin{figure}[H]
+	\begin{minipage}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=1\linewidth]{b2_output1}
+		\caption{Diastance vs n Generations, with the mean in blue/orange and the standard deviation in light blue/orange over 10 samples. }
+		\label{fig:b2output1}
+	\end{minipage}\hfill
+	\begin{minipage}[b]{0.35\linewidth}
+		\centering
+		\includegraphics[width=1\linewidth]{b2_output2}
+		\caption{Best distance of EA and MA on both datasets.}
+		\label{fig:b2output2}
+	\end{minipage}\hfill
+	\todo[inline]{``Consistency'' --- quantify. Report std or IQR of final tour length across 10 runs for each (dataset, algorithm). Consider a Mann--Whitney U test on final tour lengths to support the claim with a $p$-value; the rubric (``Validity'') rewards statistical backing of claims.}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{minipage}[c]{0.48\linewidth}
+		\centering
+		\small
+		\setlength{\tabcolsep}{4pt}
+		\begin{tabular}{lcccc}
+			\toprule
+			& \multicolumn{2}{c}{EA} & \multicolumn{2}{c}{MA} \\
+			\cmidrule(lr){2-3} \cmidrule(lr){4-5}
+			Dataset & best & std & best & std \\
+			\midrule
+			eil51 & 519.13 & 33.09 & 428.87 & 0.25 \\
+			given & 150.76 & 10.69 & 119.94 & 0.00 \\
+			\bottomrule
+		\end{tabular}
+		\captionof{table}{Best final tour length and standard deviation over 10 runs, within the 200-generation limit.}
+		\label{tab:b2_ea_vs_ma}
+	\end{minipage}\hfill
+	\begin{minipage}[c]{0.48\linewidth}
+		On both datasets the MA reaches shorter distances within the 200-generation limit (Table \ref{tab:b2_ea_vs_ma}), and its low final standard deviation shows it consistently converges to the same solution across runs. On the other hand, the EA's spread indicates it still gets stuck in different local optima at the cut-off.
+	\end{minipage}
+\end{figure}
 
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{b2_output1}
-	\caption{Both of the datasets show MA reaching better results in fewer generations, and in total.}
-	\label{fig:b2output1}
-\todo[inline]{Caption should name the datasets on each panel, the y-axis (mean best tour length in same units as the coordinates?), and what the shaded band is. Also state the gap numerically (e.g. MA $\approx X$, EA $\approx Y$ on eil51; known optimum for eil51 is $426$, mention it).}
+	\begin{minipage}[c]{0.45\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{b2_output3}
+		\captionof{figure}{Time comparison between EA and MA both running for 200 generations, mean score over 10 runs.}
+		\label{fig:b2output3}
+	\end{minipage}\hfill
+	\begin{minipage}[c]{0.5\linewidth}
+		There is an important caveat: Per generation, MA takes much more compute \& longer than EA. It is therefore not fair to compare them in this way.
+	\end{minipage}
 \end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{b2_output2}
-	\caption{In this comparison, MA clearly beats EA in distance and consistency.}
-	\label{fig:b2output2}
-\todo[inline]{``Consistency'' --- quantify. Report std or IQR of final tour length across 10 runs for each (dataset, algorithm). Consider a Mann--Whitney U test on final tour lengths to support the claim with a $p$-value; the rubric (``Validity'') rewards statistical backing of claims.}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{b2_output3}
-	\caption{Per generation, MA takes much more compute \& longer than EA. It is therefore not fair to compare them in this way.}
-	\label{fig:b2output3}
-\end{figure}
+
 
 We considered comparing them on number of operations, but the operations of MA are only in its neighborhood, so comparing them directly with whole generations of EA would again be unfair. We therefore decided to compare wall-clock time that, while influenceable by all kinds of factors and therefore not overly scientific, provides a good baseline for real-use performance, especially if averaged over 10 runs each.
 
@@ -188,16 +240,20 @@ Comparing the MA and simple EA on the same number of generations is not a fair b
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{b2_output4}
-	\caption{If compared instead on wall-clock time, MA still converges on better values, but EA's curve also flattens to near its best result in a comparable time as MA. While EA goes through more than 11-thousand generations in this time, MA only reaches around 190.}
-	\label{fig:b2output4}
+	\begin{minipage}[b]{0.5\linewidth}
+		\centering
+		\includegraphics[width=0.7\linewidth]{b2_output4}
+		\caption{If compared instead on wall-clock time, MA still converges on better values, but EA's curve also flattens to near its best result in a comparable time as MA. While EA goes through more than 11-thousand generations in this time, MA only reaches around 190.}
+		\label{fig:b2output4}
+	\end{minipage}
+	\begin{minipage}[b]{0.45\linewidth}
+		\centering
+		\includegraphics[width=0.7\linewidth]{b2_output5}
+		\caption{While the gap has shrunk considerably from comparing by number of generations, MA still provides better and more consistent results than EA.}
+		\label{fig:b2output5}
+	\end{minipage}
 \end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{b2_output5}
-	\caption{While the gap has shrunk considerably from comparing by number of generations, MA still provides better and more consistent results than EA.}
-	\label{fig:b2output5}
-\end{figure}
+
 
 Even under a fair wall-clock comparison, the MA consistently reaches shorter and more consistent tour distances than the simple EA on both datasets. The addition of local search therefore genuinely improves performance beyond what the extra computation alone can explain: 2-opt allows individuals to escape local optima that trap the plain EA, reducing both mean tour length and variance across runs.
 \todo[inline]{This is the core conclusion of B.2 --- strengthen it with numbers: ``On eil51, MA reached mean tour length $X \pm s_X$ vs EA's $Y \pm s_Y$ within the same wall-clock budget of $T$\,s (Mann--Whitney $U$, $p < 0.01$).'' Without numbers this reads as an assertion.}
