@@ -59,7 +59,6 @@ All algorithms were run single-threaded on a desktop system with a AMD Ryzen 580
 
 \begin{table}[h]
 \centering
-\caption{String Search GA Parameters}
 \begin{tabular}{ll}
 \hline
 \textbf{Parameter} & \textbf{Value} \\
@@ -74,6 +73,7 @@ Runs & 10 \\
 Max generations $G_{\max}$ & 100 \\
 \hline
 \end{tabular}
+\caption{Parameters for Exercise B1.}
 \end{table}
 \todo[inline]{Caption of this table is fine. BUT: the report mentions $G_{\max}=200$ in Fig.~\ref{fig:b1output2}'s caption while the parameter table says $G_{\max}=100$. Pick one and make them consistent, or explicitly note that the cap differs between experiments and why.}
 
@@ -103,6 +103,7 @@ Runs & 10 \\
 Datasets & eli51, TSPLIB, Custom 50-city instance\\
 \hline
 \end{tabular}
+\caption{Parameters for Exercise B2.}
 \end{table}
 \todo[inline]{Add a row for the stopping criterion / generation budget and for the wall-clock budget used in Fig.~\ref{fig:b2output4}/\ref{fig:b2output5}. Also state the 2-opt termination rule (``until no improving 2-swap remains'') already mentioned in prose --- good, but make it a table row too for quick reference.}
 
@@ -178,9 +179,9 @@ Datasets & eli51, TSPLIB, Custom 50-city instance\\
 	\label{fig:b2output3}
 \end{figure}
 
-We considered comparing them on number of operations, but the operations of MA are only in its neighbourhood, so comparing them directly with whole generations of EA would again be unfair. We therefore decided to compare wall-clock time that, while influenceable by all kinds of factors and therefore not overly scientific, provides a good baseline for real-use performance, especially if averaged over 10 runs each.
+We considered comparing them on number of operations, but the operations of MA are only in its neighborhood, so comparing them directly with whole generations of EA would again be unfair. We therefore decided to compare wall-clock time that, while influenceable by all kinds of factors and therefore not overly scientific, provides a good baseline for real-use performance, especially if averaged over 10 runs each.
 
-Comparing the MA and simple EA on the same number of generations is not a fair baseline. Each MA generation includes a full 2-opt local search over every individual in the population, making it far more computationally expensive than a single EA generation. Any advantage observed per generation could therefore reflect additional computation rather than algorithmic superiority. We considered normalising by number of fitness evaluations, but since 2-opt operates within a solution's neighbourhood its evaluation count is not directly comparable to a full population generation in the EA. We therefore compare on wall-clock time, which — while sensitive to system-level factors — provides a practical performance baseline when averaged over 10 runs.
+Comparing the MA and simple EA on the same number of generations is not a fair baseline. Each MA generation includes a full 2-opt local search over every individual in the population, making it far more computationally expensive than a single EA generation. Any advantage observed per generation could therefore reflect additional computation rather than algorithmic superiority. We considered normalizing by number of fitness evaluations, but since 2-opt operates within a solution's neighborhood its evaluation count is not directly comparable to a full population generation in the EA. We therefore compare on wall-clock time, which — while sensitive to system-level factors — provides a practical performance baseline when averaged over 10 runs.
 
 \begin{figure}[H]
 	\centering
@@ -220,6 +221,34 @@ What can you conclude about the effects of fitness scaling on selection pressure
 
 Adding constants raises all fitness all values by that amount. So it smooths out all the values. For example, when we compare f2 (which only squares X) and f4 (which squares X and adds 20), we can see that the probabilities of f4 are closer together. Probabilities are increased and reduced, so there is a much smaller gap between them, which also reduces selection pressure. 
 Multiplying by a constant does not change the selection probabilities. If we compare f2 and f3, we can see that the probabilities stay the same even if we scale it. So scaling fitness does not have an effect on the selection pressure.
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{pie_charts}
+	\caption{Selection probability of the three individuals for each
+function.}
+	\label{fig:pie_charts}
+\end{figure}
+
+
+
+\begin{table}[h]
+\centering
+\begin{tabular}{c c c c c c c c c}
+\hline
+x & f1 & p1 & f2 & p2 & f3 & p3 & f4 & p4 \\
+\hline
+2 & 2 & 0.2222 & 4  & 0.1379 & 8  & 0.1379 & 24 & 0.2697 \\
+3 & 3 & 0.3333 & 9  & 0.3103 & 18 & 0.3103 & 29 & 0.3258 \\
+4 & 4 & 0.4444 & 16 & 0.5517 & 32 & 0.5517 & 36 & 0.4045 \\
+\hline
+\end{tabular}
+\caption{Fitness function value and selection probability for each individual and each
+function.}
+\end{table}
+
 
 \subsection*{A2}
 \todo[inline]{MISSING FIGURES. Assignment A.2 requires: (i) a plot of best fitness vs.\ generations over 1500 generations for the (1+1)-GA with selection (Q1); (ii) the same plot with the no-selection variant overlaid (Q2); (iii) a figure demonstrating the performance difference using multiple runs --- e.g. mean $\pm$ std across say 20 runs, or box plots of final fitness (Q4). Text answers below are fine but unsupported without these plots.}
