@@ -36,11 +36,10 @@ By investigating the traveling salesman problem and string search, this project 
 
 
 \section*{Methods}
-\todo[inline]{Add a ``Reproducibility'' paragraph at the end of Methods: language/version (Python X.Y), RNG seeding strategy, how many runs, where the code lives (repo URL or zip), and how to reproduce each figure (e.g. ``run \texttt{python b1\_run.py --config b1.yaml} to regenerate Fig.~\ref{fig:b1output}''). Assignment explicitly requires this.}
 This project will implement a genetic algorithm (GA) for string search and memetic algorithm (MA) for traveling salesman problem. This section describes the experimental setup and design choices.
+All algorithms were run single-threaded on a desktop system with a AMD Ryzen 5800x processor.
 \subsection*{String search}
-A string search genetic algorithm was implemented and the used parameters are displayed in Table 1. "NaturalComputing" was used as the target string with a length L = 16, comprising of both lowercase and uppercase letters from an alphabet $|\Sigma|$. Since fitness is the number of characters that match the target, the maximum fitness is 16. 
-
+A string search genetic algorithm was implemented and the used parameters are displayed in Table 1. "NaturalComputing" was used as the target string with a length L = 16, containing both lowercase and uppercase letters from an alphabet $|\Sigma|$. Since fitness is the number of characters that match the target, the maximum fitness is 16. 
 
 The algorithm aims to match the target string by evolving a population of N = 200 individuals. 
 Each generation follows a few simple steps. First, during the tournament selection phase, a random subset K is drawn from the population N and the fittest string is kept for reproduction. 
@@ -50,9 +49,8 @@ Larger K values mean more potentially high-fitness strings, which can lead to th
 Then, each pair undergoes single-point crossover with a probability $p_c$ = 1, producing 2 new offsprings. Crossover selects a random index and swaps the parent's characters beyond that cutoff. Additionally, every character of the offspring has a small mutation rate $\mu$ to randomly become one of the letters from the alphabet $|\Sigma|$.
 Finally, the entire parent generation is replaced with the new offspring generation.
 
-All algorithms were run single-threaded on a desktop system with a AMD Ryzen 5800x processor.
-\todo[inline]{Add one sentence explicitly stating the diversity measures used (Hamming mean pairwise distance on a subsample; position-wise Shannon entropy $H_i = -\sum_j f_{ij}\log f_{ij}$ averaged over positions), as required by the assignment appendix. Currently this is only visible via figure captions.}
-\todo[inline]{State the stopping criterion precisely: ``A run is recorded as $t_{\text{finish}} = G_{\max}$ (right-censored) when the target is not reached.'' This matters for how the beeswarms should be read at $\mu=0$ and $\mu=3/L$.}
+Population diversity was measured using the mean pairwise Hamming distance computed on a random subsample of the population and the average position-wise Shannon entropy \[H_i = -\sum_j f_{ij} \log f_{ij},\] where $f_{ij}$ is the frequency of character j at position i. 
+Furthermore, run is terminated if it reaches target string or the maximum generations $G_{max}$ = 200. In case the target is not reached, run is recorded as $t_{finish}$ = $G_{max}$.
 
 
 \begin{table}[h]
@@ -69,26 +67,24 @@ Tournament selection $K$ & $\{2, 5\}$ \\
 Crossover probability $p_c$ & 1 \\
 Mutation rate $\mu$ & $\{0,\; 1/L,\; 3/L\}$ + sweep from 0/L to 10/L \\
 Runs & 10 \\
-Max generations $G_{\max}$ & 100 \\
+Max generations $G_{\max}$ & 200 \\
 \hline
 \end{tabular}
 \caption{Parameters for Exercise B1.}
 \end{table}
-\todo[inline]{Caption of this table is fine. BUT: the report mentions $G_{\max}=200$ in Fig.~\ref{fig:b1output2}'s caption while the parameter table says $G_{\max}=100$. Pick one and make them consistent, or explicitly note that the cap differs between experiments and why.}
+
 
 \subsection*{Traveling Salesman Problem}
-\todo[inline]{Justify the chosen parameters ($N=100$, $K=5$, $p_c=0.8$, $\mu=0.3$): one sentence citing the lecture defaults or a quick pilot run. The rubric explicitly asks whether methods are justified.}
 \todo[inline]{Describe the custom 50-city instance (how generated --- uniform random in a unit square? seed?) and which TSPLIB instance was used (eil51). Currently unclear --- a reader cannot reproduce without the code.}
 
 For the TSP, both a simple evolutionary algorithm (EA) and a memetic algorithm (MA) were implemented. Each solution is encoded as a permutation of city indices representing a tour. The simple EA uses ordered crossover (OX): a random contiguous segment is copied from one parent and the remaining cities are filled in the order they appear in the second parent. Mutation is applied via swap mutation, where two randomly selected positions in the tour are exchanged. Tournament selection ($K = 5$) is used to select parents, and generational replacement with no elitism is applied.
 
-The memetic algorithm extends the EA by applying 2-opt local search to each individual after mutation. The 2-opt procedure iteratively reverses sub-sequences of the tour to eliminate crossing edges, repeating until no improving swap can be found. This Lamarckian approach allows individuals to locally optimize their fitness before evaluation, which typically accelerates convergence. Both algorithms were evaluated on the custom 50-city dataset and on the TSPLIB benchmark instance \textit{eil51}.
+The memetic algorithm extends the EA by applying 2-opt local search to each individual after mutation. The 2-opt procedure iteratively reverses sub-sequences of the tour to eliminate crossing edges, repeating until no improving swap can be found. This Lamarckian approach allows individuals to locally optimize their fitness before evaluation, which typically accelerates convergence. Both algorithms were evaluated on the custom 51-city dataset and on the TSPLIB benchmark instance \textit{eil51}.
 
+Table 3 displays the used parameters. These parameters were chosen based on the previous exercise and further adjusted based on testing. The crossover probability was lowered to 0.8. This is high enough to help produce new better solutions, but not too high as to break already good solutions. Moreover, mutation was set to 0.3 to explore the area around solutions, and tournament selection was set to 5 as it accelerates convergence and works fairly well. Overall, these parameter settings provide balance between exploration and exploitation. 
 
 \begin{table}[h]
 \centering
-\caption{String Search GA Parameters}
-\todo[inline]{FIX CAPTION: should be ``TSP EA/MA Parameters'', not ``String Search GA Parameters'' --- copy-paste error. Also fix dataset typo ``eli51'' $\to$ ``eil51''.}
 \begin{tabular}{ll}
 \hline
 \textbf{Parameter} & \textbf{Value} \\
@@ -99,12 +95,15 @@ Crossover probability $p_c$ & 0.8 \\
 Mutation rate $\mu$ & 0.3 \\
 Local search & 2-opt \\
 Runs & 10 \\
-Datasets & eli51, TSPLIB, Custom 50-city instance\\
+Max generations $G_{\max}$ & 200 \\
+Datasets & eil51 (TSPLIB), Custom 51-city instance\\
+Stopping criterion & Fixed generations / wall-clock budget \\
+2-opt termination & Until no improving 2-swap remains \\
 \hline
 \end{tabular}
 \caption{Parameters for Exercise B2.}
 \end{table}
-\todo[inline]{Add a row for the stopping criterion / generation budget and for the wall-clock budget used in Fig.~\ref{fig:b2output4}/\ref{fig:b2output5}. Also state the 2-opt termination rule (``until no improving 2-swap remains'') already mentioned in prose --- good, but make it a table row too for quick reference.}
+
 
 
 \section*{Results}
