@@ -18,20 +18,22 @@
 \usepackage{url}
 \usepackage[T1]{fontenc}
 \usepackage{todonotes}
+\usepackage{bookmark}
+\usepackage{amssymb}
+\usepackage{multicol}
 \title{Final Project Report}
 \author{Aaron Bussche \and  David Magaram\\[0.3em] Group 28 \and Jason Kasdiran}
 \begin{document}
 	\maketitle
+\begin{multicols}{2}
 
-\section*{Introduction}
+
+\section*{Abstract}
 Final Report: Aim for a max 10 pages document, excluding references and contributions of team members. We will not subtract points for small deviations from the 10 pages, but keep in mind that if your report is much longer, there is likely an issue with conciseness / data presentation somewhere!
 
 
-\section*{Problem Statement}
-Problem statement outlining the specific goals of the work. Use the project proposal assignment and feedback as input.
-
-
-
+\section*{Introduction}
+% Problem statement outlining the specific goals of the work. Use the project proposal assignment and feedback as input.
 
 Neural Cellular Automata (NCAs) are small, shared-weight networks that grow images from a single seed pixel and can regenerate after damage, making them a promising model for robust, self-organizing systems. Their perceived robustness has led to NCAs being deployed as a defensive component in larger architectures: Xu et al. \cite{xu2024adanca} use NCA layers as plug-and-play adaptors inside Vision Transformers to make them more resistant against adversarial samples. Whether NCAs themselves can be subverted is therefore not just of theoretical interest but relevant to the security of systems that rely on them.
 
@@ -41,14 +43,8 @@ We therefore ask: \textit{can a query-only, black-box attacker using evolutionar
 
 If Growing NCAs can be influenced by this attack in a similar way as through white-box approaches, they may be less robust than priorly assumed. Otherwise, they may be safe from more realistic attack types and to be used in public-facing, but not open-weights, ML systems.  
 
-
-
-
 \section*{Related Work}
-Review of related work and how your project fits in with this. Use the project proposal assignment and feedback as input.
-
-
-
+% Review of related work and how your project fits in with this. Use the project proposal assignment and feedback as input.
 Mordvintsev et al. \cite{mordvintsev2020growing} introduced the Growing NCA model and showed that, through a sample pool training strategy and exposure to damage during training, the learned local update rules become robust enough to regenerate damaged parts. Due to this robustness, NCAs have also been used defensively: Xu et al. \cite{xu2024adanca} inserted NCA layers between vision transformer blocks to serve as an armor against adversarial attacks.
 
 On the offensive side, Randazzo et al. \cite{randazzo2021adversarial} investigated white-box vulnerabilities of Growing NCAs and showed that, while they are more resistant to local injections, they can still be reprogrammed using global state perturbations applied to every cell at every step. Similarly, Cavuoti et al. \cite{cavuoti2022adversarial} demonstrated that injecting a small number of adversarial cells into the grid can drastically alter the grown image. Both studies rely on gradient-based optimization with full access to model weights.
@@ -60,8 +56,34 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES), introduced by Hansen \
 
 
 
-\section*{Motivation}
-Motivation and description of your approach, including: methods, algorithms, evaluation/testing procedures, experimental setup, etc. Ensure that the work is reproducible given this description alone.
+\section*{Methodology and Approach}
+% Motivation and description of your approach, including: methods, algorithms, evaluation/testing procedures, experimental setup, etc. Ensure that the work is reproducible given this description alone.
+
+\subsection*{Motivation}
+To assess the true vulnerability of NCAs under a realistic threat model, we constrain the attacker to a strict black-box setting. The attacker cannot access the internal weights of the pretrained NCA, nor can they perform automatic differentiation through the grid's temporal evolution. Instead, the attacker can only provide an initial state (or intervening perturbation) and observe the final converged visual output. Because the fitness landscape of an NCA rolled out over hundreds of steps is highly non-convex and non-differentiable from a black-box perspective, we utilize CMA-ES. This evolutionary strategy is well-suited for our setup because it is derivative-free, robust to noisy objective functions, and scales well to our specific parameter space.
+
+\subsection*{Experimental Setup}
+We target a standard pretrained Growing NCA model optimized to generate a specific 2D image from a single seed pixel (e.g., the "lizard" emoji emoji model). The NCA operates on a grid of cells, each possessing a continuous state vector $x \in \mathbb{R}^{16}$.
+
+Following the framework established by Randazzo et al. \cite{randazzo2021adversarial}, we restrict our attack to a global, linear state perturbation. At each timestep of the simulation, before the NCA's convolutional update rules are applied, every cell's state vector is multiplied by a global transformation matrix $M \in \mathbb{R}^{16 \times 16}$. To maintain stability in the cellular dynamics, we restrict $M$ to be a symmetric matrix.
+
+A symmetric $16 \times 16$ matrix contains exactly 136 unique parameters (the upper triangular elements, including the diagonal). This 136-dimensional vector space forms the search space for our CMA-ES algorithm.
+To evaluate the impact of the starting distribution on the evolutionary search, we initialize the population center from three distinct points:
+\begin{itemize}
+	\item \textbf{The Identity Matrix:} This represents a "zero-damage" starting point, allowing the evolutionary search to incrementally discover minimal perturbations.
+	\item \textbf{A Random Matrix:} Initialized via a standard normal distribution to test the algorithm's ability to converge from an arbitrary, highly destructive state.
+	\item \textbf{The Baseline Gradient Matrix:} The final output matrix derived from the white-box gradient descent method used by Randazzo et al., establishing a benchmark for convergence speed and local minimum trapping.
+\end{itemize}
+
+For the initial standard deviation ($\sigma_0$), which dictates the initial search volume, we conduct a sweep across multiple magnitudes (e.g., $10^{-2}, 10^{-3}, 10^{-4}$). A smaller $\sigma_0$ is critical when starting from the identity matrix to prevent immediate catastrophic failure of the NCA rules.
+
+Poputlation size.
+
+Our final algorithm uses the following parameters: [Insert final chosen parameters here after running your grid search/ablations, e.g., $\lambda = 64, \sigma_0 = 0.0002$].
+
+\subsection*{Evaluation Metrics}
+Evaluating the success of an adversarial attack on a dynamic system like a Growing NCA requires moving beyond simple objective function minimization. To comprehensively assess the efficacy, reliability, and visual quality of the CMA-ES black-box attack against the white-box gradient baseline, we employ a multi-faceted evaluation strategy encompassing statistical, perceptual, temporal, and frequency-domain analyses.
+
 
 \section*{Results}
 Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
@@ -79,25 +101,6 @@ Conclusions. Is your line of work worth pursuing?
 \section*{Appendix}
 
 
-\subsection*{Bibliography}
-
-
-
-
-\subsection*{Author Contribution}
-Author contribution: describe each team member contributions to the project.
-
-
-\section*{Code}
-Include a link to a github repository with implementation of algorithms developed and used during the project. The repository should include
-source code,
-all data necessary to run the program (think instructions for installing external software, package versions/virtual environment, etc);
-a short manual describing how to use/run the program;
-a sample run, screenshot, or other indication of system behavior.
-
-
-
-\newpage
 \begin{thebibliography}{9}
 
 \bibitem{mordvintsev2020growing}
@@ -145,4 +148,16 @@ blog post and PyTorch implementation, 2022.
 \end{thebibliography}
 
 
+\subsection*{Author Contribution}
+Author contribution: describe each team member contributions to the project.
+
+
+\section*{Code}
+Include a link to a github repository with implementation of algorithms developed and used during the project. The repository should include
+source code,
+all data necessary to run the program (think instructions for installing external software, package versions/virtual environment, etc);
+a short manual describing how to use/run the program;
+a sample run, screenshot, or other indication of system behavior.
+
+\end{multicols}
 \end{document}
