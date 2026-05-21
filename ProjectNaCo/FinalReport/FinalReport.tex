@@ -63,7 +63,7 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES), introduced by Hansen \
 To assess the true vulnerability of NCAs under a realistic threat model, we constrain the attacker to a strict black-box setting. The attacker cannot access the internal weights of the pretrained NCA, nor can they perform automatic differentiation through the grid's temporal evolution. Instead, the attacker can only provide an initial state (or intervening perturbation) and observe the final converged visual output. Because the fitness landscape of an NCA rolled out over hundreds of steps is highly non-convex and non-differentiable from a black-box perspective, we utilize CMA-ES. This evolutionary strategy is well-suited for our setup because it is derivative-free, robust to noisy objective functions, and scales well to our specific parameter space.
 
 \subsection*{Experimental Setup}
-We target a standard pretrained Growing NCA model optimized to generate a specific 2D image from a single seed pixel (e.g., the "lizard" emoji emoji model). The NCA operates on a grid of cells, each possessing a continuous state vector $x \in \mathbb{R}^{16}$.
+We target a standard pretrained Growing NCA model optimized to generate a specific 2D image from a single seed pixel (e.g., the "lizard" emoji model). The NCA operates on a grid of cells, each possessing a continuous state vector $x \in \mathbb{R}^{16}$.
 
 Following the framework established by Randazzo et al. \cite{randazzo2021adversarial}, we restrict our attack to a global, linear state perturbation. At each timestep of the simulation, before the NCA's convolutional update rules are applied, every cell's state vector is multiplied by a global transformation matrix $M \in \mathbb{R}^{16 \times 16}$. To maintain stability in the cellular dynamics, we restrict $M$ to be a symmetric matrix.
 
@@ -77,7 +77,7 @@ To evaluate the impact of the starting distribution on the evolutionary search, 
 
 For the initial standard deviation ($\sigma_0$), which dictates the initial search volume, we conduct a sweep across multiple magnitudes (e.g., $10^{-2}, 10^{-3}, 10^{-4}$). A smaller $\sigma_0$ is critical when starting from the identity matrix to prevent immediate catastrophic failure of the NCA rules.
 
-Poputlation size.
+Population size. % Title?
 
 Our final algorithm uses the following parameters: [Insert final chosen parameters here after running your grid search/ablations, e.g., $\lambda = 64, \sigma_0 = 0.0002$].
 
