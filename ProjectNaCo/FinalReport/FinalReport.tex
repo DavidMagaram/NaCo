@@ -79,7 +79,50 @@ For the initial standard deviation ($\sigma_0$), which dictates the initial sear
 
 Population size. % Title?
 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
+	\caption{The first optuna sweep, 30 times 20 minutes with early pruning after 5 minutes}
+	\label{fig:optuna1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1_1"}
+	\caption{}
+	\label{fig:optuna11}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2"}
+	\caption{Second optuna sweep with more limited options, winner from the first round re-introduced, 20 times 20 minutes with early pruning after 5 minutes.}
+	\label{fig:optuna2}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2_1"}
+	\caption{}
+	\label{fig:optuna21}
+\end{figure}
+
+
 Our final algorithm uses the following parameters: [Insert final chosen parameters here after running your grid search/ablations, e.g., $\lambda = 64, \sigma_0 = 0.0002$].
+
+
+\begin{tabular}{|c|c|}
+	\hline
+	sigma0 & 0.0048 \\
+	\hline
+	batch\_size & 4 \\
+	\hline
+	popsize & 64 \\
+	\hline
+	decay\_factor & 0.9 \\
+	\hline
+	decay\_freq & 175 \\
+	\hline
+\end{tabular}
+
 
 \subsection*{Evaluation Metrics}
 Evaluating the success of an adversarial attack on a dynamic system like a Growing NCA requires moving beyond simple objective function minimization. To comprehensively assess the efficacy, reliability, and visual quality of the CMA-ES black-box attack against the white-box gradient baseline, we employ a multi-faceted evaluation strategy encompassing statistical, perceptual, temporal, and frequency-domain analyses.
@@ -87,6 +130,39 @@ Evaluating the success of an adversarial attack on a dynamic system like a Growi
 
 \section*{Results}
 Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{"optona & comparison output/loss graph"}
+	\caption{The best loss achieved during training and the averaged loss of the final model after training both of our implementation and the gradient-based implementation after 30 minutes of training time.}
+	\label{fig:loss-graph}
+\end{figure}
+
+While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far removed. It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{"optona & comparison output/loss plot"}
+	\caption{}
+	\label{fig:loss-plot}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{"optona & comparison output/other loss plot"}
+	\caption{}
+	\label{fig:other-loss-plot}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{"optona & comparison output/Screenshot_20260525_143522"}
+	\caption{}
+	\label{fig:screenshot20260525143522}
+\end{figure}
+
+
+
 
 
 \section*{Discussion}
@@ -109,7 +185,6 @@ A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin,
 \textit{Distill}, vol.~5, no.~2, e23, 2020.
 [Online]. Available: \url{https://distill.pub/2020/growing-ca}
 doi: \texttt{10.23915/distill.00023}.
-
 
 \bibitem{xu2024adanca}
 Y.~Xu, T.~Zhang, and S.~Süsstrunk,
