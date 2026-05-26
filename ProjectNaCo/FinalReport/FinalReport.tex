@@ -83,7 +83,7 @@ Population size. % Title?
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
-	\caption{The first optuna sweep, 30 times 20 minutes with early pruning after 5 minutes}
+	\caption{The first optuna sweep, 30 times 20 minutes with early pruning after 5 minutes. This run clearly favored a lot batch size, a population size of 32 or 64 and, multiplied together, a moderate decay (factor/frequency)}
 	\label{fig:optuna1}
 \end{figure}
 \begin{figure}[H]
@@ -95,7 +95,7 @@ Population size. % Title?
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2"}
-	\caption{Second optuna sweep with more limited options, winner from the first round re-introduced, 20 times 20 minutes with early pruning after 5 minutes.}
+	\caption{Second optuna sweep with more limited options, winner from the first round re-introduced, 20 times 20 minutes with early pruning after 5 minutes. This run favored popsize 64 over 32, a higher sigma0 and a higher decay frequency (or no decay at all, though a run with decay won overall)}
 	\label{fig:optuna2}
 \end{figure}
 \begin{figure}[H]
@@ -140,27 +140,85 @@ Results. Ensure to perform a correct experimental analysis (e.g. repeated experi
 
 While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far removed. It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
 
+% Do we need to show/disprove statistical significance here?
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{"optona & comparison output/loss plot"}
-	\caption{}
+	\includegraphics[width=1\linewidth]{"optona & comparison output/loss plot"}
+	\caption{Different ways of measuring the x-axis: time or training steps/generations. On the y-axis, the loss of the gradient-approach is always a bit better. Comparing by training steps/generation, the losses look comparable, though much more computational steps are completed per generation than per training step, making the time-based measurement approach the 'fairest' one.}
 	\label{fig:loss-plot}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{"optona & comparison output/other loss plot"}
-	\caption{}
+	\includegraphics[width=0.5\linewidth]{"optona & comparison output/other loss plot"}
+	\caption{Another way to measure the x-axis: How often does the NCA run? Here the gradient-based approach looks much better.}
 	\label{fig:other-loss-plot}
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{"optona & comparison output/Screenshot_20260525_143522"}
-	\caption{}
-	\label{fig:screenshot20260525143522}
+	\includegraphics[width=0.7\linewidth]{"optona & comparison output/goal_evolved_backprop"}
+	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack.}
+	\label{fig:goalevolvedbackprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{"optona & comparison output/grown_mutation_evolved_backprop"}
+	\caption{Left: fully grown lizard, original target image. Middle: CMA-ES attack on fully grown lizard. Right: gradient-based attack on fully grown lizard}
+	\label{fig:grownmutationevolvedbackprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/backprop"}
+	\caption{Gradient-based attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
+	\label{fig:backprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/evolved"}
+	\caption{Evolutionary attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
+	\label{fig:evolved}
 \end{figure}
 
+Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA and the target image, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/only_blurred.png"}
+	\caption{For reference: the target image transformed down and then up 4x with linear, none, and cubic interpolation algorithms in GIMP.}
+	\label{fig:only_blurred}
+\end{figure}
+
+
+\subsection*{Different starter matrices}
+
+Instead of starting from identity as attack matrix, we also tried starting from white noise \& the 8000 step gradient-optimized matrix. We used the same hyperparameter values we found using optuna to train a ~500-generation attack starting from the identify matrix.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/continued training_clean"}
+	\caption{CMA-ES does not visibly improve upon the gradient-baseline training loss within 500 generations. There is a significant jump upwards in loss after the switch, likely caused by sigma0 being too high and too big changes being made.}
+	\label{fig:continued-trainingclean}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/loss by matrix"}
+	\caption{While the model trained starting from the identity matrix and the model trained from the gradient-result-matrix continued improving, the white-noise matrix start only managed to not be worse than producing a white canvas and got stuck there. The baseline here is the loss for the starter image of white canvas with a single black pixel in the middle.}
+	\label{fig:loss-by-matrix}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/loss graph"}
+	\caption{In averaged loss after growing a full lizard from a pixel, the random matrix start sits at the empty baseline. Identity comes third place at 0.0040, gradient-only is second at 0.0038 (+- 0.000086) and the best result comes from further training the gradient output with CMA-ES at 0.0036 (+- 0.000177).}
+	\label{fig:matrix-loss-graph}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/lizard_comparison"}
+	\caption{Target (nr.1) and gradient-trained (nr. 4) lizards among CMA-ES trained ones. The third one started training on the gradient-trained matrix. The output from the white-noise trained matrix is just white, while the other ones clearly show a lizard. The Lizard trained from the gradient-trained baseline matrix seems to have the best colour accuracy, while the gradient-trained one has the most detailed white spine.}
+	\label{fig:lizardcomparison}
+\end{figure}
 
 
 
@@ -172,55 +230,77 @@ Discussion. A thorough discussion based on the analysis of the results, includin
 \section*{Conclusion}
 Conclusions. Is your line of work worth pursuing?
 
+
+
+
+
 \newpage
+
+\begin{thebibliography}{9}
+	
+	\bibitem{mordvintsev2020growing}
+	A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin,
+	``Growing neural cellular automata,''
+	\textit{Distill}, vol.~5, no.~2, e23, 2020.
+	[Online]. Available: \url{https://distill.pub/2020/growing-ca}
+	doi: \texttt{10.23915/distill.00023}.
+	
+	\bibitem{xu2024adanca}
+	Y.~Xu, T.~Zhang, and S.~Süsstrunk,
+	``AdaNCA: Neural cellular automata as adaptors for more robust vision transformer,''
+	\textit{Advances in Neural Information Processing Systems}, vol.~37, pp.~25709--25746, 2024.
+	
+	
+	\bibitem{randazzo2021adversarial}
+	E.~Randazzo, A.~Mordvintsev, E.~Niklasson, and M.~Levin,
+	``Adversarial reprogramming of neural cellular automata,''
+	\textit{Distill}, vol.~6, no.~5, e00027-004, 2021.
+	[Online]. Available: \url{https://distill.pub/selforg/2021/adversarial}
+	doi: \texttt{10.23915/distill.00027.004}.
+	
+	
+	\bibitem{cavuoti2022adversarial}
+	L.~Cavuoti, F.~Sacco, E.~Randazzo, and M.~Levin,
+	``Adversarial takeover of neural cellular automata,''
+	in \textit{Artificial Life Conference Proceedings 34}, 2022, p.~38.
+	MIT Press.
+	
+	
+	\bibitem{hansen2001cmaes}
+	N.~Hansen and A.~Ostermeier,
+	``Completely derandomized self-adaptation in evolution strategies,''
+	\textit{Evolutionary Computation}, vol.~9, no.~2, pp.~159--195, 2001.
+	
+	
+	\bibitem{greydanus2022growing}
+	S.~Greydanus,
+	``Studying growth with neural cellular automata,''
+	blog post and PyTorch implementation, 2022.
+	[Online]. Available: \url{https://greydanus.github.io/2022/05/24/studying-growth}
+	
+	
+\end{thebibliography}
+
 \appendix
 \section*{Appendix}
 
 
-\begin{thebibliography}{9}
-
-\bibitem{mordvintsev2020growing}
-A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin,
-``Growing neural cellular automata,''
-\textit{Distill}, vol.~5, no.~2, e23, 2020.
-[Online]. Available: \url{https://distill.pub/2020/growing-ca}
-doi: \texttt{10.23915/distill.00023}.
-
-\bibitem{xu2024adanca}
-Y.~Xu, T.~Zhang, and S.~Süsstrunk,
-``AdaNCA: Neural cellular automata as adaptors for more robust vision transformer,''
-\textit{Advances in Neural Information Processing Systems}, vol.~37, pp.~25709--25746, 2024.
-
-
-\bibitem{randazzo2021adversarial}
-E.~Randazzo, A.~Mordvintsev, E.~Niklasson, and M.~Levin,
-``Adversarial reprogramming of neural cellular automata,''
-\textit{Distill}, vol.~6, no.~5, e00027-004, 2021.
-[Online]. Available: \url{https://distill.pub/selforg/2021/adversarial}
-doi: \texttt{10.23915/distill.00027.004}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/visuals1"}
+	\caption{Results from Experiments starting with different matrixes.}
+	\label{fig:visuals1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/visuals2"}
+	\caption{}
+	\label{fig:visuals2}
+\end{figure}
 
 
-\bibitem{cavuoti2022adversarial}
-L.~Cavuoti, F.~Sacco, E.~Randazzo, and M.~Levin,
-``Adversarial takeover of neural cellular automata,''
-in \textit{Artificial Life Conference Proceedings 34}, 2022, p.~38.
-MIT Press.
 
 
-\bibitem{hansen2001cmaes}
-N.~Hansen and A.~Ostermeier,
-``Completely derandomized self-adaptation in evolution strategies,''
-\textit{Evolutionary Computation}, vol.~9, no.~2, pp.~159--195, 2001.
-
-
-\bibitem{greydanus2022growing}
-S.~Greydanus,
-``Studying growth with neural cellular automata,''
-blog post and PyTorch implementation, 2022.
-[Online]. Available: \url{https://greydanus.github.io/2022/05/24/studying-growth}
-
-
-\end{thebibliography}
 
 
 \subsection*{Author Contribution}
