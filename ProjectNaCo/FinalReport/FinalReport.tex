@@ -154,21 +154,59 @@ At each generation, every candidate perturbation matrix is evaluated by rolling 
 Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
 
 5 different loss functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in Table X (batch size = 4, sigma0 = 0.0048, decay factor = 0.9, decay frequency = 175).
-Losses were selected based on their relevance to this task of color change, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in an earlier section.
+Losses were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in an earlier section.
 
 
 
-\textbf{Mean Squared Error (MSE): } X
+\textbf{Mean Squared Error (MSE): } 
+MSE measures the average of the squared differences between the actual and predicted values.
+It is a pixel-wise loss that is applied to all 4 channels, where $x$ is the generated image and $t$ is the target image. 
+It squares the errors, giving more weight to larger errors, and is used as a baseline in this project.
+\begin{equation*}
+  \mathcal{L}_{\mathrm{MSE}}(x) = \frac{1}{HWC}
+  \sum_{h,w,c}\bigl(x_{hwc} - t_{hwc}\bigr)^2
+\end{equation*}
 
-\textbf{Huber: } X
 
-\textbf{Weighted RGB: } X
+\textbf{Huber: } 
+Huber loss \cite{huber1964robust} is a robust loss which combines MSE and MAE. 
+It uses MSE for small errors and switches to MAE for larger errors when $\delta$ is crossed.
+We use a small $\delta = 0.1$ threshold to use MSE for pixel errors smaller than 10\% of the full range and MAE for larger errors.
+\begin{equation*}
+  \ell_\delta(r) = \begin{cases}
+    \tfrac{1}{2}r^2 & |r| \leq \delta \\
+    \delta\!\left(|r| - \tfrac{1}{2}\delta\right) & |r| > \delta
+  \end{cases}
+\end{equation*}
 
-\textbf{Foreground-masked MSE: } X
 
-\textbf{SSIM: } X
+\textbf{Weighted RGBA: }
+This is a variant of the MSE loss that gives a higher weight to the
+specified channels: $\mathcal{L} = \frac{1}{HWC}\sum_{h,w,c} w_c
+(x_{hwc} - t_{hwc})^2$. Weights were manually set to $w = 2$ for RGB and $w = 1$ for A.
 
 
+\textbf{Foreground-masked MSE: } %Like weighted RGBA, but this one is not about which channels matter more but about which location matters more...
+This loss is a spatially weighted variant of MSE that scales each pixel's contribution by its position in the image. 
+It works similarly to weighted RGBA, however, all channels are weighted equally, pixels inside the body contribute fully, but other pixels contribute less, with background pixels contributing only 20\%. 
+\begin{equation*}
+  \mathcal{L}_{\mathrm{fg}}(x) = \frac{1}{HWC}\sum_{h,w,c}
+  \bigl(0.2 + 0.8\,t_{hw,\alpha}\bigr)\cdot\bigl(x_{hwc} - t_{hwc}\bigr)^2
+\end{equation*}
+
+
+\textbf{SSIM: }
+SSIM \cite{wang2004image} is a so-called perceptual metric that measures similarity between images by taking into account the luminance, contrast, and structure. 
+\begin{equation*}
+  \mathcal{L}_{\mathrm{SSIM}}(x) = 1 - \frac{1}{|W|}\sum_{w\in W}
+  \frac{(2\mu_x\mu_t + c_1)(2\sigma_{xt} + c_2)}
+  {(\mu_x^2+\mu_t^2+c_1)(\sigma_x^2+\sigma_t^2+c_2)}
+\end{equation*}
+
+
+
+\subsection*{Results - Losses}
+Table \ref{tab:losses} displays the evaluation metrics for the explored losses. 
 
 \begin{table}[H]
 \centering
@@ -180,16 +218,31 @@ Loss  & SSIM (higher) & LPIPS (lower) & FFT (lower) \\ %Blue?
 \midrule
 MSE  & 0.9245  & 0.0959 & 0.5410\\
 Huber  & 0.9349  & 0.0972 & 0.4949  \\
-Weighted RGB  & 0.9389  & 0.1289 & 0.4892  \\
+Weighted RGBA  & 0.9334  & 0.1034 & 0.5439  \\
 Foreground-masked MSE  & 0.9268  & 0.1173 & 0.5760  \\
-SSIM & 0.9497 & 0.1970 & 0.3617  \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
+SSIM $\star$ & 0.9497 & 0.1970 & 0.3617  \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
 % Goodheart's law = when measure becomes target it stops being a good measure...? 
 \bottomrule
 \end{tabular}}
-\caption{Losses with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better.}
+\caption{Losses with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better. $\star$ means that the lizard did not turn blue.}
 \end{table}
 
 
+As it can be seen from the table, all losses perform similarly well. However, out of all the losses, Huber performs the best overall, achieving the highest SSIM of 0.9349, the lowest FFT of 0.4949, and the second lowest LPIPS of 0.0972. 
+
+While quantitative metrics are a good indicator of performance, they do not fully reflect the actual results. In order to do that, we need to also inspect the produced final images displayed in Figure~\ref{fig:loss_mean_tgt}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/losses_mean_target.png"}
+	\caption{}
+	\label{fig:loss_mean_tgt}
+\end{figure}
+
+Although the SSIM loss has technically the highest SSIM and lowest FFT, it fails the task of turning the lizard blue. This is most likely due to fact that the green lizard to a large degree already satisfies its measures of luminance, contrast, and structure.
+This is an example of a phenomenon called Goodhart's law \cite{strathern1997improving} which states that when a measure becomes a target, it ceases to be a good measure.
+
+% Also something like: "While metrics are a good indicator of performance, we need to inspect the produced images as well in order to ___.... "
 % Probably put results in results??!
 
 
@@ -351,6 +404,22 @@ Conclusions. Is your line of work worth pursuing?
     R.~Zhang, P.~Isola, A.~A.~Efros, E.~Shechtman, and O.~Wang,
     ``The unreasonable effectiveness of deep features as a perceptual metric,''
     in \textit{Proceedings of the IEEE conference on computer vision and pattern recognition (CVPR)}, 2018, pp.~586--595.
+
+	\bibitem{huber1964robust}
+	P.~J. Huber,
+	``Robust Estimation of a Location Parameter,''
+	\emph{The Annals of Mathematical Statistics},
+	vol.~35, no.~1, pp.~73--101, 1964.
+	[Online]. Available: \url{https://doi.org/10.1214/aoms/1177703732}
+
+	\bibitem{strathern1997improving}
+	M.~Strathern,
+	``‘Improving ratings’: audit in the British University system,''
+	\emph{European Review},
+	vol.~5, no.~3, pp.~305--321, 1997.
+	[Online]. Available: \url{https://doi.org/10.1002/(SICI)1234-981X(199707)5:3<305::AID-EURO184>3.0.CO;2-4}
+
+
 \end{thebibliography}
 
 \appendix
