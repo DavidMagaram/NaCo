@@ -205,49 +205,6 @@ SSIM \cite{wang2004image} is a so-called perceptual metric that measures similar
 
 
 
-\subsection*{Results - Losses}
-Table \ref{tab:losses} displays the evaluation metrics for the explored losses. 
-
-\begin{table}[H]
-\centering
-\label{tab:losses}
-\resizebox{\linewidth}{!}{%
-\begin{tabular}{@{}lcccccc@{}}
-\toprule
-Loss  & SSIM (higher) & LPIPS (lower) & FFT (lower) \\ %Blue?
-\midrule
-MSE  & 0.9245  & 0.0959 & 0.5410\\
-Huber  & 0.9349  & 0.0972 & 0.4949  \\
-Weighted RGBA  & 0.9334  & 0.1034 & 0.5439  \\
-Foreground-masked MSE  & 0.9268  & 0.1173 & 0.5760  \\
-SSIM $\star$ & 0.9497 & 0.1970 & 0.3617  \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
-% Goodheart's law = when measure becomes target it stops being a good measure...? 
-\bottomrule
-\end{tabular}}
-\caption{Losses with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better. $\star$ means that the lizard did not turn blue.}
-\end{table}
-
-
-As it can be seen from the table, all losses perform similarly well. However, out of all the losses, Huber performs the best overall, achieving the highest SSIM of 0.9349, the lowest FFT of 0.4949, and the second lowest LPIPS of 0.0972. 
-
-While quantitative metrics are a good indicator of performance, they do not fully reflect the actual results. In order to do that, we need to also inspect the produced final images displayed in Figure~\ref{fig:loss_mean_tgt}.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"starter matrices experiment/losses_mean_target.png"}
-	\caption{}
-	\label{fig:loss_mean_tgt}
-\end{figure}
-
-Although the SSIM loss has technically the highest SSIM and lowest FFT, it fails the task of turning the lizard blue. This is most likely due to fact that the green lizard to a large degree already satisfies its measures of luminance, contrast, and structure.
-This is an example of a phenomenon called Goodhart's law \cite{strathern1997improving} which states that when a measure becomes a target, it ceases to be a good measure.
-
-% Also something like: "While metrics are a good indicator of performance, we need to inspect the produced images as well in order to ___.... "
-% Probably put results in results??!
-
-
-
-
 \section*{Results}
 Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
 
@@ -339,6 +296,55 @@ Instead of starting from identity as attack matrix, we also tried starting from 
 	\caption{Target (nr.1) and gradient-trained (nr. 4) lizards among CMA-ES trained ones. The third one started training on the gradient-trained matrix. The output from the white-noise trained matrix is just white, while the other ones clearly show a lizard. The Lizard trained from the gradient-trained baseline matrix seems to have the best colour accuracy, while the gradient-trained one has the most detailed white spine.}
 	\label{fig:lizardcomparison}
 \end{figure}
+
+
+
+\subsection*{Results - Losses}
+Table \ref{tab:losses} displays the evaluation metrics for the explored losses. 
+
+\begin{table}[H]
+\centering
+\label{tab:losses}
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Loss  & SSIM (higher) & LPIPS (lower) & FFT (lower) \\ %Blue?
+\midrule
+MSE  & 0.9245  & 0.0959 & 0.5410\\
+Huber  & 0.9349  & 0.0972 & 0.4949  \\
+Weighted RGBA  & 0.9334  & 0.1034 & 0.5439  \\
+Foreground-masked MSE  & 0.9268  & 0.1173 & 0.5760  \\
+SSIM $\star$ & 0.9497 & 0.1970 & 0.3617  \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
+% Goodheart's law = when measure becomes target it stops being a good measure...? 
+\bottomrule
+\end{tabular}}
+\caption{Losses with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better. $\star$ means that the lizard did not turn blue.}
+\end{table}
+
+
+As can be seen from the table, all losses perform similarly well. However, out of all the losses, Huber performs the best overall, achieving the highest SSIM of 0.9349, the lowest FFT of 0.4949, and the second lowest LPIPS of 0.0972. 
+
+While quantitative metrics are a good indicator of performance, they do not fully reflect the actual results. In order to do that, we need to also inspect the produced final images displayed in Figure~\ref{fig:loss_mean_tgt}, which shows the mean grown image averaged over 8 rollouts using the final perturbation matrix for each of the losses, along with the target image.
+All losses, except the SSIM, can successfully recolor the lizard, however, there are visible differences.
+Huber produces the sharpest looking result consistent with its performance across all metrics, but the limbs and the head have green residue and the edges of the body are much darker compared to others.
+MSE produces a similar result with slightly better colors. Although it is less sharper and lacks behind in some metrics, the results look to be on par with Huber. 
+The weighted RGBA and the Foreground-masked MSE both produce noticeably blurry results. Comparing the two, weighted RGBA better handles color and does not produce pink eyes.
+Lastly, although the SSIM has technically the highest SSIM and lowest FFT, it fails the task of turning the lizard blue. This is most likely due to fact that the green lizard to a large degree already satisfies its measures of luminance, contrast, and structure.
+This is an example of a phenomenon called Goodhart's law \cite{strathern1997improving} which states that when a measure becomes a target, it ceases to be a good measure.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/losses_mean_target.png"}
+	\caption{Mean grown image averaged over 8 rollouts using the final perturbation matrix for each of the 5 losses, along with the target image. }
+	\label{fig:loss_mean_tgt}
+\end{figure}
+
+
+
+Overall, Huber provides the best results closest to the target, both quantitatively and visually. 
+The results show that the selection of loss function affects the quality of the output and the attack in general. 
+
 
 
 
