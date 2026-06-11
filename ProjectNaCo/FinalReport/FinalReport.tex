@@ -39,7 +39,11 @@ Neural Cellular Automata (NCAs) are small, shared-weight networks that grow imag
 
 Randazzo et al. \cite{randazzo2021adversarial} and Cavuoti et al. \cite{cavuoti2022adversarial} demonstrated targeted attacks that, for example, can make a generated lizard image lose its tail or change color. However, every published attack on NCAs relies on white-box, gradient-based methods that require full access to the model's weights and backpropagation through the rollout. Robustness claims are so far tested only against this strong threat model. Additionally, focusing on the nature-inspired roots of NCAs, a white-box is not what a realistic adversary, for instance in a biological or bioengineering setting, would plausibly have access to.
 
-We therefore ask: \textit{can a query-only, black-box attacker using evolutionary search reproduce the same targeted reprogramming of a Growing NCA, and how close does it get to the gradient-based ceiling?} We attack the NCA via a $16 \times 16$ state-perturbation matrix applied to every cell's 16-dimensional hidden state at every timestep, the same attack surface used by Randazzo et al. Our attacker observes only the final RGB output and optimizes the L2 distance to a chosen target image using CMA-ES, without ever accessing model weights, hidden channels, or gradient information.
+We therefore ask: \textit{can a query-only, black-box attacker using evolutionary search reproduce the same targeted reprogramming of a Growing NCA, and how close does it get to the gradient-based ceiling?} 
+
+\section*{Problem Statement}
+In this project we investigate whether a black-box evolutionary approach can achieve targeted reprogramming by changing Growing NCA towards a target image.  
+We attack the NCA via a $16 \times 16$ state-perturbation matrix applied to every cell's 16-dimensional hidden state at every timestep, the same attack surface used by Randazzo et al. Our attacker observes only the final RGB output and optimizes the L2 distance to a chosen target image using CMA-ES, without ever accessing model weights, hidden channels, or gradient information.
 
 If Growing NCAs can be influenced by this attack in a similar way as through white-box approaches, they may be less robust than priorly assumed. Otherwise, they may be safe from more realistic attack types and to be used in public-facing, but not open-weights, ML systems.  
 
