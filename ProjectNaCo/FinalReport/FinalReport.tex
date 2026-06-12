@@ -296,6 +296,38 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
     \label{fig:other-loss-plot}
 \end{figure}
 
+To contextualize the computational cost and environmental footprint of different methods, we tracked carbon emissions and energy consumption 
+during the optimization process. For a fair comparison of convergence efficiency, each method was run until it reached a target log10 loss of -2.5.
+
+As detailed in Table \ref{tab:emissions-metrics} and illustrated in Figure \ref{fig:emissions-plot}, the gradient approach is substantially more 
+efficient. It successfully reached the target loss in roughly half the time and consumed approximately half the overall energy compared to the 
+evolutionary approach. 
+% In contrast, all of the evolutionary approaches exhausted the 600-generation limit with the white noise initialization far from
+% crossing the -2.5 threshold.
+\begin{table}[H]
+    \centering
+	\resizebox{\linewidth}{!}{
+    \begin{tabular}{lrrr}
+        \hline
+        Method & Emissions &Duration & Energy \\ 
+		\hline
+        CMA-ES & 0.015 & 1994.738 & 0.043 \\
+        % Gradient-start & 0.015 & 1981.945 & 0.043 \\
+        Gradient & 0.008 & 1024.074 & 0.022 \\
+        % White Noise & 0.015 & 1975.147 & 0.042 \\ 
+		\hline
+    \end{tabular}}
+    \caption{Environmental impact and computational cost of the evolutionary strategy and the gradient baseline. The table presents total carbon emissions in kgCO$_2$e, optimization duration in seconds, and overall energy consumed in kWh.}
+    \label{tab:emissions-metrics}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{"optona & comparison output/emissions_plot"}
+    \caption{Comparison of total carbon emissions and energy consumption breakdown (CPU, GPU, and RAM) across the evaluated methods.}
+    \label{fig:emissions-plot}
+\end{figure}
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
@@ -405,37 +437,6 @@ Instead of starting from identity as attack matrix, we also tried starting from 
     \caption{Quantitative comparison of evaluation metrics across different attack initializations and the gradient baseline. Higher SSIM, lower LPIPS, lower 2D-FFT, and lower TSS indicate better visual fidelity to the target image.}
     \label{tab:quantitative-metrics}
 \end{table}
-
-To contextualize the computational cost and environmental footprint of our adversarial methods, we tracked carbon emissions and energy consumption 
-during the optimization process. For a fair comparison of convergence efficiency, each method was run until it reached a target log10 loss of -2.5 
-or hit a strict ceiling of 600 generations. Because of these stopping criteria, the overall optimization durations, and the total energy consumed, 
-vary significantly across the different runs.
-
-As detailed in Table \ref{tab:emissions-metrics} and illustrated in Figure \ref{fig:emissions-plot}, the gradient approach is substantially more 
-efficient. It successfully reached the target loss in roughly half the time and consumed approximately half the overall energy compared to the 
-CMA-ES methods. In contrast, all of the evolutionary approaches exhausted the 600-generation limit with the white noise initialization far from
-crossing the -2.5 threshold.
-\begin{table}[H]
-    \centering
-	\resizebox{\linewidth}{!}{
-    \begin{tabular}{lrrr}
-        \hline
-        Method & Emissions &Duration & Energy \\ \hline
-        Identity & 0.015 & 1994.738 & 0.043 \\
-        Gradient-start & 0.015 & 1981.945 & 0.043 \\
-        Gradient & 0.008 & 1024.074 & 0.022 \\
-        White Noise & 0.015 & 1975.147 & 0.042 \\ \hline
-    \end{tabular}}
-    \caption{Environmental impact and computational cost of the different attack initializations and the gradient baseline. The table presents total carbon emissions in kgCO$_2$e, optimization duration in seconds, and overall energy consumed in kWh.}
-    \label{tab:emissions-metrics}
-\end{table}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{"optona & comparison output/emissions_plot"}
-    \caption{Comparison of total carbon emissions and energy consumption breakdown (CPU, GPU, and RAM) across the evaluated methods.}
-    \label{fig:emissions-plot}
-\end{figure}
 
 \subsection*{Different Fitness Functions}
 Table \ref{tab:losses} displays the evaluation metrics for the explored fitness functions. 

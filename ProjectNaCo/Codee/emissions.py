@@ -7,10 +7,10 @@ df = pd.read_csv('emissions.csv')
 
 # 2. Map original project names to the ones used in the report
 name_map = {
-    'Phase_2_identity': 'Identity',
-    'Phase_2_gradient-start': 'Gradient-start',
+    'Phase_2_identity': 'CMA-ES',
+    # 'Phase_2_gradient-start': 'Gradient-start',
     'Phase_1_Gradient': 'Gradient',
-    'Phase_2_random': 'White Noise'
+    # 'Phase_2_random': 'White Noise'
 }
 
 # Filter and rename
@@ -20,7 +20,7 @@ df_filtered['Method'] = df_filtered['project_name'].map(name_map)
 # Ensure the categorical order matches the report
 df_filtered['Method'] = pd.Categorical(
     df_filtered['Method'], 
-    categories=['Identity', 'Gradient-start', 'Gradient', 'White Noise'], 
+    categories=['CMA-ES', 'Gradient'], 
     ordered=True
 )
 df_filtered = df_filtered.sort_values('Method')
