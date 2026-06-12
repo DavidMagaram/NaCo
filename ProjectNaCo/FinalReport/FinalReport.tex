@@ -182,27 +182,28 @@ Furthermore, because our targets involve localized morphological changes (such a
 
 
 
-\subsection*{Losses}
+\subsection*{Different Fitness Functions}
 % Setup = What is loss/fitness...
 % What losses we use - short description of each, why...?
 % All losses evaluated on the color change task using the best found parameters (from table X) of ....
 
 % Results? New section or not?
 
-Loss function is a mathematical way of quantifying the error between a model's prediction and the actual target value. Similarly, a fitness function evaluates how good a candidate solution is.
-Both work similarly, just in different directions, and while we usually try to maximize one and minimize the other, in the settings of CMA-ES loss is fitness. 
+% Loss function is a mathematical way of quantifying the error between a model's prediction and the actual target value. Similarly, a
+% A fitness function evaluates how good a candidate solution in a evaluation strategy is.
+% Both work similarly, just in different directions, and while we usually try to maximize one and minimize the other, in the settings of CMA-ES loss is fitness. 
 
-At each generation, every candidate perturbation matrix is evaluated by rolling out the NCA for a batch of states and computing a scalar distance between the generated output and the target image. CMA-ES then uses this to update its search distribution, focusing on lower loss regions on the parameter search space. 
-Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
+At each generation, every candidate perturbation matrix is evaluated by rolling out the NCA for a batch of states and computing a scalar distance between the generated output and the target image. CMA-ES then uses this to update its search distribution.
+%  focusing on lower loss regions on the parameter search space. Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
 
-5 different loss functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in Table X (batch size = 4, sigma0 = 0.0048, decay factor = 0.9, decay frequency = 175).
-Losses were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in an earlier section.
+Five different fitness functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in table~\ref{tab:final_params}.
+Fitness functions were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in earlier.
 
 
 
 \textbf{Mean Squared Error (MSE): } 
 MSE measures the average of the squared differences between the actual and predicted values.
-It is a pixel-wise loss that is applied to all 4 channels, where $x$ is the generated image and $t$ is the target image. 
+It is a pixel-wise fitness function that is applied to all 4 channels, where $x$ is the generated image and $t$ is the target image. 
 It squares the errors, giving more weight to larger errors, and is used as a baseline in this project.
 \begin{equation*}
   \mathcal{L}_{\mathrm{MSE}}(x) = \frac{1}{HWC}
@@ -211,7 +212,7 @@ It squares the errors, giving more weight to larger errors, and is used as a bas
 
 
 \textbf{Huber: } 
-Huber loss \cite{huber1964robust} is a robust loss which combines MSE and MAE. 
+Huber loss \cite{huber1964robust} is a robust fitness function which combines MSE and MAE. 
 It uses MSE for small errors and switches to MAE for larger errors when $\delta$ is crossed.
 We use a small $\delta = 0.1$ threshold to use MSE for pixel errors smaller than 10\% of the full range and MAE for larger errors.
 \begin{equation*}
@@ -223,13 +224,13 @@ We use a small $\delta = 0.1$ threshold to use MSE for pixel errors smaller than
 
 
 \textbf{Weighted RGBA: }
-This is a variant of the MSE loss that gives a higher weight to the
+This is a variant of the MSE function that gives a higher weight to the
 specified channels: $\mathcal{L} = \frac{1}{HWC}\sum_{h,w,c} w_c
 (x_{hwc} - t_{hwc})^2$. Weights were manually set to $w = 2$ for RGB and $w = 1$ for A.
 
 
 \textbf{Foreground-masked MSE: } %Like weighted RGBA, but this one is not about which channels matter more but about which location matters more...
-This loss is a spatially weighted variant of MSE that scales each pixel's contribution by its position in the image. 
+This fitness function is a spatially weighted variant of MSE that scales each pixel's contribution by its position in the image. 
 It works similarly to weighted RGBA, however, all channels are weighted equally, pixels inside the body contribute fully, but other pixels contribute less, with background pixels contributing only 20\%. 
 \begin{equation*}
   \mathcal{L}_{\mathrm{fg}}(x) = \frac{1}{HWC}\sum_{h,w,c}
@@ -238,13 +239,13 @@ It works similarly to weighted RGBA, however, all channels are weighted equally,
 
 
 \textbf{SSIM: }
-SSIM \cite{wang2004image} is a so-called perceptual metric that measures similarity between images by taking into account the luminance, contrast, and structure. 
+As detailed in the Evaluation Metrics section, we also explore SSIM \cite{wang2004image} as an alternative fitness function to explicitly optimize for structural and perceptual similarity.
 \begin{equation*}
-  \mathcal{L}_{\mathrm{SSIM}}(x) = 1 - \frac{1}{|W|}\sum_{w\in W}
-  \frac{(2\mu_x\mu_t + c_1)(2\sigma_{xt} + c_2)}
-  {(\mu_x^2+\mu_t^2+c_1)(\sigma_x^2+\sigma_t^2+c_2)}
+\begin{split}
+  \mathcal{L}_{\mathrm{SSIM}}(x) &= 1 - \frac{1}{|W|}\sum_{w\in W} \\
+  &\quad \frac{(2\mu_x\mu_t + c_1)(2\sigma_{xt} + c_2)}{(\mu_x^2+\mu_t^2+c_1)(\sigma_x^2+\sigma_t^2+c_2)}
+\end{split}
 \end{equation*}
-
 
 
 \section*{Results}
