@@ -28,24 +28,29 @@
 \begin{multicols}{2}
 
 
-\section*{Abstract}
-Final Report: Aim for a max 10 pages document, excluding references and contributions of team members. We will not subtract points for small deviations from the 10 pages, but keep in mind that if your report is much longer, there is likely an issue with conciseness / data presentation somewhere!
-
 
 \section*{Introduction}
-% Problem statement outlining the specific goals of the work. Use the project proposal assignment and feedback as input.
 
 Neural Cellular Automata (NCAs) are small, shared-weight networks that grow images from a single seed pixel and can regenerate after damage, making them a promising model for robust, self-organizing systems. Their perceived robustness has led to NCAs being deployed as a defensive component in larger architectures: Xu et al. \cite{xu2024adanca} use NCA layers as plug-and-play adaptors inside Vision Transformers to make them more resistant against adversarial samples. Whether NCAs themselves can be subverted is therefore not just of theoretical interest but relevant to the security of systems that rely on them.
 
 Randazzo et al. \cite{randazzo2021adversarial} and Cavuoti et al. \cite{cavuoti2022adversarial} demonstrated targeted attacks that, for example, can make a generated lizard image lose its tail or change color. However, every published attack on NCAs relies on white-box, gradient-based methods that require full access to the model's weights and backpropagation through the rollout. Robustness claims are so far tested only against this strong threat model. Additionally, focusing on the nature-inspired roots of NCAs, a white-box is not what a realistic adversary, for instance in a biological or bioengineering setting, would plausibly have access to.
 
-We therefore ask: \textit{can a query-only, black-box attacker using evolutionary search reproduce the same targeted reprogramming of a Growing NCA, and how close does it get to the gradient-based ceiling?} 
+%We therefore ask: \textit{can a query-only, black-box attacker using evolutionary search reproduce the same targeted reprogramming of a Growing NCA, and how close does it get to the gradient-based ceiling?} 
 
 \section*{Problem Statement}
-In this project we investigate whether a black-box evolutionary approach can achieve targeted reprogramming by changing Growing NCA towards a target image.  
-We attack the NCA via a $16 \times 16$ state-perturbation matrix applied to every cell's 16-dimensional hidden state at every timestep, the same attack surface used by Randazzo et al. Our attacker observes only the final RGB output and optimizes the L2 distance to a chosen target image using CMA-ES, without ever accessing model weights, hidden channels, or gradient information.
+% Problem statement outlining the specific goals of the work. Use the project proposal assignment and feedback as input.
 
-If Growing NCAs can be influenced by this attack in a similar way as through white-box approaches, they may be less robust than priorly assumed. Otherwise, they may be safe from more realistic attack types and to be used in public-facing, but not open-weights, ML systems.  
+In this project we investigate whether a query-only, black-box attacker using evolutionary search can reproduce the same targeted reprogramming of a Growing NCA by changing it towards the target image, and how close does it get to the gradient-based ceiling.
+
+The goal is to find a $16 \times 16$ state-perturbation matrix that when applied to every cell's 16-dimensional hidden state at every timestep forces the NCA to grow into the target image rather than to its original form, which is the same attack surface used by Randazzo et al. \cite{randazzo2021adversarial}. 
+In our approach the attacker can only observe the final RGB output and optimize the L2 distance to a chosen target image using the CMA-ES evolutionary algorithm, without ever accessing model weights or gradient information.  
+
+%We attack the NCA via a $16 \times 16$ state-perturbation matrix applied to every cell's 16-dimensional hidden state at every timestep, the same attack surface used by Randazzo et al. Our attacker observes only the final RGB output and optimizes the L2 distance to a chosen target image using CMA-ES, without ever accessing model weights, hidden channels, or gradient information.
+
+We evaluate if our black-box attack can influence the Growing NCA in a similar way as the white-box approach. If the evolutionary attacker approaches the gradient ceiling, it suggests that NCAs may be vulnerable and less robust than previously assumed. However, if it fails to closely approach that ceiling, then the NCAs may be considered safe from more realistic attack types and safe to be used in public-facing, but not open-weights, machine learning systems. 
+
+%If Growing NCAs can be influenced by this attack in a similar way as through white-box approaches, they may be less robust than previously assumed. Otherwise, they may be safe from more realistic attack types and to be used in public-facing, but not open-weights, ML systems.  
+
 
 \section*{Related Work}
 % Review of related work and how your project fits in with this. Use the project proposal assignment and feedback as input.
