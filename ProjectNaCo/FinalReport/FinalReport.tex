@@ -169,35 +169,41 @@ While the Mean Squared Error (MSE, or $L_2$ distance) is utilized as the primary
 \textbf{Target-Specific Semantic Score (TSS)}: While automated metrics like SSIM and LPIPS capture structural and deep feature similarities, they can occasionally overlook distinct morphological traits critical to the specific target image (e.g., the accurate formation of individual limbs or highly localized color patterns). To bridge the gap between qualitative human perception and quantitative evaluation, we implement a Target-Specific Semantic Score. This metric systematically assesses five key features of the generated morphology: Granularity, Bodily Parts, Blueness, Dorsal Stripe, and Head Features. 
 Each feature is evaluated on a discrete scale from $1$ (highly degraded) to $4$ (excellent target match). The final composite score $\sum TSS$ is then min-max normalized to yield a continuous value $TSS_{norm} \in [0, 1]$ according to the following formula:$$TSS_{norm} = \frac{\sum TSS - 5}{15}$$where a score closer to $1.0$ indicates superior structural and morphological alignment with the target. The comprehensive evaluation rubric detailing the specific criteria for each score is provided in table \ref{tab:visual-rubric}.
 
-\textbf{Frequency-Domain Analysis (2D-FFT):} Adversarial reprogramming of cellular automata relies on altering local convolutional updates, which frequently introduces high-frequency structural noise (e.g., checkerboard artifacts) not heavily penalized by spatial loss functions. To quantify these artifacts, we perform a 2D Fast Fourier Transform (2D-FFT) on the grayscale representations of the generated and target images. We compute the mean absolute difference of their log-magnitude spectra:
-$$ D_{F} = \frac{1}{H \times W} \sum_{u,v} \left| \log(1 + |\mathcal{F}(\text{img}_{\text{target}})_{u,v}|) - \log(1 + |\mathcal{F}(\text{img}_{\text{grown}})_{u,v}|) \right| $$
+\textbf{2D Fast Fourier Transform (2D-FFT):} Adversarial reprogramming of cellular automata relies on altering local convolutional updates, which frequently introduces high-frequency structural noise (e.g., checkerboard artifacts) not heavily penalized by spatial loss functions. To quantify these artifacts, we perform a 2D Fast Fourier Transform (2D-FFT) on the grayscale representations of the generated and target images. We compute the mean absolute difference of their log-magnitude spectra:
+\begin{equation*}
+\begin{split}
+    D_{F} &= \frac{1}{H \times W} \sum_{u,v} \Big| \log(1 + |\mathcal{F}(\text{img}_{\text{target}})_{u,v}|) \\
+    &\quad - \log(1 + |\mathcal{F}(\text{img}_{\text{grown}})_{u,v}|) \Big|
+\end{split}
+\end{equation*}
 where $\mathcal{F}$ denotes the discrete 2D-FFT. 
 
 Furthermore, because our targets involve localized morphological changes (such as the removal of a lizard's tail or head), a global Fourier transform may average out highly localized frequency discrepancies. To address this, we implement a partitioned spectral difference metric: the images are divided into a $2 \times 2$ grid (four quadrants), and the spectral difference is calculated independently for each block and then averaged. This allows us to precisely capture localized artifacting around the explicitly altered regions of the target shapes.
 
 
 
-\subsection*{Losses}
+\subsection*{Different Fitness Functions}
 % Setup = What is loss/fitness...
 % What losses we use - short description of each, why...?
 % All losses evaluated on the color change task using the best found parameters (from table X) of ....
 
 % Results? New section or not?
 
-Loss function is a mathematical way of quantifying the error between a model's prediction and the actual target value. Similarly, a fitness function evaluates how good a candidate solution is.
-Both work similarly, just in different directions, and while we usually try to maximize one and minimize the other, in the settings of CMA-ES loss is fitness. 
+% Loss function is a mathematical way of quantifying the error between a model's prediction and the actual target value. Similarly, a
+% A fitness function evaluates how good a candidate solution in a evaluation strategy is.
+% Both work similarly, just in different directions, and while we usually try to maximize one and minimize the other, in the settings of CMA-ES loss is fitness. 
 
-At each generation, every candidate perturbation matrix is evaluated by rolling out the NCA for a batch of states and computing a scalar distance between the generated output and the target image. CMA-ES then uses this to update its search distribution, focusing on lower loss regions on the parameter search space. 
-Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
+At each generation, every candidate perturbation matrix is evaluated by rolling out the NCA for a batch of states and computing a scalar distance between the generated output and the target image. CMA-ES then uses this to update its search distribution.
+%  focusing on lower loss regions on the parameter search space. Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
 
-5 different loss functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in Table X (batch size = 4, sigma0 = 0.0048, decay factor = 0.9, decay frequency = 175).
-Losses were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in an earlier section.
+Five different fitness functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in table~\ref{tab:final_params}.
+Fitness functions were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in earlier.
 
 
 
 \textbf{Mean Squared Error (MSE): } 
 MSE measures the average of the squared differences between the actual and predicted values.
-It is a pixel-wise loss that is applied to all 4 channels, where $x$ is the generated image and $t$ is the target image. 
+It is a pixel-wise fitness function that is applied to all 4 channels, where $x$ is the generated image and $t$ is the target image. 
 It squares the errors, giving more weight to larger errors, and is used as a baseline in this project.
 \begin{equation*}
   \mathcal{L}_{\mathrm{MSE}}(x) = \frac{1}{HWC}
@@ -206,7 +212,7 @@ It squares the errors, giving more weight to larger errors, and is used as a bas
 
 
 \textbf{Huber: } 
-Huber loss \cite{huber1964robust} is a robust loss which combines MSE and MAE. 
+Huber loss \cite{huber1964robust} is a robust fitness function which combines MSE and MAE. 
 It uses MSE for small errors and switches to MAE for larger errors when $\delta$ is crossed.
 We use a small $\delta = 0.1$ threshold to use MSE for pixel errors smaller than 10\% of the full range and MAE for larger errors.
 \begin{equation*}
@@ -218,13 +224,13 @@ We use a small $\delta = 0.1$ threshold to use MSE for pixel errors smaller than
 
 
 \textbf{Weighted RGBA: }
-This is a variant of the MSE loss that gives a higher weight to the
+This is a variant of the MSE function that gives a higher weight to the
 specified channels: $\mathcal{L} = \frac{1}{HWC}\sum_{h,w,c} w_c
 (x_{hwc} - t_{hwc})^2$. Weights were manually set to $w = 2$ for RGB and $w = 1$ for A.
 
 
 \textbf{Foreground-masked MSE: } %Like weighted RGBA, but this one is not about which channels matter more but about which location matters more...
-This loss is a spatially weighted variant of MSE that scales each pixel's contribution by its position in the image. 
+This fitness function is a spatially weighted variant of MSE that scales each pixel's contribution by its position in the image. 
 It works similarly to weighted RGBA, however, all channels are weighted equally, pixels inside the body contribute fully, but other pixels contribute less, with background pixels contributing only 20\%. 
 \begin{equation*}
   \mathcal{L}_{\mathrm{fg}}(x) = \frac{1}{HWC}\sum_{h,w,c}
@@ -233,13 +239,13 @@ It works similarly to weighted RGBA, however, all channels are weighted equally,
 
 
 \textbf{SSIM: }
-SSIM \cite{wang2004image} is a so-called perceptual metric that measures similarity between images by taking into account the luminance, contrast, and structure. 
+As detailed in the Evaluation Metrics section, we also explore SSIM \cite{wang2004image} as an alternative fitness function to explicitly optimize for structural and perceptual similarity.
 \begin{equation*}
-  \mathcal{L}_{\mathrm{SSIM}}(x) = 1 - \frac{1}{|W|}\sum_{w\in W}
-  \frac{(2\mu_x\mu_t + c_1)(2\sigma_{xt} + c_2)}
-  {(\mu_x^2+\mu_t^2+c_1)(\sigma_x^2+\sigma_t^2+c_2)}
+\begin{split}
+  \mathcal{L}_{\mathrm{SSIM}}(x) &= 1 - \frac{1}{|W|}\sum_{w\in W} \\
+  &\quad \frac{(2\mu_x\mu_t + c_1)(2\sigma_{xt} + c_2)}{(\mu_x^2+\mu_t^2+c_1)(\sigma_x^2+\sigma_t^2+c_2)}
+\end{split}
 \end{equation*}
-
 
 
 \section*{Results}
@@ -286,7 +292,7 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{"optona & comparison output/other loss plot"}
-    \caption{Optimization efficiency measured by cumulative NCA state-steps. This metric }
+    \caption{Optimization efficiency measured by cumulative NCA state-steps.}
     \label{fig:other-loss-plot}
 \end{figure}
 
@@ -355,59 +361,44 @@ Instead of starting from identity as attack matrix, we also tried starting from 
 	\label{fig:lizardcomparison}
 \end{figure}
 
+\begin{table}[H]
+    \centering
+    % \renewcommand{\arraystretch}{1.2}
+	\resizebox{\linewidth}{!}{
+    \begin{tabular}{lcccc}
+        \hline
+        Method & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\downarrow$\\ 
+		 \hline
+        Identity & 0.932 & 0.081 & 0.437 & 0.4\\ 
+        Gradient-start &  0.941 &  0.070 &  0.435 &  0.5\\ 
+        Gradient & 0.934 & 0.074 & 0.439 & 0.6\\ 
+        White Noise & 0.857 & 0.551 & 1.488 & 0.0 \\ 
+		\hline
+    \end{tabular}}
+    \caption{Quantitative comparison of evaluation metrics across different attack initializations and the gradient baseline. Higher SSIM, lower LPIPS, lower 2D-FFT, and lower TSS indicate better visual fidelity to the target image.}
+    \label{tab:quantitative-metrics}
+\end{table}
 
-
-
-
-\subsection*{Results - Butterfly}
-In order to explore the capabilities of the NCA model and the CMA-ES framework, we tried to change the original lizard into a butterfly.
-For this, we only needed to change the target image.
-
-Figure \ref{fig:butterfly-steps} displays 5 images from the visualization of the training run at 5 different steps, along with the target image for comparison.
-
-Step 120 was selected because the image had the most butterfly-like shape. The overall color distribution also approximates the the target image distribution, however, the details and patterns are present.
-At 500 steps, the butterfly shape is somewhat lost. 
-After 500 steps, perturbation is turned off and the NCA starts regenerating. Because of the strange shape and pixel distribution, 2 lizards are regenerated.
-After 1000 steps, perturbation is turned back on. Again, after 120 steps the shape is the most butterfly-like, however, this time the 2 butterflies overlap because we had 2 lizards. And at 2500 steps the NCA again loses its shape.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"starter matrices experiment/butterlfly_steps.png"}
-	\caption{Images from the visualization of the training run at steps 120, 500, 1000, 1120, and 2500, with perturbation off from 500 to 1000, trained for 600 steps. Target image included.}
-	\label{fig:butterfly-steps}
-\end{figure}
-
-While the target image was not reached, it can be concluded that the task succeeded to some degree as CMA-ES managed to approximate the butterfly, both its shape and its orange color. 
-This also demonstrates the CMA-ES black-box capabilities and the NCA's impressive regenerative powers. 
-
-
-
-
-
-
-
-
-
-\subsection*{Results - Losses}
-Table \ref{tab:losses} displays the evaluation metrics for the explored losses. 
+\subsection*{Different Fitness Functions}
+Table \ref{tab:losses} displays the evaluation metrics for the explored fitness functions. 
 
 \begin{table}[H]
 \centering
-\label{tab:losses}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
-Loss  & SSIM (higher) & LPIPS (lower) & FFT (lower) \\ %Blue?
+Fitness Functions  & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ \\ %Blue?
 \midrule
-MSE  & 0.9245  & 0.0959 & 0.5410\\
-Huber  & 0.9349  & 0.0972 & 0.4949  \\
-Weighted RGBA  & 0.9334  & 0.1034 & 0.5439  \\
-Foreground-masked MSE  & 0.9268  & 0.1173 & 0.5760  \\
-SSIM $\star$ & 0.9497 & 0.1970 & 0.3617  \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
+MSE  & 0.925  & 0.096 & 0.541\\
+Huber  & 0.935  & 0.097 & 0.495  \\
+Weighted RGBA  & 0.934  & 0.103 & 0.544  \\
+Foreground-masked MSE  & 0.927  & 0.117 & 0.576  \\
+SSIM $\star$ & 0.950 & 0.197 & 0.362  \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
 % Goodheart's law = when measure becomes target it stops being a good measure...? 
 \bottomrule
 \end{tabular}}
-\caption{Losses with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better. $\star$ means that the lizard did not turn blue.}
+\caption{Fitness functions with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better. $\star$ means that the lizard did not turn blue.}
+\label{tab:losses}
 \end{table}
 
 
@@ -439,14 +430,28 @@ The results show that the selection of loss function affects the quality of the 
 
 
 \section*{Discussion}
-Discussion. A thorough discussion based on the analysis of the results, including limitations and future directions (What additional enhancements could be made? What future work should be done?)
+
+Compared to the original backpropagation version, our NCA-ES tuned adversarial attack is less effective in the same time. That said, the evolutionary version is in our opinion surprisingly not that far behind and produces results which are roughly on the same qualitative level as the ones presented by \cite{randazzo2021adversarial}. 
+\todo[inline]{also put climate results}
+\todo[inline]{put qualitative results}
+
+Now CMA-ES and the original version are both relatively successfully optimizing the same loss function, and getting to similar results with differing amounts of effort. But there are still differences in the results they produce. The end result of the gradient-optimized attack is an image with more details, but it overemphasizes the blue and is somewhat blurry. The CMA-ES trained adversarial attack leads to a more jagged image that perhaps overemphasizes the green of the edges and is more jagged and grainy, but not washed out.
+
+Crucially, both optimizers optimize in broadly the same direction and our version can further improve on top of the final results by the original approach. Seeing that CMA-ES does not lead away from the optimum but further guides toward it validates our approach. The results would likely be even better if we started the run (see figure \ref{fig:continued-trainingclean}) with a lower $sigma0$ instead of the priorly found optimal values for full training, so that it hadn't initially taken disproportionately big steps out of the local optimum. It is interesting though that the results of both optimizers do clearly have distinct characteristic looks given the same training objective, meaning they do not optimize in precisely the same direction.
+
+Our approach does not manage to recover from being initialized from a fully gaussian starter matrix, but instead produces a completely white image. These results are very similar to when we first started experimenting with our approach and, underestimating the power of the permutation matrix being multiplied once per growth step for a total of 64-96 times, set $sigma0$ too high. The big implication of small changes likely lock the model in a very unfavorable local optima that it cannot manage to climb out of, as every single step from it makes the results even worse. The standard identity matrix starter is a forgiving start, as it preserves all features of the lizard, with only the colour needing changing, so a step-by-step improvement is possible.
+
+
+\todo[inline]{write about all the other results like going from lizard to butterfly}
+\todo[inline]{limitations more clearly}
+\todo[inline]{future directions \& additional possible enhancements}
 
 
 \section*{Conclusion}
 Conclusions. Is your line of work worth pursuing?
 
 
-
+ we ball
 
 
 \newpage
@@ -549,36 +554,36 @@ a sample run, screenshot, or other indication of system behavior.
 
 \begin{table}[H]
     \centering
-    \renewcommand{\arraystretch}{1.5}
+    % \renewcommand{\arraystretch}{1.5}
     \begin{tabular}{| p{0.15\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} |}
         \hline
         \textbf{Feature} & \textbf{1 - Poor (Highly Degraded)} & \textbf{2 - Fair (Significant Artifacts)} & \textbf{3 - Good (Minor Flaws)} & \textbf{4 - Excellent (Target Match)} \\ \hline
         
-        \textbf{1. Granularity} & 
-        Edges are highly unstable; explosive noise, checkerboard artifacts, or completely blurred boundaries. & 
+        \textbf{Granularity} & 
+        Edges are highly unstable; explosive noise, or completely blurred boundaries. & 
         Significant noise or artifacting around the borders; toes are indistinguishable blobs. & 
         Edges are mostly clean; green/dark tint on extremities is visible but somewhat messy or jagged. & 
         Crisp pixelated edges; distinct green fringing correctly placed on the toes/limbs, with minimal to no stray pixels. \\ \hline
         
-        \textbf{2. Bodily Parts} & 
+        \textbf{Bodily Parts} & 
         Unrecognizable mass; missing a tail or multiple limbs. & 
         Recognizable as a lizard, but severely deformed (e.g., missing one leg, severely stunted/bloated tail). & 
         All four limbs and tail are present; minor structural anomalies or slightly incorrect proportions. & 
         Excellent anatomical structure; four distinct legs with toes, a clearly defined head, and a smoothly curving tail. \\ \hline
         
-        \textbf{3. Blueness} & 
+        \textbf{Blueness} & 
         Deep blue is largely absent, completely overtaken by noise, or shifted to the wrong hue. & 
         Blue is present but patchy, washed out, or heavily mixed with incorrect stray colors. & 
         Body is predominantly the correct deep blue; minor color bleeding or slight noise in the torso. & 
         Solid, cohesive deep blue body that contrasts sharply with the dorsal stripe and the head. \\ \hline
         
-        \textbf{4. Dorsal Stripe} & 
+        \textbf{Dorsal Stripe} & 
         Stripe is completely missing or unrecognizable. & 
         Stripe is visible but heavily fragmented, scattered, or significantly the wrong color/thickness. & 
         Stripe is visible and mostly continuous down the back, but may have minor interruptions or jaggedness. & 
-        Distinct, continuous pale yellow/white stripe running cleanly from the base of the head down the spine. \\ \hline
+        Distinct, continuous pale white stripe running cleanly from the base of the head down the spine. \\ \hline
         
-        \textbf{5. Head Features} & 
+        \textbf{Head Features} & 
         Head is indistinguishable from the body; eyes are completely missing. & 
         Head is somewhat distinct, but eyes are blurry, merged into a single blob, or missing pupils. & 
         Head shows lighter coloration; two eyes are present but slightly distorted or asymmetric. & 
