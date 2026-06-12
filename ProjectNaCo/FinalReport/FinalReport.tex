@@ -430,14 +430,28 @@ The results show that the selection of loss function affects the quality of the 
 
 
 \section*{Discussion}
-Discussion. A thorough discussion based on the analysis of the results, including limitations and future directions (What additional enhancements could be made? What future work should be done?)
+
+Compared to the original backpropagation version, our NCA-ES tuned adversarial attack is less effective in the same time. That said, the evolutionary version is in our opinion surprisingly not that far behind and produces results which are roughly on the same qualitative level as the ones presented by \cite{randazzo2021adversarial}. 
+\todo[inline]{also put climate results}
+\todo[inline]{put qualitative results}
+
+Now CMA-ES and the original version are both relatively successfully optimizing the same loss function, and getting to similar results with differing amounts of effort. But there are still differences in the results they produce. The end result of the gradient-optimized attack is an image with more details, but it overemphasizes the blue and is somewhat blurry. The CMA-ES trained adversarial attack leads to a more jagged image that perhaps overemphasizes the green of the edges and is more jagged and grainy, but not washed out.
+
+Crucially, both optimizers optimize in broadly the same direction and our version can further improve on top of the final results by the original approach. Seeing that CMA-ES does not lead away from the optimum but further guides toward it validates our approach. The results would likely be even better if we started the run (see figure \ref{fig:continued-trainingclean}) with a lower $sigma0$ instead of the priorly found optimal values for full training, so that it hadn't initially taken disproportionately big steps out of the local optimum. It is interesting though that the results of both optimizers do clearly have distinct characteristic looks given the same training objective, meaning they do not optimize in precisely the same direction.
+
+Our approach does not manage to recover from being initialized from a fully gaussian starter matrix, but instead produces a completely white image. These results are very similar to when we first started experimenting with our approach and, underestimating the power of the permutation matrix being multiplied once per growth step for a total of 64-96 times, set $sigma0$ too high. The big implication of small changes likely lock the model in a very unfavorable local optima that it cannot manage to climb out of, as every single step from it makes the results even worse. The standard identity matrix starter is a forgiving start, as it preserves all features of the lizard, with only the colour needing changing, so a step-by-step improvement is possible.
+
+
+\todo[inline]{write about all the other results like going from lizard to butterfly}
+\todo[inline]{limitations more clearly}
+\todo[inline]{future directions \& additional possible enhancements}
 
 
 \section*{Conclusion}
 Conclusions. Is your line of work worth pursuing?
 
 
-
+ we ball
 
 
 \newpage
