@@ -29,6 +29,8 @@ Assignment2/_minted-report/default.pygstyle
 *.gz
 *.json
 *.tdo
+*.report.synctex*
+*.pdf
 # *.png
 Assignment1/1C/img
 .idea/
