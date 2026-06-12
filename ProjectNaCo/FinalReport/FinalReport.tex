@@ -102,9 +102,9 @@ At each generation, the CMA-ES produced population of 64 candidate vectors. Each
 We apply step-size decay to avoid making disruptive jumps during search. There, $\sigma$ is multiplied by \texttt{decay\_factor} $= 0.9$ every \texttt{decay\_freq} $= 175$ generations. 
 The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21}.
 
-Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 8 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
+Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 4 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
 Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optuna sweep. It reveals that batch\_size is the most important hyperparameter by a significant amount.  
-In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous Optuna sweep were re-introduced, such as batch\_size 8, so we could find the remaining best hyperparameters. 
+In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous Optuna sweep were re-introduced, such as batch\_size 4, so we could find the remaining best hyperparameters. 
 This run favored population size of 64, a higher sigma0, and a higher decay frequency. 
 
 \end{multicols}
