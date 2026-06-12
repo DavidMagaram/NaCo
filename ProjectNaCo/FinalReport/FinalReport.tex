@@ -100,15 +100,17 @@ At each generation, the CMA-ES produced population of 64 candidate vectors. Each
 We apply step-size decay to avoid making disruptive jumps during search. There, $\sigma$ is multiplied by \texttt{decay\_factor} $= 0.9$ every \texttt{decay\_freq} $= 175$ generations. 
 The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21}.
 
-Figure \ref{fig:optuna1} ...
-
+Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 8 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
+Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optuna sweep. It reveals that batch\_size is the most important hyperparameter by a significant amount.  
+In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous Optuna sweep were re-introduced, such as batch\_size 8, so we could find the remaining best hyperparameters. 
+This run favored population size of 64, a higher sigma0, and a higher decay frequency. 
 
 \end{multicols}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
-	\caption{The first optuna sweep, 30 times 20 minutes with early pruning after 5 minutes. This run clearly favored a lot batch size, a population size of 32 or 64 and, multiplied together, a moderate decay (factor/frequency)}
+	\caption{First optuna sweep. It ran 30 times in 20 minutes with early pruning after 5 minutes.}
 	\label{fig:optuna1}
 \end{figure}
 \begin{figure}[H]
@@ -120,7 +122,7 @@ Figure \ref{fig:optuna1} ...
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2"}
-	\caption{Second optuna sweep with more limited options, winner from the first round re-introduced, 20 times 20 minutes with early pruning after 5 minutes. This run favored popsize 64 over 32, a higher sigma0 and a higher decay frequency (or no decay at all, though a run with decay won overall)}
+	\caption{Second optuna sweep with less options as the winners from the first round were re-introduced. It ran 20 times in 20 minutes with early pruning after 5 minutes.}
 	\label{fig:optuna2}
 \end{figure}
 \begin{figure}[H]
@@ -132,7 +134,7 @@ Figure \ref{fig:optuna1} ...
 
 
 \begin{multicols}{2}
-Our final algorithm uses the following parameters displayed in table \ref{tab:final_params}.
+Based on the two Optuna sweeps, our final algorithm uses the parameters displayed in table \ref{tab:final_params}.
 
 \begin{table}[H]
 \centering
