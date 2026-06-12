@@ -86,8 +86,9 @@ To evaluate the impact of the starting distribution on the evolutionary search, 
 
 For the initial standard deviation ($\sigma_0$), which dictates the initial search volume, we conduct a sweep across multiple magnitudes (e.g., $10^{-2}, 10^{-3}, 10^{-4}$). A smaller $\sigma_0$ is critical when starting from the identity matrix to prevent immediate catastrophic failure of the NCA rules.
 
-Population size. % Title?
+% Population size. % Title?
 
+\end{multicols}
 
 \begin{figure}[H]
 	\centering
@@ -115,10 +116,10 @@ Population size. % Title?
 \end{figure}
 
 
-Our final algorithm uses the following parameters displayed in the Table \ref{tab:final_params} below:
+\begin{multicols}{2}
+Our final algorithm uses the following parameters displayed in table \ref{tab:final_params}.
 
 \begin{table}[H]
-\label{tab:final_params}
 \centering
 \begin{tabular}{lc}
 \toprule
@@ -132,9 +133,8 @@ decay\_freq & 175 \\
 \bottomrule
 \end{tabular}
 \caption{Hyperparameter values used for CMA-ES optimization.}
-\label{tab:cmaes-hyperparameters}
+\label{tab:final_params}
 \end{table}
-
 
 
 
@@ -223,41 +223,49 @@ SSIM \cite{wang2004image} is a so-called perceptual metric that measures similar
 
 
 \section*{Results}
-Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
+% Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{"optona & comparison output/loss graph"}
+	\includegraphics[width=1\linewidth]{"optona & comparison output/loss graph"}
 	\caption{The best loss achieved during training and the averaged loss of the final model after training both of our implementation and the gradient-based implementation after 30 minutes of training time.}
 	\label{fig:loss-graph}
 \end{figure}
 
 While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far removed. It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
 
-% Do we need to show/disprove statistical significance here?
 
+% Do we need to show/disprove statistical significance here?
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/loss plot"}
+	\includegraphics[width=1\linewidth]{"optona & comparison output/loss plot 1"}
 	\caption{Different ways of measuring the x-axis: time or training steps/generations. On the y-axis, the loss of the gradient-approach is always a bit better. Comparing by training steps/generation, the losses look comparable, though much more computational steps are completed per generation than per training step, making the time-based measurement approach the 'fairest' one.}
 	\label{fig:loss-plot}
 \end{figure}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.5\linewidth]{"optona & comparison output/other loss plot"}
+	\includegraphics[width=1\linewidth]{"optona & comparison output/loss plot 2"}
 	\caption{Another way to measure the x-axis: How often does the NCA run? Here the gradient-based approach looks much better.}
 	\label{fig:other-loss-plot}
 \end{figure}
+
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{"optona & comparison output/goal_evolved_backprop"}
+	\includegraphics[width=1\linewidth]{"optona & comparison output/other loss plot"}
+	\caption{Another way to measure the x-axis: How often does the NCA run? Here the gradient-based approach looks much better.}
+	\label{fig:other-loss-plot}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
 	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack.}
 	\label{fig:goalevolvedbackprop}
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.7\linewidth]{"optona & comparison output/grown_mutation_evolved_backprop"}
+	\includegraphics[width=1\linewidth]{"optona & comparison output/grown_mutation_evolved_backprop"}
 	\caption{Left: fully grown lizard, original target image. Middle: CMA-ES attack on fully grown lizard. Right: gradient-based attack on fully grown lizard}
 	\label{fig:grownmutationevolvedbackprop}
 \end{figure}
