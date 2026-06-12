@@ -357,6 +357,37 @@ Instead of starting from identity as attack matrix, we also tried starting from 
 
 
 
+
+
+\subsection*{Results - Butterfly}
+In order to explore the capabilities of the NCA model and the CMA-ES framework, we tried to change the original lizard into a butterfly.
+For this, we only needed to change the target image.
+
+Figure \ref{fig:butterfly-steps} displays 5 images from the visualization of the training run at 5 different steps, along with the target image for comparison.
+
+Step 120 was selected because the image had the most butterfly-like shape. The overall color distribution also approximates the the target image distribution, however, the details and patterns are present.
+At 500 steps, the butterfly shape is somewhat lost. 
+After 500 steps, perturbation is turned off and the NCA starts regenerating. Because of the strange shape and pixel distribution, 2 lizards are regenerated.
+After 1000 steps, perturbation is turned back on. Again, after 120 steps the shape is the most butterfly-like, however, this time the 2 butterflies overlap because we had 2 lizards. And at 2500 steps the NCA again loses its shape.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/butterlfly_steps.png"}
+	\caption{Images from the visualization of the training run at steps 120, 500, 1000, 1120, and 2500, with perturbation off from 500 to 1000, trained for 600 steps. Target image included.}
+	\label{fig:butterfly-steps}
+\end{figure}
+
+While the target image was not reached, it can be concluded that the task succeeded to some degree as CMA-ES managed to approximate the butterfly, both its shape and its orange color. 
+This also demonstrates the CMA-ES black-box capabilities and the NCA's impressive regenerative powers. 
+
+
+
+
+
+
+
+
+
 \subsection*{Results - Losses}
 Table \ref{tab:losses} displays the evaluation metrics for the explored losses. 
 
