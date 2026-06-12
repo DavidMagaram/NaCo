@@ -225,6 +225,9 @@ SSIM \cite{wang2004image} is a so-called perceptual metric that measures similar
 \section*{Results}
 % Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
 
+While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far off (figure~\ref{fig:loss-graph}). 
+It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/loss graph"}
@@ -232,29 +235,39 @@ SSIM \cite{wang2004image} is a so-called perceptual metric that measures similar
 	\label{fig:loss-graph}
 \end{figure}
 
-While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far removed. It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
-
 
 % Do we need to show/disprove statistical significance here?
+To compare the optimization efficiency of the black-box CMA-ES attack against the gradient-based baseline, we 
+tracked the convergence of the $\log_{10}$ objective loss across three different independent variables, namely wall-clock time, 
+algorithmic iterations, and cumulative NCA state-steps. Given the fundamentally different mechanics of 
+population-based search versus gradient descent, relying on a single metric does not provide the full picture. 
+Wall-clock time serves as a practical benchmark for real-world adversarial feasibility; by this measure, 
+the evolutionary attack is highly competitive. Figure~\ref{fig:loss-plot-1} shows that the gradient-based baseline completes 
+significantly more update steps and converges to a marginally lower final loss than the CMA-ES attack.
+While the loss per iteration (figure~\ref{fig:loss-plot-2}) appears superficially comparable, this metric masks the differing computational payloads.
+A single CMA-ES iteration evaluates an entire population of candidates, whereas the gradient-based iteration evaluates a single mini-batch.
+The loss per cumulative NCA state-steps (figure~\ref{fig:other-loss-plot}) isolates forward-pass sample efficiency, highlighting that the CMA-ES attack requires 
+roughly an order of magnitude more simulation steps to achieve convergence compared to the gradient-based baseline.
+Thus, when analyzing the loss per iteration or per cumulative NCA state-step, the inherent sample inefficiency of the CMA-ES attack becomes apparent.
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/loss plot 1"}
-	\caption{Different ways of measuring the x-axis: time or training steps/generations. On the y-axis, the loss of the gradient-approach is always a bit better. Comparing by training steps/generation, the losses look comparable, though much more computational steps are completed per generation than per training step, making the time-based measurement approach the 'fairest' one.}
-	\label{fig:loss-plot}
+    \centering
+    \includegraphics[width=1\linewidth]{"optona & comparison output/loss plot 1"}
+    \caption{Convergence of the objective loss plotted against wall-clock time (approximately 30 minutes).}
+    \label{fig:loss-plot-1}
 \end{figure}
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/loss plot 2"}
-	\caption{Another way to measure the x-axis: How often does the NCA run? Here the gradient-based approach looks much better.}
-	\label{fig:other-loss-plot}
+    \centering
+    \includegraphics[width=1\linewidth]{"optona & comparison output/loss plot 2"}
+    \caption{Optimization trajectory measured by training iterations.}
+    \label{fig:loss-plot-2}
 \end{figure}
 
 \begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/other loss plot"}
-	\caption{Another way to measure the x-axis: How often does the NCA run? Here the gradient-based approach looks much better.}
-	\label{fig:other-loss-plot}
+    \centering
+    \includegraphics[width=1\linewidth]{"optona & comparison output/other loss plot"}
+    \caption{Optimization efficiency measured by cumulative NCA state-steps. This metric }
+    \label{fig:other-loss-plot}
 \end{figure}
 
 \begin{figure}[H]
