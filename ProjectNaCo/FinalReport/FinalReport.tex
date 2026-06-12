@@ -68,13 +68,22 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES), introduced by Hansen \
 \section*{Methodology and Approach}
 % Motivation and description of your approach, including: methods, algorithms, evaluation/testing procedures, experimental setup, etc. Ensure that the work is reproducible given this description alone.
 
-% \subsection*{Motivation}
+\subsection*{Motivation}
+
 To assess the true vulnerability of NCAs under a realistic threat model, we constrain the attacker to a strict black-box setting. The attacker cannot access the internal weights of the pretrained NCA, nor can they perform automatic differentiation through the grid's temporal evolution. Instead, the attacker can only provide an initial state (or intervening perturbation) and observe the final converged visual output. Because the fitness landscape of an NCA rolled out over hundreds of steps is highly non-convex and non-differentiable from a black-box perspective, we utilize CMA-ES. This evolutionary strategy is well-suited for our setup because it is derivative-free, robust to noisy objective functions, and scales well to our specific parameter space.
 
 \subsection*{Experimental Setup}
-We target a standard pretrained Growing NCA model optimized to generate a specific 2D image from a single seed pixel (e.g., the "lizard" emoji model). The NCA operates on a grid of cells, each possessing a continuous state vector $x \in \mathbb{R}^{16}$.
+%Neural Cellular Automata (NCAs) are small, shared-weight networks that grow images from a single seed pixel and can regenerate after damage. 
+%We use a pretrained Growing NCA model, one of a lizard emoji, introduced by Mordvintsev et al. \cite{mordvintsev2020growing}. 
+%The model operates on a W $\times$ H (40 $\times$ 40, padding 32) grid where each cell (pixel) has a 16-dimensional vector. Among the 16 channels, 3 encode RGB color, 1 encodes transparency (Alpha), and the remaining 12 are hidden.
+%The NCA is rolled out for N timesteps from a single seed pixel
 
-Following the framework established by Randazzo et al. \cite{randazzo2021adversarial}, we restrict our attack to a global, linear state perturbation. At each timestep of the simulation, before the NCA's convolutional update rules are applied, every cell's state vector is multiplied by a global transformation matrix $M \in \mathbb{R}^{16 \times 16}$. To maintain stability in the cellular dynamics, we restrict $M$ to be a symmetric matrix.
+We target a pretrained Growing NCA model optimized to generate a specific 2D image from a single seed pixel (e.g., the "lizard" emoji model) introduced by Mordvintsev et al. \cite{mordvintsev2020growing}. 
+The NCA operates on a  W $\times$ H (40 $\times$ 40, padding 32) grid of cells, where each cell (pixel) has a continuous 16-dimensional state vector $x \in \mathbb{R}^{16}$. Among the 16 channels, 3 encode RGB color, 1 encodes transparency (Alpha), and the remaining 12 are hidden.
+
+Following the framework established by Randazzo et al. \cite{randazzo2021adversarial}, we restrict our attack to a global, linear state perturbation. 
+At each timestep of the simulation, before the NCA's convolutional update rules are applied, every cell's state vector is multiplied by a global transformation matrix $M \in \mathbb{R}^{16 \times 16}$. To maintain stability in the cellular dynamics, we restrict $M$ to be a symmetric matrix.
+During CMA-ES training, the NCA is rolled out for a randomly sampled number of steps in $[64, 96]$ per generation. For evaluation, a fixed 96 steps are used.
 
 A symmetric $16 \times 16$ matrix contains exactly 136 unique parameters (the upper triangular elements, including the diagonal). This 136-dimensional vector space forms the search space for our CMA-ES algorithm.
 To evaluate the impact of the starting distribution on the evolutionary search, we initialize the population center from three distinct points:
@@ -87,6 +96,12 @@ To evaluate the impact of the starting distribution on the evolutionary search, 
 For the initial standard deviation ($\sigma_0$), which dictates the initial search volume, we conduct a sweep across multiple magnitudes (e.g., $10^{-2}, 10^{-3}, 10^{-4}$). A smaller $\sigma_0$ is critical when starting from the identity matrix to prevent immediate catastrophic failure of the NCA rules.
 
 % Population size. % Title?
+At each generation, the CMA-ES produced population of 64 candidate vectors. Each candidate is evaluated by rolling out the NCA from a batch of \texttt{batch\_size}$=4$ states taken from a sample pool of 1024 states and averaging the resulting loss. 
+We apply step-size decay to avoid making disruptive jumps during search. There, $\sigma$ is multiplied by \texttt{decay\_factor} $= 0.9$ every \texttt{decay\_freq} $= 175$ generations. 
+The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21}.
+
+Figure \ref{fig:optuna1} ...
+
 
 \end{multicols}
 
@@ -99,7 +114,7 @@ For the initial standard deviation ($\sigma_0$), which dictates the initial sear
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1_1"}
-	\caption{}
+	\caption{Hyperparameter importance during the first Optuna sweep.}
 	\label{fig:optuna11}
 \end{figure}
 \begin{figure}[H]
@@ -111,7 +126,7 @@ For the initial standard deviation ($\sigma_0$), which dictates the initial sear
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2_1"}
-	\caption{}
+	\caption{Hyperparameter importance during the second Optuna sweep.}
 	\label{fig:optuna21}
 \end{figure}
 
