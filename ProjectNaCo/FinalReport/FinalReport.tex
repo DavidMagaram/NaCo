@@ -370,10 +370,10 @@ For this, we only needed to change the target image.
 
 Figure \ref{fig:butterfly-steps} displays 5 images from the visualization of the training run at 5 different steps, along with the target image for comparison.
 
-Step 120 was selected because the image had the most butterfly-like shape. The overall color distribution also approximates the the target image distribution, however, the details and patterns are present.
+Step 120 was selected because the image had the most butterfly-like shape. The overall color distribution also approximates the the target image distribution, however, the details and patterns are not present.
 At 500 steps, the butterfly shape is somewhat lost. 
 After 500 steps, perturbation is turned off and the NCA starts regenerating. Because of the strange shape and pixel distribution, 2 lizards are regenerated.
-After 1000 steps, perturbation is turned back on. Again, after 120 steps the shape is the most butterfly-like, however, this time the 2 butterflies overlap because we had 2 lizards. And at 2500 steps the NCA again loses its shape.
+After 1000 steps, perturbation is turned back on. Again, after 120 steps the shape is the most butterfly-like, however, this time there are 2 lizards so we end up with 2 overlapping butterflies. At the end at 2500 steps the NCA again loses its shape in a similar fashion as at 500 steps.
 
 \begin{figure}[H]
 	\centering
@@ -386,6 +386,7 @@ While the target image was not reached, it can be concluded that the task succee
 This also demonstrates the CMA-ES black-box capabilities and the NCA's impressive regenerative powers. 
 
 
+\subsection*{Experiment - How long it takes to recover from an attack: Perturbation On/Off}
 
 
 
@@ -587,11 +588,15 @@ Author contribution: describe each team member contributions to the project.
 
 
 \section*{Code}
-Include a link to a github repository with implementation of algorithms developed and used during the project. The repository should include
-source code,
-all data necessary to run the program (think instructions for installing external software, package versions/virtual environment, etc);
-a short manual describing how to use/run the program;
-a sample run, screenshot, or other indication of system behavior.
+%Include a link to a github repository with implementation of algorithms developed and used during the project. The repository should include
+%source code,
+%all data necessary to run the program (think instructions for installing external software, package versions/virtual environment, etc);
+%a short manual describing how to use/run the program;
+%a sample run, screenshot, or other indication of system behavior.
+
+https://github.com/DavidMagaram/NaturalComputing 
+
+
 
 \section*{Appendix}
 
