@@ -81,11 +81,12 @@ To assess the true vulnerability of NCAs under a realistic threat model, we cons
 We target a pretrained Growing NCA model optimized to generate a specific 2D image from a single seed pixel (e.g., the "lizard" emoji model) introduced by Mordvintsev et al. \cite{mordvintsev2020growing}. 
 The NCA operates on a  W $\times$ H (40 $\times$ 40, padding 32) grid of cells, where each cell (pixel) has a continuous 16-dimensional state vector $x \in \mathbb{R}^{16}$. Among the 16 channels, 3 encode RGB color, 1 encodes transparency (Alpha), and the remaining 12 are hidden.
 
-Following the framework established by Randazzo et al. \cite{randazzo2021adversarial}, we restrict our attack to a global, linear state perturbation. 
+The gradient-based attack from Randazzo et al.~\cite{randazzo2021adversarial}, which optimizes $M$ directly via backpropagation through the full NCA rollout using MSE loss and the Adam optimizer, with complete access to model weights, serves as the performance ceiling against which our black-box approach is measured. 
+Following this framework, we restrict our attack to a global, linear state perturbation. 
 At each timestep of the simulation, before the NCA's convolutional update rules are applied, every cell's state vector is multiplied by a global transformation matrix $M \in \mathbb{R}^{16 \times 16}$. To maintain stability in the cellular dynamics, we restrict $M$ to be a symmetric matrix.
-During CMA-ES training, the NCA is rolled out for a randomly sampled number of steps in $[64, 96]$ per generation. For evaluation, a fixed 96 steps are used.
-
 A symmetric $16 \times 16$ matrix contains exactly 136 unique parameters (the upper triangular elements, including the diagonal). This 136-dimensional vector space forms the search space for our CMA-ES algorithm.
+
+
 To evaluate the impact of the starting distribution on the evolutionary search, we initialize the population center from three distinct points:
 \begin{itemize}
 	\item \textbf{The Identity Matrix:} This represents a "zero-damage" starting point, allowing the evolutionary search to incrementally discover minimal perturbations.
@@ -96,19 +97,22 @@ To evaluate the impact of the starting distribution on the evolutionary search, 
 For the initial standard deviation ($\sigma_0$), which dictates the initial search volume, we conduct a sweep across multiple magnitudes (e.g., $10^{-2}, 10^{-3}, 10^{-4}$). A smaller $\sigma_0$ is critical when starting from the identity matrix to prevent immediate catastrophic failure of the NCA rules.
 
 % Population size. % Title?
+During CMA-ES training, the NCA is rolled out for a randomly sampled number of steps in $[64, 96]$ per generation. For evaluation, a fixed 96 steps are used.
 At each generation, the CMA-ES produced population of 64 candidate vectors. Each candidate is evaluated by rolling out the NCA from a batch of \texttt{batch\_size}$=4$ states taken from a sample pool of 1024 states and averaging the resulting loss. 
 We apply step-size decay to avoid making disruptive jumps during search. There, $\sigma$ is multiplied by \texttt{decay\_factor} $= 0.9$ every \texttt{decay\_freq} $= 175$ generations. 
 The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21}.
 
-Figure \ref{fig:optuna1} ...
-
+Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 4 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
+Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optuna sweep. It reveals that batch\_size is the most important hyperparameter by a significant amount.  
+In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous Optuna sweep were re-introduced, such as batch\_size 4, so we could find the remaining best hyperparameters. 
+This run favored population size of 64, a higher sigma0, and a higher decay frequency. 
 
 \end{multicols}
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
-	\caption{The first optuna sweep, 30 times 20 minutes with early pruning after 5 minutes. This run clearly favored a lot batch size, a population size of 32 or 64 and, multiplied together, a moderate decay (factor/frequency)}
+	\caption{First optuna sweep. It ran 30 times in 20 minutes with early pruning after 5 minutes.}
 	\label{fig:optuna1}
 \end{figure}
 \begin{figure}[H]
@@ -120,7 +124,7 @@ Figure \ref{fig:optuna1} ...
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2"}
-	\caption{Second optuna sweep with more limited options, winner from the first round re-introduced, 20 times 20 minutes with early pruning after 5 minutes. This run favored popsize 64 over 32, a higher sigma0 and a higher decay frequency (or no decay at all, though a run with decay won overall)}
+	\caption{Second optuna sweep with less options as the winners from the first round were re-introduced. It ran 20 times in 20 minutes with early pruning after 5 minutes.}
 	\label{fig:optuna2}
 \end{figure}
 \begin{figure}[H]
@@ -132,7 +136,7 @@ Figure \ref{fig:optuna1} ...
 
 
 \begin{multicols}{2}
-Our final algorithm uses the following parameters displayed in table \ref{tab:final_params}.
+Based on the two Optuna sweeps, our final algorithm uses the parameters displayed in table \ref{tab:final_params}.
 
 \begin{table}[H]
 \centering
@@ -150,6 +154,7 @@ decay\_freq & 175 \\
 \caption{Hyperparameter values used for CMA-ES optimization.}
 \label{tab:final_params}
 \end{table}
+
 
 
 
@@ -177,28 +182,27 @@ Furthermore, because our targets involve localized morphological changes (such a
 
 
 
-\subsection*{Different Fitness Functions}
+\subsection*{Losses}
 % Setup = What is loss/fitness...
 % What losses we use - short description of each, why...?
 % All losses evaluated on the color change task using the best found parameters (from table X) of ....
 
 % Results? New section or not?
 
-% Loss function is a mathematical way of quantifying the error between a model's prediction and the actual target value. Similarly, a
-A fitness function evaluates how good a candidate solution in a evaluation strategy is.
-% Both work similarly, just in different directions, and while we usually try to maximize one and minimize the other, in the settings of CMA-ES loss is fitness. 
+Loss function is a mathematical way of quantifying the error between a model's prediction and the actual target value. Similarly, a fitness function evaluates how good a candidate solution is.
+Both work similarly, just in different directions, and while we usually try to maximize one and minimize the other, in the settings of CMA-ES loss is fitness. 
 
-At each generation, every candidate perturbation matrix is evaluated by rolling out the NCA for a batch of states and computing a scalar distance between the generated output and the target image. CMA-ES then uses this to update its search distribution.
-%  focusing on lower loss regions on the parameter search space. Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
+At each generation, every candidate perturbation matrix is evaluated by rolling out the NCA for a batch of states and computing a scalar distance between the generated output and the target image. CMA-ES then uses this to update its search distribution, focusing on lower loss regions on the parameter search space. 
+Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
 
-Five different fitness functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in table~\ref{tab:final_params}.
-Fitness functions were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in earlier.
+5 different loss functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in Table X (batch size = 4, sigma0 = 0.0048, decay factor = 0.9, decay frequency = 175).
+Losses were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in an earlier section.
 
 
 
 \textbf{Mean Squared Error (MSE): } 
 MSE measures the average of the squared differences between the actual and predicted values.
-It is a pixel-wise fitness function that is applied to all 4 channels, where $x$ is the generated image and $t$ is the target image. 
+It is a pixel-wise loss that is applied to all 4 channels, where $x$ is the generated image and $t$ is the target image. 
 It squares the errors, giving more weight to larger errors, and is used as a baseline in this project.
 \begin{equation*}
   \mathcal{L}_{\mathrm{MSE}}(x) = \frac{1}{HWC}
@@ -207,7 +211,7 @@ It squares the errors, giving more weight to larger errors, and is used as a bas
 
 
 \textbf{Huber: } 
-Huber loss \cite{huber1964robust} is a robust fitness function which combines MSE and MAE. 
+Huber loss \cite{huber1964robust} is a robust loss which combines MSE and MAE. 
 It uses MSE for small errors and switches to MAE for larger errors when $\delta$ is crossed.
 We use a small $\delta = 0.1$ threshold to use MSE for pixel errors smaller than 10\% of the full range and MAE for larger errors.
 \begin{equation*}
@@ -219,13 +223,13 @@ We use a small $\delta = 0.1$ threshold to use MSE for pixel errors smaller than
 
 
 \textbf{Weighted RGBA: }
-This is a variant of the MSE function that gives a higher weight to the
+This is a variant of the MSE loss that gives a higher weight to the
 specified channels: $\mathcal{L} = \frac{1}{HWC}\sum_{h,w,c} w_c
 (x_{hwc} - t_{hwc})^2$. Weights were manually set to $w = 2$ for RGB and $w = 1$ for A.
 
 
 \textbf{Foreground-masked MSE: } %Like weighted RGBA, but this one is not about which channels matter more but about which location matters more...
-This fitness function is a spatially weighted variant of MSE that scales each pixel's contribution by its position in the image. 
+This loss is a spatially weighted variant of MSE that scales each pixel's contribution by its position in the image. 
 It works similarly to weighted RGBA, however, all channels are weighted equally, pixels inside the body contribute fully, but other pixels contribute less, with background pixels contributing only 20\%. 
 \begin{equation*}
   \mathcal{L}_{\mathrm{fg}}(x) = \frac{1}{HWC}\sum_{h,w,c}
@@ -234,12 +238,11 @@ It works similarly to weighted RGBA, however, all channels are weighted equally,
 
 
 \textbf{SSIM: }
-As detailed in the Evaluation Metrics section, we also explore SSIM \cite{wang2004image} as an alternative fitness function to explicitly optimize for structural and perceptual similarity.
+SSIM \cite{wang2004image} is a so-called perceptual metric that measures similarity between images by taking into account the luminance, contrast, and structure. 
 \begin{equation*}
-\begin{split}
-  \mathcal{L}_{\mathrm{SSIM}}(x) &= 1 - \frac{1}{|W|}\sum_{w\in W} \\
-  &\quad \frac{(2\mu_x\mu_t + c_1)(2\sigma_{xt} + c_2)}{(\mu_x^2+\mu_t^2+c_1)(\sigma_x^2+\sigma_t^2+c_2)}
-\end{split}
+  \mathcal{L}_{\mathrm{SSIM}}(x) = 1 - \frac{1}{|W|}\sum_{w\in W}
+  \frac{(2\mu_x\mu_t + c_1)(2\sigma_{xt} + c_2)}
+  {(\mu_x^2+\mu_t^2+c_1)(\sigma_x^2+\sigma_t^2+c_2)}
 \end{equation*}
 
 
