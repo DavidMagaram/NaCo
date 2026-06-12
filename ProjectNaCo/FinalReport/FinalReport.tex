@@ -164,7 +164,7 @@ While the Mean Squared Error (MSE, or $L_2$ distance) is utilized as the primary
 \textbf{Target-Specific Semantic Score (TSS)}: While automated metrics like SSIM and LPIPS capture structural and deep feature similarities, they can occasionally overlook distinct morphological traits critical to the specific target image (e.g., the accurate formation of individual limbs or highly localized color patterns). To bridge the gap between qualitative human perception and quantitative evaluation, we implement a Target-Specific Semantic Score. This metric systematically assesses five key features of the generated morphology: Granularity, Bodily Parts, Blueness, Dorsal Stripe, and Head Features. 
 Each feature is evaluated on a discrete scale from $1$ (highly degraded) to $4$ (excellent target match). The final composite score $\sum TSS$ is then min-max normalized to yield a continuous value $TSS_{norm} \in [0, 1]$ according to the following formula:$$TSS_{norm} = \frac{\sum TSS - 5}{15}$$where a score closer to $1.0$ indicates superior structural and morphological alignment with the target. The comprehensive evaluation rubric detailing the specific criteria for each score is provided in table \ref{tab:visual-rubric}.
 
-\textbf{Frequency-Domain Analysis (2D-FFT):} Adversarial reprogramming of cellular automata relies on altering local convolutional updates, which frequently introduces high-frequency structural noise (e.g., checkerboard artifacts) not heavily penalized by spatial loss functions. To quantify these artifacts, we perform a 2D Fast Fourier Transform (2D-FFT) on the grayscale representations of the generated and target images. We compute the mean absolute difference of their log-magnitude spectra:
+\textbf{2D Fast Fourier Transform (2D-FFT):} Adversarial reprogramming of cellular automata relies on altering local convolutional updates, which frequently introduces high-frequency structural noise (e.g., checkerboard artifacts) not heavily penalized by spatial loss functions. To quantify these artifacts, we perform a 2D Fast Fourier Transform (2D-FFT) on the grayscale representations of the generated and target images. We compute the mean absolute difference of their log-magnitude spectra:
 \begin{equation*}
 \begin{split}
     D_{F} &= \frac{1}{H \times W} \sum_{u,v} \Big| \log(1 + |\mathcal{F}(\text{img}_{\text{target}})_{u,v}|) \\
@@ -288,7 +288,7 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{"optona & comparison output/other loss plot"}
-    \caption{Optimization efficiency measured by cumulative NCA state-steps. This metric }
+    \caption{Optimization efficiency measured by cumulative NCA state-steps.}
     \label{fig:other-loss-plot}
 \end{figure}
 
@@ -357,28 +357,44 @@ Instead of starting from identity as attack matrix, we also tried starting from 
 	\label{fig:lizardcomparison}
 \end{figure}
 
+\begin{table}[H]
+    \centering
+    % \renewcommand{\arraystretch}{1.2}
+	\resizebox{\linewidth}{!}{
+    \begin{tabular}{lcccc}
+        \hline
+        Method & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\downarrow$\\ 
+		 \hline
+        Identity & 0.932 & 0.081 & 0.437 & 0.4\\ 
+        Gradient-start &  0.941 &  0.070 &  0.435 &  0.5\\ 
+        Gradient & 0.934 & 0.074 & 0.439 & 0.6\\ 
+        White Noise & 0.857 & 0.551 & 1.488 & 0.0 \\ 
+		\hline
+    \end{tabular}}
+    \caption{Quantitative comparison of evaluation metrics across different attack initializations and the gradient baseline. Higher SSIM, lower LPIPS, lower 2D-FFT, and lower TSS indicate better visual fidelity to the target image.}
+    \label{tab:quantitative-metrics}
+\end{table}
 
-
-\subsection*{Different Losses}
-Table \ref{tab:losses} displays the evaluation metrics for the explored losses. 
+\subsection*{Different Fitness Functions}
+Table \ref{tab:losses} displays the evaluation metrics for the explored fitness functions. 
 
 \begin{table}[H]
 \centering
-\label{tab:losses}
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
-Loss  & SSIM (higher) & LPIPS (lower) & FFT (lower) \\ %Blue?
+Fitness Functions  & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ \\ %Blue?
 \midrule
-MSE  & 0.9245  & 0.0959 & 0.5410\\
-Huber  & 0.9349  & 0.0972 & 0.4949  \\
-Weighted RGBA  & 0.9334  & 0.1034 & 0.5439  \\
-Foreground-masked MSE  & 0.9268  & 0.1173 & 0.5760  \\
-SSIM $\star$ & 0.9497 & 0.1970 & 0.3617  \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
+MSE  & 0.925  & 0.096 & 0.541\\
+Huber  & 0.935  & 0.097 & 0.495  \\
+Weighted RGBA  & 0.934  & 0.103 & 0.544  \\
+Foreground-masked MSE  & 0.927  & 0.117 & 0.576  \\
+SSIM $\star$ & 0.950 & 0.197 & 0.362  \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
 % Goodheart's law = when measure becomes target it stops being a good measure...? 
 \bottomrule
 \end{tabular}}
-\caption{Losses with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better. $\star$ means that the lizard did not turn blue.}
+\caption{Fitness functions with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better. $\star$ means that the lizard did not turn blue.}
+\label{tab:losses}
 \end{table}
 
 
@@ -520,36 +536,36 @@ a sample run, screenshot, or other indication of system behavior.
 
 \begin{table}[H]
     \centering
-    \renewcommand{\arraystretch}{1.5}
+    % \renewcommand{\arraystretch}{1.5}
     \begin{tabular}{| p{0.15\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} |}
         \hline
         \textbf{Feature} & \textbf{1 - Poor (Highly Degraded)} & \textbf{2 - Fair (Significant Artifacts)} & \textbf{3 - Good (Minor Flaws)} & \textbf{4 - Excellent (Target Match)} \\ \hline
         
-        \textbf{1. Granularity} & 
-        Edges are highly unstable; explosive noise, checkerboard artifacts, or completely blurred boundaries. & 
+        \textbf{Granularity} & 
+        Edges are highly unstable; explosive noise, or completely blurred boundaries. & 
         Significant noise or artifacting around the borders; toes are indistinguishable blobs. & 
         Edges are mostly clean; green/dark tint on extremities is visible but somewhat messy or jagged. & 
         Crisp pixelated edges; distinct green fringing correctly placed on the toes/limbs, with minimal to no stray pixels. \\ \hline
         
-        \textbf{2. Bodily Parts} & 
+        \textbf{Bodily Parts} & 
         Unrecognizable mass; missing a tail or multiple limbs. & 
         Recognizable as a lizard, but severely deformed (e.g., missing one leg, severely stunted/bloated tail). & 
         All four limbs and tail are present; minor structural anomalies or slightly incorrect proportions. & 
         Excellent anatomical structure; four distinct legs with toes, a clearly defined head, and a smoothly curving tail. \\ \hline
         
-        \textbf{3. Blueness} & 
+        \textbf{Blueness} & 
         Deep blue is largely absent, completely overtaken by noise, or shifted to the wrong hue. & 
         Blue is present but patchy, washed out, or heavily mixed with incorrect stray colors. & 
         Body is predominantly the correct deep blue; minor color bleeding or slight noise in the torso. & 
         Solid, cohesive deep blue body that contrasts sharply with the dorsal stripe and the head. \\ \hline
         
-        \textbf{4. Dorsal Stripe} & 
+        \textbf{Dorsal Stripe} & 
         Stripe is completely missing or unrecognizable. & 
         Stripe is visible but heavily fragmented, scattered, or significantly the wrong color/thickness. & 
         Stripe is visible and mostly continuous down the back, but may have minor interruptions or jaggedness. & 
-        Distinct, continuous pale yellow/white stripe running cleanly from the base of the head down the spine. \\ \hline
+        Distinct, continuous pale white stripe running cleanly from the base of the head down the spine. \\ \hline
         
-        \textbf{5. Head Features} & 
+        \textbf{Head Features} & 
         Head is indistinguishable from the body; eyes are completely missing. & 
         Head is somewhat distinct, but eyes are blurry, merged into a single blob, or missing pupils. & 
         Head shows lighter coloration; two eyes are present but slightly distorted or asymmetric. & 
