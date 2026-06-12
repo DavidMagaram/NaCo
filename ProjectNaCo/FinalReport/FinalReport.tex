@@ -115,22 +115,27 @@ Population size. % Title?
 \end{figure}
 
 
-Our final algorithm uses the following parameters displayed in the table below:
+Our final algorithm uses the following parameters displayed in the Table \ref{tab:final_params} below:
 
-
-\begin{tabular}{|c|c|}
-	\hline
-	sigma0 & 0.0048 \\
-	\hline
-	batch\_size & 4 \\
-	\hline
-	popsize & 64 \\
-	\hline
-	decay\_factor & 0.9 \\
-	\hline
-	decay\_freq & 175 \\
-	\hline
+\begin{table}[H]
+\label{tab:final_params}
+\centering
+\begin{tabular}{lc}
+\toprule
+Parameter & Value \\
+\midrule
+sigma0 & 0.0048 \\
+batch\_size & 4 \\
+popsize & 64 \\
+decay\_factor & 0.9 \\
+decay\_freq & 175 \\
+\bottomrule
 \end{tabular}
+\caption{Hyperparameter values used for CMA-ES optimization.}
+\label{tab:cmaes-hyperparameters}
+\end{table}
+
+
 
 
 \subsection*{Evaluation Metrics}
