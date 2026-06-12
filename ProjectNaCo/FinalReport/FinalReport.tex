@@ -438,6 +438,17 @@ Conclusions. Is your line of work worth pursuing?
 \end{thebibliography}
 
 \appendix
+\section*{Author Contribution}
+Author contribution: describe each team member contributions to the project.
+
+
+\section*{Code}
+Include a link to a github repository with implementation of algorithms developed and used during the project. The repository should include
+source code,
+all data necessary to run the program (think instructions for installing external software, package versions/virtual environment, etc);
+a short manual describing how to use/run the program;
+a sample run, screenshot, or other indication of system behavior.
+
 \section*{Appendix}
 
 
@@ -454,21 +465,47 @@ Conclusions. Is your line of work worth pursuing?
 	\label{fig:visuals2}
 \end{figure}
 
-
-
-
-
-
-\subsection*{Author Contribution}
-Author contribution: describe each team member contributions to the project.
-
-
-\section*{Code}
-Include a link to a github repository with implementation of algorithms developed and used during the project. The repository should include
-source code,
-all data necessary to run the program (think instructions for installing external software, package versions/virtual environment, etc);
-a short manual describing how to use/run the program;
-a sample run, screenshot, or other indication of system behavior.
-
 \end{multicols}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{| p{0.15\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} |}
+        \hline
+        \textbf{Feature} & \textbf{1 - Poor (Highly Degraded)} & \textbf{2 - Fair (Significant Artifacts)} & \textbf{3 - Good (Minor Flaws)} & \textbf{4 - Excellent (Target Match)} \\ \hline
+        
+        \textbf{1. Granularity} & 
+        Edges are highly unstable; explosive noise, checkerboard artifacts, or completely blurred boundaries. & 
+        Significant noise or artifacting around the borders; toes are indistinguishable blobs. & 
+        Edges are mostly clean; green/dark tint on extremities is visible but somewhat messy or jagged. & 
+        Crisp pixelated edges; distinct green fringing correctly placed on the toes/limbs, with minimal to no stray pixels. \\ \hline
+        
+        \textbf{2. Bodily Parts} & 
+        Unrecognizable mass; missing a tail or multiple limbs. & 
+        Recognizable as a lizard, but severely deformed (e.g., missing one leg, severely stunted/bloated tail). & 
+        All four limbs and tail are present; minor structural anomalies or slightly incorrect proportions. & 
+        Excellent anatomical structure; four distinct legs with toes, a clearly defined head, and a smoothly curving tail. \\ \hline
+        
+        \textbf{3. Blueness} & 
+        Deep blue is largely absent, completely overtaken by noise, or shifted to the wrong hue. & 
+        Blue is present but patchy, washed out, or heavily mixed with incorrect stray colors. & 
+        Body is predominantly the correct deep blue; minor color bleeding or slight noise in the torso. & 
+        Solid, cohesive deep blue body that contrasts sharply with the dorsal stripe and the head. \\ \hline
+        
+        \textbf{4. Dorsal Stripe} & 
+        Stripe is completely missing or unrecognizable. & 
+        Stripe is visible but heavily fragmented, scattered, or significantly the wrong color/thickness. & 
+        Stripe is visible and mostly continuous down the back, but may have minor interruptions or jaggedness. & 
+        Distinct, continuous pale yellow/white stripe running cleanly from the base of the head down the spine. \\ \hline
+        
+        \textbf{5. Head Features} & 
+        Head is indistinguishable from the body; eyes are completely missing. & 
+        Head is somewhat distinct, but eyes are blurry, merged into a single blob, or missing pupils. & 
+        Head shows lighter coloration; two eyes are present but slightly distorted or asymmetric. & 
+        Head is distinctively lighter (light purple/blue); two clear white eyes with distinct black pupils are perfectly placed. \\ \hline
+    \end{tabular}
+    \caption{Visual Fidelity Rubric for the NCA Lizard Target Image.}
+    \label{tab:visual-rubric}
+\end{table}
+
 \end{document}
