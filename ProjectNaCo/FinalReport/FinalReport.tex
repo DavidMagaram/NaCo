@@ -115,7 +115,7 @@ Population size. % Title?
 \end{figure}
 
 
-Our final algorithm uses the following parameters: [Insert final chosen parameters here after running your grid search/ablations, e.g., $\lambda = 64, \sigma_0 = 0.0002$].
+Our final algorithm uses the following parameters displayed in the table below:
 
 
 \begin{tabular}{|c|c|}
@@ -143,6 +143,7 @@ While the Mean Squared Error (MSE, or $L_2$ distance) is utilized as the primary
 
 \textbf{Target-Specific Semantic Score (TSS)}: While automated metrics like SSIM and LPIPS capture structural and deep feature similarities, they can occasionally overlook distinct morphological traits critical to the specific target image (e.g., the accurate formation of individual limbs or highly localized color patterns). To bridge the gap between qualitative human perception and quantitative evaluation, we implement a Target-Specific Semantic Score. This metric systematically assesses five key features of the generated morphology: Granularity, Bodily Parts, Blueness, Dorsal Stripe, and Head Features. 
 Each feature is evaluated on a discrete scale from $1$ (highly degraded) to $4$ (excellent target match). The final composite score $\sum TSS$ is then min-max normalized to yield a continuous value $TSS_{norm} \in [0, 1]$ according to the following formula:$$TSS_{norm} = \frac{\sum TSS - 5}{15}$$where a score closer to $1.0$ indicates superior structural and morphological alignment with the target. The comprehensive evaluation rubric detailing the specific criteria for each score is provided in table \ref{tab:visual-rubric}.
+
 \textbf{Frequency-Domain Analysis (2D-FFT):} Adversarial reprogramming of cellular automata relies on altering local convolutional updates, which frequently introduces high-frequency structural noise (e.g., checkerboard artifacts) not heavily penalized by spatial loss functions. To quantify these artifacts, we perform a 2D Fast Fourier Transform (2D-FFT) on the grayscale representations of the generated and target images. We compute the mean absolute difference of their log-magnitude spectra:
 $$ D_{F} = \frac{1}{H \times W} \sum_{u,v} \left| \log(1 + |\mathcal{F}(\text{img}_{\text{target}})_{u,v}|) - \log(1 + |\mathcal{F}(\text{img}_{\text{grown}})_{u,v}|) \right| $$
 where $\mathcal{F}$ denotes the discrete 2D-FFT. 
