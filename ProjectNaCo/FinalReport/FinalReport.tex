@@ -252,7 +252,8 @@ As detailed in the Evaluation Metrics section, we also explore SSIM \cite{wang20
 \section*{Results}
 % Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
 
-\subsection*{Comparing our CMA-ES approach with their gradient-approach}
+\subsection*{Experiment 1: Comparing our CMA-ES approach with their gradient-approach}
+\subsection*{1.1: Comparison after 30 Minutes runtime}
 
 While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far off (figure~\ref{fig:loss-graph}). 
 It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
@@ -347,7 +348,7 @@ Lastly for this comparison with both approaches running for equal time, we wante
 
 The changes from identity (not pictured here) are hard to see visually in the CMA-ES version, as they are comparatively tiny. The gradient baseline on the other hand has made much bigger changes to the starter perturbation matrix, as also validated by comparing the Euclidean distance between the perturbation matrices and the identity matrix. This is despite leading to comparable (if worse) results, see Figure \ref{fig:goalevolvedbackprop}.
 
-\subsubsection*{Environmental Impact}
+\subsubsection*{Experiment 1.2: Environmental Impact}
 
 To contextualize the computational cost and environmental footprint of different methods, we tracked carbon emissions and energy consumption 
 during the optimization process. For a fair comparison of convergence efficiency, each method was run until it reached a target log10 loss of -2.5.
@@ -384,7 +385,7 @@ evolutionary approach.
 
 
 
-\subsection*{Butterfly}
+\subsection*{Experiment 2: Change Lizard to Butterfly}
 In order to explore the capabilities of the NCA model and the CMA-ES framework, we tried to change the original lizard into a butterfly.
 For this, we only needed to change the target image.
 
@@ -406,14 +407,13 @@ While the target image was not reached, it can be concluded that the task succee
 This also demonstrates the CMA-ES black-box capabilities and the NCA's impressive regenerative powers. 
 
 
-\subsection*{Experiment - How long it takes to recover from an attack: Perturbation On/Off}
+\subsection*{Experiment 3: How long it takes to recover from an attack: Perturbation On/Off}
 \todo[inline]{finish subsection}
 Following the same steps as X did in their experiments, we also explored how long it takes to recover from an attack by setting perturbation on and off.
 
 
 
-\subsection*{Different starter matrices}
-
+\subsection*{Experiment 4: Different starter perturbation matrices}
 Instead of starting from identity as attack matrix, we also tried starting from white noise \& the 8000 step gradient-optimized matrix. We used the same hyperparameter values we found using optuna to train a ~500-generation attack starting from the identify matrix.
 
 \begin{figure}[H]
@@ -452,6 +452,11 @@ In averaged loss after growing a full lizard from a pixel, the random matrix sta
 
 The output from the white-noise trained matrix is just white, while the other ones clearly show a lizard. The Lizard trained from the gradient-trained baseline matrix seems to have the best colour accuracy, while the gradient-trained one has the most detailed white spine.
 
+
+\subsubsection*{Experiment 4 results graded by different evaluation metrics}
+
+\todo[inline]{needs description}
+
 \begin{table}[H]
 	\centering
 	% \renewcommand{\arraystretch}{1.2}
@@ -470,7 +475,7 @@ The output from the white-noise trained matrix is just white, while the other on
 	\label{tab:quantitative-metrics}
 \end{table}
 
-\subsubsection*{Training a gradient-approach attack starting with a random perturbation matrix}
+\subsubsection*{Experiment 4 Addition: Training a gradient-approach attack starting with a random perturbation matrix}
 
 As we were interested in how the gradient-based approach would handle a random starter permutation matrix in comparison, we additionally also ran a white noise start with it. Instead of producing white outputs, it looked like this after 8000 training steps:
 \begin{figure}[H]
@@ -483,7 +488,7 @@ As we were interested in how the gradient-based approach would handle a random s
 With a grown-image loss of 4.550461 (+- 0.201547) it never even came close to the baseline of one starter pixel on a white background as shown in Figure \ref{fig:matrix-loss-graph} and has a much higher loss than the rest.
 
 
-\subsection*{Different Fitness Functions}
+\subsection*{Experiment 5: Different Fitness Functions}
 Table \ref{tab:losses} displays the evaluation metrics for the explored fitness functions. 
 
 \begin{table}[H]
