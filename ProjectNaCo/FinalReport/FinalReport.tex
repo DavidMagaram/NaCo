@@ -494,8 +494,20 @@ The results show that the selection of loss function affects the quality of the 
 \section*{Discussion}
 
 Compared to the original backpropagation version, our NCA-ES tuned adversarial attack is less effective in the same time. That said, the evolutionary version is in our opinion surprisingly not that far behind and produces results which are roughly on the same qualitative level as the ones presented by \cite{randazzo2021adversarial}. 
-\todo[inline]{also put climate results}
+
+Comparing these two methods highlights a tradeoff between threat models and overall resource costs. 
+Because CMA-ES evaluates entire populations instead of using gradients, it requires roughly ten times more forward simulation 
+steps. Despite this computational penalty, the evolutionary attack remains competitive in practical wall clock time. However, 
+when we measure the environmental footprint required to reach a specific target loss of -2.5 (on a log$_10$ scale), the differences become obvious. 
+The gradient approach is significantly more efficient. It reaches the target in half the time, uses half the total energy, 
+and produces half the carbon emissions compared to the CMA-ES method. While the gradient baseline is greener and faster, 
+it is less stable. We observed that the gradient attack produces a higher standard deviation in its final loss. 
+Gradient descent quickly exploits local information but often gets trapped in local minima based on its starting conditions. 
+CMA-ES avoids this issue by continuously sampling a broader search space. This guides the model toward more stable solutions 
+and results in less variance across different runs.
+
 \todo[inline]{put qualitative results}
+
 
 Now CMA-ES and the original version are both relatively successfully optimizing the same loss function, and getting to similar results with differing amounts of effort. But there are still differences in the results they produce. The end result of the gradient-optimized attack is an image with more details, but it overemphasizes the blue and is somewhat blurry. The CMA-ES trained adversarial attack leads to a more jagged image that perhaps overemphasizes the green of the edges and is more jagged and grainy, but not washed out.
 
