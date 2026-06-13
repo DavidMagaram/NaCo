@@ -252,6 +252,8 @@ As detailed in the Evaluation Metrics section, we also explore SSIM \cite{wang20
 \section*{Results}
 % Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
 
+\subsection*{Comparing our CMA-ES approach with their gradient-approach}
+
 While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far off (figure~\ref{fig:loss-graph}). 
 It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
 
@@ -297,37 +299,6 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
     \label{fig:other-loss-plot}
 \end{figure}
 
-To contextualize the computational cost and environmental footprint of different methods, we tracked carbon emissions and energy consumption 
-during the optimization process. For a fair comparison of convergence efficiency, each method was run until it reached a target log10 loss of -2.5.
-
-As detailed in Table \ref{tab:emissions-metrics} and illustrated in Figure \ref{fig:emissions-plot}, the gradient approach is substantially more 
-efficient. It successfully reached the target loss in roughly half the time and consumed approximately half the overall energy compared to the 
-evolutionary approach. 
-% In contrast, all of the evolutionary approaches exhausted the 600-generation limit with the white noise initialization far from
-% crossing the -2.5 threshold.
-\begin{table}[H]
-    \centering
-	\resizebox{\linewidth}{!}{
-    \begin{tabular}{lrrr}
-        \hline
-        Method & Emissions &Duration & Energy \\ 
-		\hline
-        CMA-ES & 0.015 & 1994.738 & 0.043 \\
-        % Gradient-start & 0.015 & 1981.945 & 0.043 \\
-        Gradient & 0.008 & 1024.074 & 0.022 \\
-        % White Noise & 0.015 & 1975.147 & 0.042 \\ 
-		\hline
-    \end{tabular}}
-    \caption{Environmental impact and computational cost of the evolutionary strategy and the gradient baseline. The table presents total carbon emissions in kgCO$_2$e, optimization duration in seconds, and overall energy consumed in kWh.}
-    \label{tab:emissions-metrics}
-\end{table}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{"optona & comparison output/emissions_plot"}
-    \caption{Comparison of total carbon emissions and energy consumption breakdown (CPU, GPU, and RAM) across the evaluated methods.}
-    \label{fig:emissions-plot}
-\end{figure}
 
 
 \todo[inline]{aaron annotate/story it up}
@@ -356,7 +327,7 @@ evolutionary approach.
 	\label{fig:evolved}
 \end{figure}
 
-Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA and the target image, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail).
+Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA \ref{fig:grownmutationevolvedbackprop} and the target image \ref{fig:goalevolvedbackprop}, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail) \ref{fig:only_blurred}.
 
 \begin{figure}[H]
 	\centering
@@ -364,6 +335,52 @@ Visually, both the gradient-based attack and our lizard trained with CMA-ES prod
 	\caption{For reference: the target image transformed down and then up 4x with linear, none, and cubic interpolation algorithms in GIMP.}
 	\label{fig:only_blurred}
 \end{figure}
+
+Lastly for this comparison with both approaches running for equal time, we wanted to take a look at the final perturbation matrices.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/final perturbation matrices"}
+	\caption{Visualisations of the final perturbation matrices for the gradient baseline and our CMA-ES approach, both trained 30 minutes.}
+	\label{fig:final-perturbation-matrices}
+\end{figure}
+
+The changes from identity (not pictured here) are hard to see visually in the CMA-ES version, as they are comparatively tiny. The gradient baseline on the other hand has made much bigger changes to the starter perturbation matrix, as also validated by comparing the Euclidean distance between the perturbation matrices and the identity matrix. This is despite leading to comparable (if worse) results, see Figure \ref{fig:goalevolvedbackprop}.
+
+\subsubsection*{Environmental Impact}
+
+To contextualize the computational cost and environmental footprint of different methods, we tracked carbon emissions and energy consumption 
+during the optimization process. For a fair comparison of convergence efficiency, each method was run until it reached a target log10 loss of -2.5.
+
+As detailed in Table \ref{tab:emissions-metrics} and illustrated in Figure \ref{fig:emissions-plot}, the gradient approach is substantially more 
+efficient. It successfully reached the target loss in roughly half the time and consumed approximately half the overall energy compared to the 
+evolutionary approach. 
+% In contrast, all of the evolutionary approaches exhausted the 600-generation limit with the white noise initialization far from
+% crossing the -2.5 threshold.
+\begin{table}[H]
+	\centering
+	\resizebox{\linewidth}{!}{
+		\begin{tabular}{lrrr}
+			\hline
+			Method & Emissions &Duration & Energy \\ 
+			\hline
+			CMA-ES & 0.015 & 1994.738 & 0.043 \\
+			% Gradient-start & 0.015 & 1981.945 & 0.043 \\
+			Gradient & 0.008 & 1024.074 & 0.022 \\
+			% White Noise & 0.015 & 1975.147 & 0.042 \\ 
+			\hline
+	\end{tabular}}
+	\caption{Environmental impact and computational cost of the evolutionary strategy and the gradient baseline. The table presents total carbon emissions in kgCO$_2$e, optimization duration in seconds, and overall energy consumed in kWh.}
+	\label{tab:emissions-metrics}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/emissions_plot"}
+	\caption{Comparison of total carbon emissions and energy consumption breakdown (CPU, GPU, and RAM) across the evaluated methods.}
+	\label{fig:emissions-plot}
+\end{figure}
+
 
 
 \subsection*{How long does it takes to recover from an attack: Perturbation On/Off}
@@ -408,6 +425,12 @@ After 1000 steps, perturbation is turned back on. Again, after 120 steps the sha
 While the target image was not reached, it can be concluded that the task succeeded to some degree as CMA-ES managed to approximate the butterfly, both its shape and its orange color. 
 This also demonstrates the CMA-ES black-box capabilities and the NCA's impressive regenerative powers. 
 While the results are not exactly perfect, had the model been trained for longer we expect the outcome to be slightly better.
+
+
+\subsection*{Experiment - How long it takes to recover from an attack: Perturbation On/Off}
+\todo[inline]{finish subsection}
+Following the same steps as X did in their experiments, we also explored how long it takes to recover from an attack by setting perturbation on and off.
+
 
 
 \subsection*{Different starter matrices}
@@ -468,7 +491,7 @@ The output from the white-noise trained matrix is just white, while the other on
 	\label{tab:quantitative-metrics}
 \end{table}
 
-\subsubsection*{Training a gradient-approach attack starting with a gaussian perturbation matrix}
+\subsubsection*{Training a gradient-approach attack starting with a random perturbation matrix}
 
 As we were interested in how the gradient-based approach would handle a random starter permutation matrix in comparison, we additionally also ran a white noise start with it. Instead of producing white outputs, it looked like this after 8000 training steps:
 \begin{figure}[H]
