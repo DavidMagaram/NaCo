@@ -382,6 +382,41 @@ evolutionary approach.
 \end{figure}
 
 
+\todo[inline]{aaron annotate/story it up}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
+	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack.}
+	\label{fig:goalevolvedbackprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/grown_mutation_evolved_backprop"}
+	\caption{Left: fully grown lizard, original target image. Middle: CMA-ES attack on fully grown lizard. Right: gradient-based attack on fully grown lizard}
+	\label{fig:grownmutationevolvedbackprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/backprop"}
+	\caption{Gradient-based attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
+	\label{fig:backprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/evolved"}
+	\caption{Evolutionary attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
+	\label{fig:evolved}
+\end{figure}
+
+Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA and the target image, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/only_blurred.png"}
+	\caption{For reference: the target image transformed down and then up 4x with linear, none, and cubic interpolation algorithms in GIMP.}
+	\label{fig:only_blurred}
+\end{figure}
+
 
 \subsection*{How long does it takes to recover from an attack: Perturbation On/Off}
 Following the same steps as Randazzo et al. \cite{randazzo2021adversarial} did in their experiments, we also explore how long it takes to recover from an attack by setting perturbation on and off.
@@ -401,7 +436,7 @@ Turning perturbation off, within 15 steps the lizard loses most of the blue colo
 By step 625 the image grows sharper, and by step 925 we can notice its individual toes, making it almost indistinguishable from the original. 
 Turning the perturbation back on, the image behaves similarly as it did in the beginning. However, at step 1800 it begins mutating, creating a new body by step 2500.
 
-In the end, it only takes the model several steps to regain its original color and several hundred steps to return to its original state.
+In the end, it only takes the model several steps to regain its original color and several hundred steps to return to its original state, demonstrating its impressive regenerating capabilities.
 While it began mutating, it is not uncommon. We attribute this to the fact that the model has only been trained for 500 steps. 
 
 
