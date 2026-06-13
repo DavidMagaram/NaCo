@@ -108,8 +108,9 @@ Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optu
 In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous Optuna sweep were re-introduced, such as batch\_size 4, so we could find the remaining best hyperparameters. 
 This run favored population size of 64, a higher sigma0, and a higher decay frequency. 
 
-\end{multicols}
 
+\end{multicols}
+\todo[inline]{way too big can't lie maybe appendix}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
@@ -302,7 +303,7 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 
 
 
-\todo[inline]{aaron annotate/story it up}
+\todo[inline]{aaron storied it up (text after) but its still a lot of images for little text around here, maybe put chunks from the texts before and after inbetween}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
@@ -441,6 +442,8 @@ While the model trained starting from the identity matrix and the model trained 
 	\label{fig:matrix-loss-graph}
 \end{figure}
 
+\todo[inline]{gotta contextualise that the gradient one here has been trained 8000 steps and is not a fair comparison!}
+
 In averaged loss after growing a full lizard from a pixel, the random matrix start sits near the empty baseline. Identity comes third place at 0.0040, gradient-only (theirs) is second at 0.0038 (+- 0.000086) and the best result comes from further training the gradient output with CMA-ES at 0.0036 (+- 0.000177).
 
 \begin{figure}[H]
@@ -455,7 +458,7 @@ The output from the white-noise trained matrix is just white, while the other on
 
 \subsubsection*{Experiment 4 results graded by different evaluation metrics}
 
-\todo[inline]{needs description}
+\todo[inline]{needs description + see earlier todo. I think the grading rubric is better suited to (additionally?) be in experiment 1}
 
 \begin{table}[H]
 	\centering
