@@ -69,6 +69,7 @@ Covariance Matrix Adaptation Evolution Strategy (CMA-ES), introduced by Hansen \
 % Motivation and description of your approach, including: methods, algorithms, evaluation/testing procedures, experimental setup, etc. Ensure that the work is reproducible given this description alone.
 
 % \subsection*{Motivation}
+\todo[inline]{Motivation and description of your approach, including: methods, algorithms, evaluation/testing procedures, experimental setup, etc. Ensure that the work is reproducible given this description alone.}
 
 To assess the true vulnerability of NCAs under a realistic threat model, we constrain the attacker to a strict black-box setting. The attacker cannot access the internal weights of the pretrained NCA, nor can they perform automatic differentiation through the grid's temporal evolution. Instead, the attacker can only provide an initial state (or intervening perturbation) and observe the final converged visual output. Because the fitness landscape of an NCA rolled out over hundreds of steps is highly non-convex and non-differentiable from a black-box perspective, we utilize CMA-ES. This evolutionary strategy is well-suited for our setup because it is derivative-free, robust to noisy objective functions, and scales well to our specific parameter space.
 
@@ -388,6 +389,7 @@ This also demonstrates the CMA-ES black-box capabilities and the NCA's impressiv
 
 \subsection*{Experiment - How long it takes to recover from an attack: Perturbation On/Off}
 
+Following the same steps as X did in their experiments, we also explored how long it takes to recover from an attack by setting perturbation on and off.
 
 
 
