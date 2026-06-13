@@ -1,4 +1,6 @@
 node_modules/
+__pycache__/
+*.pyc
 Assignment1/1A/img
 Assignment1/1C/Experiments/img
 Assignment1/1A/example_node/img
