@@ -570,8 +570,6 @@ Gradient descent quickly exploits local information but often gets trapped in lo
 CMA-ES avoids this issue by continuously sampling a broader search space. This guides the model toward more stable solutions 
 and results in less variance across different runs.
 
-\todo[inline]{put qualitative results}
-
 
 Now CMA-ES and the original version are both relatively successfully optimizing the same loss function, and getting to similar results with differing amounts of effort. But there are still differences in the results they produce. The end result of the gradient-optimized attack is an image with more details, but it overemphasizes the blue and is somewhat blurry. The CMA-ES trained adversarial attack leads to a more jagged image that perhaps overemphasizes the green of the edges and is more jagged and grainy, but not washed out.
 
