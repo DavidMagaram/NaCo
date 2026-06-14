@@ -231,13 +231,12 @@ As detailed in the Evaluation Metrics section, we also explore SSIM \cite{wang20
 \subsection*{Experiment 1: Comparing our CMA-ES approach with their gradient-approach}
 \subsection*{1.1: Comparison after 30 Minutes runtime}
 
-While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far off (figure~\ref{fig:loss-graph}). 
-It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
+Averaged over four independent runs, the gradient-based model reaches a slightly lower final loss in the same time, but the black-box CMA-ES attack stays close (figure~\ref{fig:loss-graph}). A paired comparison of the grown-image loss across the four runs shows the gradient baseline lower in every run (mean $0.00377 \pm 0.00017$ versus $0.00414 \pm 0.00015$), although the gap is small and only marginally significant ($p \approx 0.07$, paired $t$-test, $n=4$). Both methods lie roughly five times below the empty-seed baseline loss of $0.0218$, confirming that both clearly succeed at the attack. Although the gradient baseline runs about eleven times as many iterations in the same wall-clock budget ($4836 \pm 85$ versus $434 \pm 24$), each gradient iteration is a single small mini-batch update, whereas every CMA-ES generation evaluates a full population of candidates. The more meaningful measure of compute is therefore the cumulative number of forward NCA state-steps, by which the evolutionary attack is the more expensive of the two, using roughly three times as many ($\approx 9\times10^6$ versus $3\times10^6$).
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.9\linewidth]{"optona & comparison output/loss graph"}
-	\caption{The best loss achieved during training and the averaged loss of the final model after training both of our implementation and the gradient-based implementation after 30 minutes of training time. 366 generations/4719 steps.}
+	\caption{The best loss achieved during training and the grown-image loss of the final model, for both our implementation and the gradient-based implementation after 30 minutes of training time. Bars show the mean over $n=4$ independent runs and error bars the across-run standard deviation.}
 	\label{fig:loss-graph}
 \end{figure}
 
@@ -252,8 +251,8 @@ the evolutionary attack is highly competitive. Figure~\ref{fig:loss-plot-1} show
 significantly more update steps and converges to a marginally lower final loss than the CMA-ES attack.
 While the loss per iteration (figure~\ref{fig:loss-plot-2}) appears superficially comparable, this metric masks the differing computational payloads.
 A single CMA-ES iteration evaluates an entire population of candidates, whereas the gradient-based iteration evaluates a single mini-batch.
-The loss per cumulative NCA state-steps (figure~\ref{fig:other-loss-plot}) isolates forward-pass sample efficiency, highlighting that the CMA-ES attack requires 
-roughly an order of magnitude more simulation steps to achieve convergence compared to the gradient-based baseline.
+The loss per cumulative NCA state-steps (figure~\ref{fig:other-loss-plot}) isolates forward-pass sample efficiency, highlighting that the CMA-ES attack requires
+roughly three times as many cumulative simulation steps to reach a comparable loss as the gradient-based baseline.
 Thus, when analyzing the loss per iteration or per cumulative NCA state-step, the inherent sample inefficiency of the CMA-ES attack becomes apparent.
 \begin{figure}[H]
     \centering
@@ -345,30 +344,21 @@ The changes from identity (not shown in Figure \ref{fig:final-perturbation-matri
 	\label{fig:final-perturbation-matrices}
 \end{figure}
 
-Finally, Table \ref{tab:quantitative-metrics} presents the quantitative evaluation of both attack methods. The structural similarity 
-(SSIM) scores are nearly identical, showing that both methods recover the broad spatial structure of the target image equally well. 
-However, the gradient baseline performs better on the Learned Perceptual Image Patch Similarity (LPIPS) and the Target Specific Score 
-(TSS). This aligns with our visual observation that the gradient attack better reconstructs semantic features like the eyes and the 
-dorsal stripe. Conversely, the CMA-ES approach achieves a slightly lower 2D-FFT score. This suggests that while the evolutionary 
-approach struggles with specific target traits, it introduces slightly less high frequency structural noise into the final grid than 
-the gradient method. Overall, the quantitative metrics confirm that the black box attack produces highly competitive results that 
-closely follow the gradient baseline.
+Finally, Table \ref{tab:quantitative-metrics} presents the quantitative evaluation of both attack methods, averaged over the four runs. Across the structural, perceptual, and frequency-domain metrics (SSIM, LPIPS, and 2D-FFT) the two methods are statistically indistinguishable: none of the paired differences are significant ($p = 0.21$, $0.99$, and $0.82$ respectively, paired $t$-test, $n=4$), and the LPIPS and 2D-FFT means are essentially identical. The Target-Specific Score (TSS), which we scored on a single representative run, favours the gradient baseline ($0.533$ versus $0.467$), consistent with our visual observation that the gradient attack better reconstructs semantic features such as the eyes and the dorsal stripe. Overall, the only consistent quantitative gap is the slightly lower grown-image loss of the gradient baseline; on every perceptual metric the black-box attack closely follows it.
 
 \begin{table}[H]
 	\centering
 	% \renewcommand{\arraystretch}{1.2}
 	\resizebox{\linewidth}{!}{
-		\begin{tabular}{lcccc}
+		\begin{tabular}{lccccc}
 			\hline
-			Method & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\uparrow$\\ 
+			Method & Grown loss $\downarrow$ & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\uparrow$\\
 			\hline
-			CMA-ES & 0.932 & 0.090 & 0.440 & 0.467\\ 
-			% Gradient-start &  0.941 &  0.070 &  0.435 &  0.53\\ 
-			Gradient & 0.930 & 0.073 & 0.450 & 0.533\\ 
-			% White Noise & 0.857 & 0.551 & 1.488 & 0.00 \\ 
+			CMA-ES & $0.00414{\pm}0.00015$ & $0.933{\pm}0.001$ & $0.077{\pm}0.009$ & $0.438{\pm}0.006$ & $0.467$\\
+			Gradient & $0.00377{\pm}0.00017$ & $0.937{\pm}0.005$ & $0.077{\pm}0.004$ & $0.440{\pm}0.010$ & $0.533$\\
 			\hline
 	\end{tabular}}
-	\caption{Quantitative comparison of evaluation metrics for the CMA-ES approach and the gradient baseline. Higher SSIM, lower LPIPS, lower 2D-FFT, and higher TSS indicate better visual fidelity to the target image.}
+	\caption{Quantitative comparison of the CMA-ES approach and the gradient baseline, reported as mean $\pm$ standard deviation over $n=4$ independent runs (TSS scored on a single representative run). Higher SSIM and TSS, and lower grown-image loss, LPIPS, and 2D-FFT, indicate better fidelity to the target image.}
 	\label{tab:quantitative-metrics}
 \end{table}
 
@@ -560,8 +550,8 @@ The results show that the selection of loss function affects the quality of the 
 Compared to the original backpropagation version, our NCA-ES tuned adversarial attack is less effective in the same time. That said, the evolutionary version is in our opinion surprisingly not that far behind and produces results which are roughly on the same qualitative level as the ones presented by \cite{randazzo2021adversarial}. 
 
 Comparing these two methods highlights a tradeoff between threat models and overall resource costs. 
-Because CMA-ES evaluates entire populations instead of using gradients, it requires roughly ten times more forward simulation 
-steps. Despite this computational penalty, the evolutionary attack remains competitive in practical wall clock time. However, 
+Because CMA-ES evaluates entire populations instead of using gradients, it requires roughly three times more forward simulation
+steps. Despite this computational penalty, the evolutionary attack remains competitive in practical wall clock time. However,
 when we measure the environmental footprint required to reach a specific target loss of -2.5 (on a log$_{10}$ scale), the differences become obvious. 
 The gradient approach is significantly more efficient. It reaches the target in half the time, uses half the total energy, 
 and produces half the carbon emissions compared to the CMA-ES method. While the gradient baseline is greener and faster, 
@@ -603,19 +593,18 @@ Furthermore, these loss functions were selected because of their relation to the
 
 Other than addressing the stated limitations and issues in the previous paragraphs, there are several directions the future work could follow.
 Asymmetrical perturbation matrix would allow for a wider search space and different resulting attack strategies.
-Improving efficiency is also crucial as CMA-ES currently needs roughly 10 times more NCA forward passes than the gradient-based baseline. Other strategies such as gray-box attacks, natural evolution strategies, or other approaches could reduce the cost.
+Improving efficiency is also crucial as CMA-ES currently needs roughly three times more NCA forward passes than the gradient-based baseline. Other strategies such as gray-box attacks, natural evolution strategies, or other approaches could reduce the cost.
 Furthermore, we have not fully replicated the other experiments by Randazzo et al. \cite{randazzo2021adversarial}, such as the removal of limbs, combining multiple perturbations at the same time, and even adversarial injections.
 Doing so would involve a different parameter configuration setting and different fitness function and more. While the black-box model performed well so far, and we believe it would perform well on these task as well, it would be interesting to see how well it compares.
 Therefore, future work should explore and replicate these other experiments as well and see how the black-box model compares.
 Finally, future work should test if the perturbation matrix found by CMA-ES would corrupt the defense layers used by Xu et al. \cite{xu2024adanca} inside their Vision Transformers.
 
 \section*{Conclusion}
-This work explores whether a query-only, black-box attacker using evolutionary search can reproduce the same targeted adversarial reprogramming of Growing NCA which was previously only demonstrated with a white-box, gradient-based methods. 
-Comparing the final grown image loss and visual output quality, we compare the methods.
-In this work we show that a realistic attacker who has no access to model weights and gradients can change the NCA output towards a selected target image, just like the gradient approach could, by using CMA-ES to optimize a global $16 \times 16$ state perturbation matrix.
+\todo[inline]{Conclusions. Is your line of work worth pursuing?}
 
+Overall, our query-only evolutionary attack comes close to the white-box gradient baseline. It reproduces the same targeted reprogramming and reaches a visually similar result (with near-identical SSIM and comparable LPIPS, 2D-FFT, and TSS). Within the same 30-minute budget the gradient baseline still converges to a somewhat lower loss and slightly sharper detail, but our attack lands in the same range rather than being clearly worse. This closeness comes at a cost, as CMA-ES needs roughly three times more NCA forward passes and more energy to get there. At the same time it shows some interesting properties: it achieves its results with minimal changes to the starter perturbation matrix and appears to fail more gracefully than the gradient approach from a fully random start. The attack also generalises beyond the colour change, approximating a different target (the butterfly) by simply swapping the target image, with the choice of fitness function further shaping the result. We do, however, confirm that the attacks are not permanent, as the NCA regenerates its original form within a few hundred steps once the perturbation is switched off.
 
-Overall, our evolutionary approach manages to come quite close to the baseline gradient approach. Though it takes longer and more compute to reach results as well for the main experiment, it has some interesting properties in that it achieves its results with minimal changes to the starter perturbation matrix and deals better with a fully random starter perturbation matrix. We show that blackbox attacks in which the target model is not available for backpropagation can succeed against NCA models, indicating that perhaps NCA's are not as robust against attacks as indicated by prior literature.
+We have shown that a white-box attack is not needed to successfully attack NCA's and that they may not be as robust as they were priorly considered.
 
 \newpage
 
@@ -687,15 +676,8 @@ Overall, our evolutionary approach manages to come quite close to the baseline g
 
 % \appendix
 \section*{Author Contribution}
-
-\textbf{Aaron :} Developed the core CMA-ES attack framework, including the perturbation matrix parameterization, initialization strategies, and hyperparameter optimization via Optuna sweeps.
-
-\textbf{Jason :} Designed the evaluation metric suite including the Target-Specific Semantic Score rubric (Appendix D), implemented the SSIM, LPIPS, 2D-FFT, and TSS pipeline used to assess all experiments, set up and ran the gradient-based baseline for comparison, and conducted the environmental impact analysis
-
-\textbf{David :} Implemented and ran the lizard-to-butterfly experiment, the perturbation on/off recovery experiment, and the comparison of different fitness functions.
-
-Tasks were divided roughly equally, with each member independently running their experiments and sharing results with the group. All members contributed to the writing of this report, primarily reporting on their own experiments, with collective involvement in the introduction, discussion, and conclusion.
-
+Author contribution: describe each team member contributions to the project.
+\todo[inline]{needed}
 
 
 \section*{Code}
@@ -705,7 +687,7 @@ Tasks were divided roughly equally, with each member independently running their
 %a short manual describing how to use/run the program;
 %a sample run, screenshot, or other indication of system behavior.
 
-All code used in this project can be found at https://github.com/DavidMagaram/NaturalComputingFinal. 
+All code used in this project can be found at https://github.com/DavidMagaram/NaturalComputing. 
 All experiments were performed using Jupyter notebooks that were developed in Google Colab using a T4 GPU, and can be located in the $Codee$ folder. 
 No additional installation or configuration is needed.
 
