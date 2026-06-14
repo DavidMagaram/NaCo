@@ -592,6 +592,12 @@ Similarly, in Experiment 3, where we turn perturbation of and off, the NCA model
 Once the perturbation is disabled, the blue coloring disappears within 15 steps and is entirely gone within 30 steps. Throughout the next steps the lizard then recovers its structural details and is almost indistinguishable from the original by step 925.
 While NCAs are used as defensive layers by Xu et al. \cite{xu2024adanca}, it is important to note that they can be attacked using a black-box attacker, however, the effects are not permanent as once the perturbation is disabled, they regenerate back quickly. 
 
+The fitness function comparison in Experiment 5 shows that he selection of loss function affects the quality of the output and the attack in general.
+Huber achieves the highest SSIM of 0.9349 and lowest 2D-FFT of 0.4949, thanks to its blend of MSE and MAE. 
+Foreground-masked MSE and Weighted RGBA compare poorly as they introduce noticeable blur, suggesting that channel based losses are not ideal. 
+The SSIM loss achieved an even better SSIM and 2D-FFT scores than Huber loss did, however, it failed to turn the lizard blue, demonstrating the Goodhart's law \cite{strathern1997improving}.  
+Although Huber loss is the best overall loss, all experiments used the baseline MSE loss. 
+Furthermore, these loss functions were selected because of their relation to the color change task. Other loss functions might work better for other experiments such as limb removal.
 
 \todo[inline]{LIMITATIONS (rubric D4): write a dedicated paragraph covering: (1) $M$ restricted to symmetric matrices (limits the reachable perturbation space); (2) evaluated on a single NCA model and a small set of targets (lizard color-change, butterfly); (3) ~10x sample/compute inefficiency and higher energy vs. the gradient baseline; (4) no explicit query-budget accounting, so the "realistic black-box attacker" framing is only partially validated; (5) failure to recover from a gaussian/white-noise starter matrix.}
 \todo[inline]{FUTURE WORK (rubric D5): write a dedicated paragraph covering: asymmetric/structured perturbation matrices; query-efficient ES variants to close the sample-efficiency gap; evaluation across other NCA models/targets; a true query-budget-constrained threat model; transferability of evolved perturbations across models; combining gradient warm-start + CMA-ES refinement (link to Exp. 4 result).}
@@ -607,7 +613,9 @@ Future work should explore and replicate these other experiments as well and see
 \section*{Conclusion}
 Conclusions. Is your line of work worth pursuing?
 
-\todo[inline]{write conclusion}
+\todo[inline]{write conclusion
+Only white-box attacks explored. White-box is not a realistic adversary (biological...) (no access to internals).
+So: It is not as safe as assumed/claimed. Black-box attack also works and Xu et al. should asses the practical security risk of using NCAs as defensive layers...}
 
  we ball
 
