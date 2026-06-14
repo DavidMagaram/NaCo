@@ -101,7 +101,7 @@ For the initial standard deviation ($\sigma_0$), which dictates the initial sear
 During CMA-ES training, the NCA is rolled out for a randomly sampled number of steps in $[64, 96]$ per generation. For evaluation, a fixed 96 steps are used.
 At each generation, the CMA-ES produced population of 64 candidate vectors. Each candidate is evaluated by rolling out the NCA from a batch of \texttt{batch\_size}$=4$ states taken from a sample pool of 1024 states and averaging the resulting loss. 
 We apply step-size decay to avoid making disruptive jumps during search. There, $\sigma$ is multiplied by \texttt{decay\_factor} $= 0.9$ every \texttt{decay\_freq} $= 175$ generations. 
-The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21} (Figures \ref{fig:optuna1}, \ref{fig:optuna11}, \ref{fig:optuna2} and \ref{fig:optuna21} can be found in the \ref{Appendix}.
+The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21} (Figures \ref{fig:optuna1}, \ref{fig:optuna11}, \ref{fig:optuna2} and \ref{fig:optuna21} can be found in the Appendix. %\ref{Appendix}.
 
 Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 4 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
 Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optuna sweep. It reveals that batch\_size is the most important hyperparameter by a significant amount.  
@@ -364,7 +364,7 @@ evolutionary approach.
 \end{figure}
 
 
-\subsection*{How long does it takes to recover from an attack: Perturbation On/Off}
+\subsection*{Experiment 2: How long does it takes to recover from an attack: Perturbation On/Off}
 Following the same steps as Randazzo et al. \cite{randazzo2021adversarial} did in their experiments, we also explore how long it takes to recover from an attack by setting perturbation on and off.
 The visualization of the training run ran for 2500 steps while toggling perturbation off during steps 500-1000.
 A model trained for 500 steps with the MSE loss is used.
@@ -386,7 +386,7 @@ In the end, it only takes the model several steps to regain its original color a
 While it began mutating, it is not uncommon. We attribute this to the fact that the model has only been trained for 500 steps. 
 
 
-\subsection*{Experiment 2: Change Lizard to Butterfly}
+\subsection*{Experiment 3: Change Lizard to Butterfly}
 In order to explore the capabilities of the NCA model and the CMA-ES framework, we tried to change the original lizard into a butterfly.
 For this, we only needed to change the target image.
 
@@ -406,11 +406,6 @@ After 1000 steps, perturbation is turned back on. Again, after 120 steps the sha
 While the target image was not reached, it can be concluded that the task succeeded to some degree as CMA-ES managed to approximate the butterfly, both its shape and its orange color. 
 This also demonstrates the CMA-ES black-box capabilities and the NCA's impressive regenerative powers. 
 While the results are not exactly perfect, had the model been trained for longer we expect the outcome to be slightly better.
-
-
-\subsection*{Experiment 3: How long it takes to recover from an attack: Perturbation On/Off}
-\todo[inline]{finish subsection}
-Following the same steps as X did in their experiments, we also explored how long it takes to recover from an attack by setting perturbation on and off.
 
 
 
