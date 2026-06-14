@@ -39,8 +39,6 @@
 \begin{document}
 	\maketitle
 \begin{multicols}{2}
-
-
 \section*{Introduction}
 
 Neural Cellular Automata (NCAs) are small, shared-weight networks that grow images from a single seed pixel and can regenerate after damage, making them a promising model for robust, self-organizing systems. Their perceived robustness has led to NCAs being deployed as a defensive component in larger architectures: Xu et al. \cite{xu2024adanca} use NCA layers as plug-and-play adaptors inside Vision Transformers to make them more resistant against adversarial samples. Whether NCAs themselves can be subverted is therefore not just of theoretical interest but relevant to the security of systems that rely on them.
@@ -305,7 +303,7 @@ further details the step by step growth process of both attacks over 120 simulat
 Visually, both the gradient attack and our CMA-ES attack produce noisier results than the original trained NCA and the target image. This 
 noise is obvious up close but blends in from a distance. The CMA-ES lizard has sharper and more ragged edges. It retains some original green 
 colors around the edges of the limbs and tail, while a darker blue shines through more overall. The gradient attacked lizard has better color 
-accuracy and superior fine details, like the eye position and the white line on the back.. 
+accuracy and superior fine details, like the eye position and the white line on the back.
 
 \begin{figure}[H]
 	\centering
@@ -456,7 +454,7 @@ While the results are not exactly perfect, had the model been trained for longer
 
 
 \subsection*{Experiment 4: Different starter perturbation matrices}
-Instead of starting from identity as attack matrix, we also tried starting from white noise \& the 8000 step gradient-optimized matrix. We used the same hyperparameter values we found using optuna to train a ~500-generation attack starting from the identify matrix.
+Instead of starting from identity as attack matrix, we also tried starting from white noise \& the 8000 step gradient-optimized matrix. We used the same hyperparameter values we found using optuna to train a ~500-generation attack starting from the identity matrix.
 
 \begin{figure}[H]
 	\centering
@@ -506,7 +504,7 @@ As we were interested in how the gradient-based approach would handle a random s
 \end{figure}
 
 With a grown-image loss of 4.550461 (+- 0.201547) it never even came close to the baseline of one starter pixel on a white background as shown in Figure \ref{fig:matrix-loss-graph} and has a much higher loss than the rest.
-More firgures can be found in Appendix \hyperref[appendix:c]{C}.
+More figures can be found in Appendix \hyperref[appendix:c]{C}.
 
 \subsection*{Experiment 5: Different Fitness Functions}
 Table \ref{tab:losses} displays the evaluation metrics for the explored fitness functions. 
@@ -579,18 +577,20 @@ Now CMA-ES and the original version are both relatively successfully optimizing 
 
 Crucially, both optimizers optimize in broadly the same direction and our version can further improve on top of the final results by the original approach. Seeing that CMA-ES does not lead away from the optimum but further guides toward it validates our approach. The results would likely be even better if we started the run (see figure \ref{fig:continued-trainingclean}) with a lower $sigma0$ instead of the priorly found optimal values for full training, so that it hadn't initially taken disproportionately big steps out of the local optimum. It is interesting though that the results of both optimizers do clearly have distinct characteristic looks given the same training objective, meaning they do not optimize in precisely the same direction.
 
-Our approach does not manage to recover from being initialized from a fully gaussian starter matrix, but instead produces a completely white image. These results are very similar to when we first started experimenting with our approach and, underestimating the power of the permutation matrix being multiplied once per growth step for a total of 64-96 times, set $sigma0$ too high. The big implication of small changes likely lock the model in a very unfavorable local optima that it cannot manage to climb out of, as every single step from it makes the results even worse. The standard identity matrix starter is a forgiving start, as it preserves all features of the lizard, with only the colour needing changing, so a step-by-step improvement is possible.
+Our approach does not manage to recover from being initialized from a fully gaussian starter matrix, but instead produces a completely white image. These results are very similar to when we first started experimenting with our approach and, underestimating the power of the permutation matrix being multiplied once per growth step for a total of 64-96 times, set $sigma0$ too high. The big implications of small changes likely lock the model in a very unfavorable local optima that it cannot manage to climb out of, as every single step from it makes the results even worse. Interestingly, the gradient descent approach actually does much worse than ours when starting with a gaussian perturbation matrix in terms of loss, growing something like blue TV static. A likely explanation is that, since $M$ is reapplied at every one of the 64-96 growth steps, backpropagating through such a deeply iterated, chaotic rollout yields ill-conditioned gradients that overshoot into a worse attractor, whereas the derivative-free CMA-ES cannot be pushed below its starting quality and instead settles on the safe near-white canvas.
 
 
-Experiment 2, the lizard to butterfly experiment, demonstrates that the black-box attack can be used for other types of attack, just by simply swapping the target. 
-CMA-ES can approximate the butterfly"s shape and color distribution to some degree and grow back to its original state when perturbation is turned off. 
+The standard identity matrix starter is a forgiving start, as it preserves all features of the lizard, with only the colour needing changing, so a step-by-step improvement is possible. When analyzing the final perturbation matrices, we observe that our approach stays very close to the identity matrix while theirs strays far, which is unexpected for us. This indicates that our approach reaches roughly the same results with a much smaller perturbation. Since the magnitude of perturbation needed to subvert a model reflects how (non-)robust it is, a near-identity attack arguably strengthens our claim that NCAs are less robust than assumed. A perturbation close to identity also leaves most of the NCA's learned local update rules intact and only gently steers the dynamics, which may relate to the lower variance in our final loss (Experiment 1).
+
+Experiment 3, the lizard to butterfly experiment, demonstrates that the black-box attack can be used for other types of attack, just by simply swapping the target.
+CMA-ES can approximate the butterfly's shape and color distribution to some degree and grow back to its original state when perturbation is turned off.
 While it mutates one perturbation is applied again, it shows that even if the NCA's underlying dynamics are of a lizard we can steer the output towards a different target without permanently changing what the model has learned. 
 
-Similarly, in Experiment 3, where we turn perturbation of and off, the NCA model displays impressive regenerative capabilities.
+Similarly, in Experiment 2, where we turn perturbation on and off, the NCA model displays impressive regenerative capabilities.
 Once the perturbation is disabled, the blue coloring disappears within 15 steps and is entirely gone within 30 steps. Throughout the next steps the lizard then recovers its structural details and is almost indistinguishable from the original by step 925.
 While NCAs are used as defensive layers by Xu et al. \cite{xu2024adanca}, it is important to note that they can be attacked using a black-box attacker, however, the effects are not permanent as once the perturbation is disabled, they regenerate back quickly. 
 
-The fitness function comparison in Experiment 5 shows that he selection of loss function affects the quality of the output and the attack in general.
+The fitness function comparison in Experiment 5 shows that the selection of loss function affects the quality of the output and the attack in general.
 Huber achieves the highest SSIM of 0.9349 and lowest 2D-FFT of 0.4949, thanks to its blend of MSE and MAE. 
 Foreground-masked MSE and Weighted RGBA compare poorly as they introduce noticeable blur, suggesting that channel based losses are not ideal. 
 The SSIM loss achieved an even better SSIM and 2D-FFT scores than Huber loss did, however, it failed to turn the lizard blue, demonstrating the Goodhart's law \cite{strathern1997improving}.  
@@ -603,22 +603,18 @@ Furthermore, these loss functions were selected because of their relation to the
 
 %\todo[inline]{Is this (below) relevant? Or maybe for future work?}
 
-Other than addressing the stated limitations and issues in the previous paragraphs, there are several directions the future work could follow. 
+Other than addressing the stated limitations and issues in the previous paragraphs, there are several directions the future work could follow.
 Asymmetrical perturbation matrix would allow for a wider search space and different resulting attack strategies.
-Improving efficiency is also crucial as CMA-ES currently needs roughly 10 times more NCA forward passes than the gradient-based baseline. Other strategies such as gray-box attacks, natural evolution strategies, or other approaches could reduce the cost. 
+Improving efficiency is also crucial as CMA-ES currently needs roughly 10 times more NCA forward passes than the gradient-based baseline. Other strategies such as gray-box attacks, natural evolution strategies, or other approaches could reduce the cost.
 Furthermore, we have not fully replicated the other experiments by Randazzo et al. \cite{randazzo2021adversarial}, such as the removal of limbs, combining multiple perturbations at the same time, and even adversarial injections.
 Doing so would involve a different parameter configuration setting and different fitness function and more. While the black-box model performed well so far, and we believe it would perform well on these task as well, it would be interesting to see how well it compares.
-Therefore, future work should explore and replicate these other experiments as well and see how the black-box model compares. 
+Therefore, future work should explore and replicate these other experiments as well and see how the black-box model compares.
 Finally, future work should test if the perturbation matrix found by CMA-ES would corrupt the defense layers used by Xu et al. \cite{xu2024adanca} inside their Vision Transformers.
 
 \section*{Conclusion}
-Conclusions. Is your line of work worth pursuing?
+\todo[inline]{Conclusions. Is your line of work worth pursuing?}
 
-\todo[inline]{write conclusion
-Only white-box attacks explored. White-box is not a realistic adversary (biological...) (no access to internals).
-So: It is not as safe as assumed/claimed. Black-box attack also works and Xu et al. should asses the practical security risk of using NCAs as defensive layers...}
-
-we ball
+Overall, our evolutionary approach manages to come quite close to the baseline gradient approach. Though it takes longer and more compute to reach results as well for the main experiment, it has some interesting properties in that it achieves its results with minimal changes to the starter perturbation matrix and deals better with a fully random starter perturbation matrix. We show that blackbox attacks in which the target model is not available for backpropagation can succeed against NCA models, indicating that perhaps NCA's are not as robust against attacks as indicated by prior literature.
 
 
 \newpage
