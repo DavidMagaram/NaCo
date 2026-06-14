@@ -177,7 +177,7 @@ At each generation, every candidate perturbation matrix is evaluated by rolling 
 %  focusing on lower loss regions on the parameter search space. Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
 
 Five different fitness functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in table~\ref{tab:final_params}.
-Fitness functions were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in earlier.
+Fitness functions were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned earlier.
 
 
 
@@ -316,7 +316,7 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 	\label{fig:attack-comparison}
 \end{figure}
 
-Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA \ref{fig:grownmutationevolvedbackprop} and the target image \ref{fig:goalevolvedbackprop}, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail) \ref{fig:only_blurred}.
+Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA \ref{fig:grownmutationevolvedbackprop} and the target image \ref{fig:goalevolvedbackprop}, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superior details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail) \ref{fig:only_blurred}.
 
 \begin{figure}[H]
 	\centering
@@ -398,7 +398,7 @@ In order to explore the capabilities of the NCA model and the CMA-ES framework, 
 For this, we only needed to change the target image.
 
 Figure \ref{fig:butterfly-steps} displays 5 images from the visualization of the training run at 5 different steps, along with the target image for comparison.
-The first image at step 120 was selected because it had the most butterfly-like shape. The overall color distribution also approximates the the target image distribution, however, the details and patterns are not present.
+The first image at step 120 was selected because it had the most butterfly-like shape. The overall color distribution also approximates the target image distribution, however, the details and patterns are not present.
 At 500 steps, the butterfly shape is somewhat lost. 
 After 500 steps, perturbation is turned off and the NCA starts regenerating. But because of the strange shape and pixel distribution, 2 lizards are regenerated.
 After 1000 steps, perturbation is turned back on. Again, after 120 steps the shape is the most butterfly-like, however, this time there are 2 lizards so we end up with 2 overlapping butterflies. At the end at 2500 steps the NCA again loses its shape in a similar fashion as at 500 steps.
@@ -413,6 +413,7 @@ After 1000 steps, perturbation is turned back on. Again, after 120 steps the sha
 While the target image was not reached, it can be concluded that the task succeeded to some degree as CMA-ES managed to approximate the butterfly, both its shape and its orange color. 
 This also demonstrates the CMA-ES black-box capabilities and the NCA's impressive regenerative powers. 
 While the results are not exactly perfect, had the model been trained for longer we expect the outcome to be slightly better.
+
 
 
 
@@ -466,7 +467,7 @@ The output from the white-noise trained matrix is just white, while the other on
 	\resizebox{\linewidth}{!}{
 		\begin{tabular}{lcccc}
 			\hline
-			Method & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\downarrow$\\ 
+			Method & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\uparrow$\\ 
 			\hline
 			Identity & 0.932 & 0.081 & 0.437 & 0.47\\ 
 			Gradient-start &  0.941 &  0.070 &  0.435 &  0.53\\ 
@@ -499,7 +500,7 @@ Table \ref{tab:losses} displays the evaluation metrics for the explored fitness 
 \resizebox{\linewidth}{!}{%
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
-Fitness Functions  & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\downarrow$\\ %Blue?
+Fitness Functions  & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\uparrow$\\ %Blue?
 \midrule
 MSE  & 0.925  & 0.096 & 0.541& 0.47\\
 Huber  & 0.935  & 0.097 & 0.495 & 0.47 \\
@@ -519,9 +520,9 @@ As can be seen from the table, all losses perform similarly well. However, out o
 While quantitative metrics are a good indicator of performance, they do not fully reflect the actual results. In order to do that, we need to also inspect the produced final images displayed in Figure~\ref{fig:loss_mean_tgt}, which shows the mean grown image averaged over 8 rollouts using the final perturbation matrix for each of the losses, along with the target image.
 All losses, except the SSIM, can successfully recolor the lizard, however, there are visible differences.
 Huber produces the sharpest looking result consistent with its performance across all metrics, but the limbs and the head have green residue and the edges of the body are much darker compared to others.
-MSE produces a similar result with slightly better colors. Although it is less sharper and lacks behind in some metrics, the results look to be on par with Huber. 
+MSE produces a similar result with slightly better colors. Although it is less sharp and lags behind in some metrics, the results look to be on par with Huber.
 The weighted RGBA and the Foreground-masked MSE both produce noticeably blurry results. Comparing the two, weighted RGBA better handles color and does not produce pink eyes.
-Lastly, although the SSIM has technically the highest SSIM and lowest FFT, it fails the task of turning the lizard blue. This is most likely due to fact that the green lizard to a large degree already satisfies its measures of luminance, contrast, and structure.
+Lastly, although the SSIM has technically the highest SSIM and lowest FFT, it fails the task of turning the lizard blue. This is most likely due to the fact that the green lizard to a large degree already satisfies its measures of luminance, contrast, and structure.
 This is an example of a phenomenon called Goodhart's law \cite{strathern1997improving} which states that when a measure becomes a target, it ceases to be a good measure.
 
 
@@ -536,7 +537,6 @@ This is an example of a phenomenon called Goodhart's law \cite{strathern1997impr
 
 Overall, Huber provides the best results closest to the target, both quantitatively and visually. 
 The results show that the selection of loss function affects the quality of the output and the attack in general. 
-
 
 
 
@@ -567,13 +567,14 @@ Our approach does not manage to recover from being initialized from a fully gaus
 
 
 \todo[inline]{write about all the other results like going from lizard to butterfly}
-\todo[inline]{limitations more clearly}
-\todo[inline]{future directions \& additional possible enhancements}
+\todo[inline]{LIMITATIONS (rubric D4): write a dedicated paragraph covering: (1) $M$ restricted to symmetric matrices (limits the reachable perturbation space); (2) evaluated on a single NCA model and a small set of targets (lizard color-change, butterfly); (3) ~10x sample/compute inefficiency and higher energy vs. the gradient baseline; (4) no explicit query-budget accounting, so the "realistic black-box attacker" framing is only partially validated; (5) failure to recover from a gaussian/white-noise starter matrix.}
+\todo[inline]{FUTURE WORK (rubric D5): write a dedicated paragraph covering: asymmetric/structured perturbation matrices; query-efficient ES variants to close the sample-efficiency gap; evaluation across other NCA models/targets; a true query-budget-constrained threat model; transferability of evolved perturbations across models; combining gradient warm-start + CMA-ES refinement (link to Exp. 4 result).}
 
 
 \section*{Conclusion}
 Conclusions. Is your line of work worth pursuing?
 
+\todo[inline]{write conclusion}
 
  we ball
 
@@ -649,6 +650,7 @@ Conclusions. Is your line of work worth pursuing?
 % \appendix
 \section*{Author Contribution}
 Author contribution: describe each team member contributions to the project.
+\todo[inline]{needed}
 
 
 \section*{Code}
@@ -658,9 +660,9 @@ Author contribution: describe each team member contributions to the project.
 %a short manual describing how to use/run the program;
 %a sample run, screenshot, or other indication of system behavior.
 
-https://github.com/DavidMagaram/NaturalComputing 
-
-
+All code used in this project can be found at https://github.com/DavidMagaram/NaturalComputing. 
+All experiments were performed using Jupyter notebooks that were developed in Google Colab using a T4 GPU, and can be located in the $Codee$ folder. 
+No additional installation or configuration is needed.
 
 \newpage
 \end{multicols}
