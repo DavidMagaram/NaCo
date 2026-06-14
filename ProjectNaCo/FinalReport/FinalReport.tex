@@ -93,7 +93,7 @@ To assess the true vulnerability of NCAs under a realistic threat model, we cons
 %The NCA is rolled out for N timesteps from a single seed pixel
 
 We target a pretrained Growing NCA model optimized to generate a specific 2D image from a single seed pixel (e.g., the "lizard" emoji model) introduced by Mordvintsev et al. \cite{mordvintsev2020growing}. 
-The NCA operates on a  W $\times$ H (40 $\times$ 40, padding 32) grid of cells, where each cell (pixel) has a continuous 16-dimensional state vector $x \in \mathbb{R}^{16}$. Among the 16 channels, 3 encode RGB color, 1 encodes transparency (Alpha), and the remaining 12 are hidden.
+The NCA operates on a  W $\times$ H (40 $\times$ 40, padding 32) grid of cells, where each cell (pixel) has a continuous 16-dimensional state vector $x \in \mathbb{R}^{16}$. Among the 16 channels, 3 encode RGB color, 1 encodes transparency (Alpha), and the remaining 12 are hidden. We can perturb the states of these cells to steer the system a certain way.
 
 The gradient-based attack from Randazzo et al.~\cite{randazzo2021adversarial}, which optimizes $M$ directly via backpropagation through the full NCA rollout using MSE loss and the Adam optimizer, with complete access to model weights, serves as the performance ceiling against which our black-box approach is measured. 
 Following this framework, we restrict our attack to a global, linear state perturbation. 
@@ -575,8 +575,24 @@ Our approach does not manage to recover from being initialized from a fully gaus
 
 
 \todo[inline]{write about all the other results like going from lizard to butterfly}
+Experiment 2, the lizard to butterfly experiment, demonstrates that the black-box attack can be used for other types of attack, just by simply swapping the target. 
+CMA-ES can approximate the butterfly"s shape and color distribution to some degree and grow back to its original state when perturbation is turned off. 
+While it mutates one perturbation is applied again, it shows that even if the NCA's underlying dynamics are of a lizard we can steer the output towards a different target without permanently changing what the model has learned. 
+
+Similarly, in Experiment 3, where we turn perturbation of and off, the NCA model displays impressive regenerative capabilities.
+Once the perturbation is disabled, the blue coloring disappears within 15 steps and is entirely gone within 30 steps. Throughout the next steps the lizard then recovers its structural details and is almost indistinguishable from the original by step 925.
+While NCAs are used as defensive layers by Xu et al. \cite{xu2024adanca}, it is important to note that they can be attacked using a black-box attacker, however, the effects are not permanent as once the perturbation is disabled, they regenerate back quickly. 
+
+
 \todo[inline]{LIMITATIONS (rubric D4): write a dedicated paragraph covering: (1) $M$ restricted to symmetric matrices (limits the reachable perturbation space); (2) evaluated on a single NCA model and a small set of targets (lizard color-change, butterfly); (3) ~10x sample/compute inefficiency and higher energy vs. the gradient baseline; (4) no explicit query-budget accounting, so the "realistic black-box attacker" framing is only partially validated; (5) failure to recover from a gaussian/white-noise starter matrix.}
 \todo[inline]{FUTURE WORK (rubric D5): write a dedicated paragraph covering: asymmetric/structured perturbation matrices; query-efficient ES variants to close the sample-efficiency gap; evaluation across other NCA models/targets; a true query-budget-constrained threat model; transferability of evolved perturbations across models; combining gradient warm-start + CMA-ES refinement (link to Exp. 4 result).}
+
+
+\todo[inline]{Is this (below) relevant? Or maybe for future work?}
+
+Unlike, Randazzo et al. \cite{randazzo2021adversarial}, we have not observed any shifts or traversing in our experiments, except of a couple of mutations.
+While we intended to follow and replicate their experiments with our black-box approach, we have not tried and implemented all of them. The shifts and traversing seems to only happen when combining multiple perturbations at the same time.
+Future work should explore and replicate these other experiments as well and see how the black-box model compares. 
 
 
 \section*{Conclusion}
