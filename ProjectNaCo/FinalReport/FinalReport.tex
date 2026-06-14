@@ -146,7 +146,7 @@ While the Mean Squared Error (MSE, or $L_2$ distance) is utilized as the primary
 
 \textbf{Learned Perceptual Image Patch Similarity (LPIPS):} To quantify semantic and perceptual similarity, we utilize the LPIPS metric \cite{zhang2018unreasonable}. By passing both the target image and the generated NCA output through a pretrained deep convolutional network (in our case, AlexNet) and comparing the internal feature activations, LPIPS effectively measures whether the generated image "looks" semantically identical to the target. Images are normalized to the $[-1, 1]$ range prior to extraction. A lower LPIPS score indicates that the adversarial image is perceptually closer to the intended target.
 
-\textbf{Target-Specific Semantic Score (TSS)}: While automated metrics like SSIM and LPIPS capture structural and deep feature similarities, they can occasionally overlook distinct morphological traits critical to the specific target image (e.g., the accurate formation of individual limbs or highly localized color patterns). To bridge the gap between qualitative human perception and quantitative evaluation, we implement a Target-Specific Semantic Score. This metric systematically assesses five key features of the generated morphology: Granularity, Bodily Parts, Blueness, Dorsal Stripe, and Head Features. 
+\textbf{Target-Specific Semantic Score (TSS)}: While automated metrics like SSIM and LPIPS capture structural and deep feature similarities, they can occasionally overlook distinct morphological traits critical to the specific target image (e.g., the accurate formation of individual limbs or highly localized color patterns). To bridge the gap between qualitative human perception and quantitative evaluation, we implement a Target-Specific Semantic Score (detailed in Appendix \hyperref[appendix:d]{D}). This metric systematically assesses five key features of the generated morphology: Granularity, Bodily Parts, Blueness, Dorsal Stripe, and Head Features. 
 Each feature is evaluated on a discrete scale from $1$ (highly degraded) to $4$ (excellent target match). The final composite score $\sum TSS$ is then min-max normalized to yield a continuous value $TSS_{norm} \in [0, 1]$ according to the following formula:$$TSS_{norm} = \frac{\sum TSS - 5}{15}$$where a score closer to $1.0$ indicates superior structural and morphological alignment with the target. The comprehensive evaluation rubric detailing the specific criteria for each score is provided in table \ref{tab:visual-rubric}.
 
 \textbf{2D Fast Fourier Transform (2D-FFT):} Adversarial reprogramming of cellular automata relies on altering local convolutional updates, which frequently introduces high-frequency structural noise (e.g., checkerboard artifacts) not heavily penalized by spatial loss functions. To quantify these artifacts, we perform a 2D Fast Fourier Transform (2D-FFT) on the grayscale representations of the generated and target images. We compute the mean absolute difference of their log-magnitude spectra:
@@ -284,48 +284,62 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 
 
 
-\todo[inline]{aaron storied it up (text after) but its still a lot of images for little text around here, maybe put chunks from the texts before and after inbetween}
+% \todo[inline]{aaron storied it up (text after) but its still a lot of images for little text around here, maybe put chunks from the texts before and after inbetween}
+We evaluate the visual results of both attacks under two different conditions. Figure~\ref{fig:goalevolvedbackprop} shows the results when the 
+perturbation matrix is applied from a single seed pixel to grow the target shape. Figure~\ref{fig:grownmutationevolvedbackprop} shows 
+how the attacks behave when applied to a fully grown original NCA lizard to mutate its existing structure. Figure~\ref{fig:attack-comparison} 
+further details the step by step growth process of both attacks over 120 simulation steps.
+
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
-	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack (theirs).}
+	\caption{Visual comparison of attacks grown from a single seed pixel. Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack (theirs).}
 	\label{fig:goalevolvedbackprop}
 \end{figure}
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/grown_mutation_evolved_backprop"}
-	\caption{Left: fully grown lizard, original target image. Middle: CMA-ES attack on fully grown lizard. Right: gradient-based attack on fully grown lizard}
+	\caption{Visual comparison of attacks applied to an already grown structure. Left: fully grown lizard, original NCA lizard. Middle: CMA-ES attack on fully grown lizard. Right: gradient-based attack on fully grown lizard}
 	\label{fig:grownmutationevolvedbackprop}
 \end{figure}
+
+Visually, both the gradient attack and our CMA-ES attack produce noisier results than the original trained NCA and the target image. This 
+noise is obvious up close but blends in from a distance. The CMA-ES lizard has sharper and more ragged edges. It retains some original green 
+colors around the edges of the limbs and tail, while a darker blue shines through more overall. The gradient attacked lizard has better color 
+accuracy and superior fine details, like the eye position and the white line on the back.. 
+
 \begin{figure}[H]
 	\centering
 	\begin{subfigure}{\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{"optona & comparison output/backprop"}
-		\caption{Gradient-based attack.}
+		\caption{Gradient-based attack growth progress.}
 		\label{fig:backprop}
 	\end{subfigure}
 
 	\begin{subfigure}{\linewidth}
 		\centering
 		\includegraphics[width=\linewidth]{"optona & comparison output/evolved"}
-		\caption{Evolutionary attack.}
+		\caption{Evolutionary attack growth progress.}
 		\label{fig:evolved}
 	\end{subfigure}
 	\caption{Attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120.}
 	\label{fig:attack-comparison}
 \end{figure}
 
-Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA \ref{fig:grownmutationevolvedbackprop} and the target image \ref{fig:goalevolvedbackprop}, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superior details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail) \ref{fig:only_blurred}.
+% Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA \ref{fig:grownmutationevolvedbackprop} and the target image \ref{fig:goalevolvedbackprop}, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superior details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail) \ref{fig:only_blurred}.
+That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image. Figure~\ref{fig:only_blurred} shows that a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail).
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/only_blurred.png"}
-	\caption{For reference: the target image transformed down and then up 4x with linear, none, and cubic interpolation algorithms in GIMP.}
+	\caption{Reference image showing the target transformed down and then up four times with linear, none, and cubic interpolation algorithms in GIMP.}
 	\label{fig:only_blurred}
 \end{figure}
 
 Lastly for this comparison with both approaches running for equal time, we wanted to take a look at the final perturbation matrices.
+
+The changes from identity (not shown in Figure \ref{fig:goalevolvedbackprop}) are hard to see visually in the CMA-ES version, as they are comparatively tiny. However, in figure \ref{fig:goalevolvedbackprop} we see that the gradient baseline has made much bigger changes to the starter perturbation matrix, as also validated by comparing the Euclidean distance between the perturbation matrices and the identity matrix. This is despite leading to comparable (if worse) results.
 
 \begin{figure}[H]
 	\centering
@@ -334,7 +348,23 @@ Lastly for this comparison with both approaches running for equal time, we wante
 	\label{fig:final-perturbation-matrices}
 \end{figure}
 
-The changes from identity (not pictured here) are hard to see visually in the CMA-ES version, as they are comparatively tiny. The gradient baseline on the other hand has made much bigger changes to the starter perturbation matrix, as also validated by comparing the Euclidean distance between the perturbation matrices and the identity matrix. This is despite leading to comparable (if worse) results, see Figure \ref{fig:goalevolvedbackprop}.
+\begin{table}[H]
+	\centering
+	% \renewcommand{\arraystretch}{1.2}
+	\resizebox{\linewidth}{!}{
+		\begin{tabular}{lcccc}
+			\hline
+			Method & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\uparrow$\\ 
+			\hline
+			CMA-ES & 0.932 & 0.090 & 0.440 & 0.467\\ 
+			% Gradient-start &  0.941 &  0.070 &  0.435 &  0.53\\ 
+			Gradient & 0.930 & 0.073 & 0.450 & 0.533\\ 
+			% White Noise & 0.857 & 0.551 & 1.488 & 0.00 \\ 
+			\hline
+	\end{tabular}}
+	\caption{Quantitative comparison of evaluation metrics for the CMA-ES approach and the gradient baseline. Higher SSIM, lower LPIPS, lower 2D-FFT, and lower TSS indicate better visual fidelity to the target image.}
+	\label{tab:quantitative-metrics}
+\end{table}
 
 \subsubsection*{Experiment 1.2: Environmental Impact}
 
@@ -348,10 +378,10 @@ evolutionary approach.
 % crossing the -2.5 threshold.
 \begin{table}[H]
 	\centering
-	\resizebox{\linewidth}{!}{
+	\resizebox{1\linewidth}{!}{
 		\begin{tabular}{lrrr}
 			\hline
-			Method & Emissions &Duration & Energy \\ 
+			Method & Emissions&Duration (s) & Energy (kWh)\\ 
 			\hline
 			CMA-ES & 0.015 & 1994.738 & 0.043 \\
 			% Gradient-start & 0.015 & 1981.945 & 0.043 \\
@@ -359,13 +389,13 @@ evolutionary approach.
 			% White Noise & 0.015 & 1975.147 & 0.042 \\ 
 			\hline
 	\end{tabular}}
-	\caption{Environmental impact and computational cost of the evolutionary strategy and the gradient baseline. The table presents total carbon emissions in kgCO$_2$e, optimization duration in seconds, and overall energy consumed in kWh.}
+	\caption{Environmental impact and computational cost of the evolutionary strategy and the gradient baseline. The total carbon emissions are presented in kgCO$_2$e.}
 	\label{tab:emissions-metrics}
 \end{table}
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/emissions_plot"}
+	\includegraphics[width=0.8\linewidth]{"optona & comparison output/emissions_plot"}
 	\caption{Comparison of total carbon emissions and energy consumption breakdown (CPU, GPU, and RAM) across the evaluated methods.}
 	\label{fig:emissions-plot}
 \end{figure}
@@ -456,28 +486,6 @@ In averaged loss after growing a full lizard from a pixel, the random matrix sta
 
 The output from the white-noise trained matrix is just white, while the other ones clearly show a lizard. The Lizard trained from the gradient-trained baseline matrix seems to have the best colour accuracy, while the gradient-trained one has the most detailed white spine.
 
-
-\subsubsection*{Experiment 4 results graded by different evaluation metrics}
-
-\todo[inline]{needs description + see earlier todo. I think the grading rubric is better suited to (additionally?) be in experiment 1}
-
-\begin{table}[H]
-	\centering
-	% \renewcommand{\arraystretch}{1.2}
-	\resizebox{\linewidth}{!}{
-		\begin{tabular}{lcccc}
-			\hline
-			Method & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\uparrow$\\ 
-			\hline
-			Identity & 0.932 & 0.081 & 0.437 & 0.47\\ 
-			Gradient-start &  0.941 &  0.070 &  0.435 &  0.53\\ 
-			Gradient & 0.934 & 0.074 & 0.439 & 0.60\\ 
-			White Noise & 0.857 & 0.551 & 1.488 & 0.00 \\ 
-			\hline
-	\end{tabular}}
-	\caption{Quantitative comparison of evaluation metrics across different attack initializations and the gradient baseline. Higher SSIM, lower LPIPS, lower 2D-FFT, and lower TSS indicate better visual fidelity to the target image.}
-	\label{tab:quantitative-metrics}
-\end{table}
 
 \subsubsection*{Experiment 4 Addition: Training a gradient-approach attack starting with a random perturbation matrix}
 
