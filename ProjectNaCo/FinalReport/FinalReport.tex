@@ -101,7 +101,7 @@ For the initial standard deviation ($\sigma_0$), which dictates the initial sear
 During CMA-ES training, the NCA is rolled out for a randomly sampled number of steps in $[64, 96]$ per generation. For evaluation, a fixed 96 steps are used.
 At each generation, the CMA-ES produced population of 64 candidate vectors. Each candidate is evaluated by rolling out the NCA from a batch of \texttt{batch\_size}$=4$ states taken from a sample pool of 1024 states and averaging the resulting loss. 
 We apply step-size decay to avoid making disruptive jumps during search. There, $\sigma$ is multiplied by \texttt{decay\_factor} $= 0.9$ every \texttt{decay\_freq} $= 175$ generations. 
-The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21}.
+The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21} (Figures \ref{fig:optuna1}, \ref{fig:optuna11}, \ref{fig:optuna2} and \ref{fig:optuna21} can be found in the \ref{Appendix}.
 
 Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 4 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
 Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optuna sweep. It reveals that batch\_size is the most important hyperparameter by a significant amount.  
@@ -109,35 +109,6 @@ In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous O
 This run favored population size of 64, a higher sigma0, and a higher decay frequency. 
 
 
-\end{multicols}
-\todo[inline]{way too big can't lie maybe appendix}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
-	\caption{First optuna sweep. It ran 30 times in 20 minutes with early pruning after 5 minutes.}
-	\label{fig:optuna1}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1_1"}
-	\caption{Hyperparameter importance during the first Optuna sweep.}
-	\label{fig:optuna11}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2"}
-	\caption{Second optuna sweep with less options as the winners from the first round were re-introduced. It ran 20 times in 20 minutes with early pruning after 5 minutes.}
-	\label{fig:optuna2}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2_1"}
-	\caption{Hyperparameter importance during the second Optuna sweep.}
-	\label{fig:optuna21}
-\end{figure}
-
-
-\begin{multicols}{2}
 Based on the two Optuna sweeps, our final algorithm uses the parameters displayed in table \ref{tab:final_params}.
 
 \begin{table}[H]
@@ -289,16 +260,19 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{"optona & comparison output/loss plot 2"}
-    \caption{Optimization trajectory measured by training iterations.}
-    \label{fig:loss-plot-2}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=1\linewidth]{"optona & comparison output/other loss plot"}
-    \caption{Optimization efficiency measured by cumulative NCA state-steps.}
-    \label{fig:other-loss-plot}
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{"optona & comparison output/loss plot 2"}
+        \caption{Optimization trajectory measured by training iterations.}
+        \label{fig:loss-plot-2}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[t]{0.49\linewidth}
+        \centering
+        \includegraphics[width=\linewidth]{"optona & comparison output/other loss plot"}
+        \caption{Optimization efficiency measured by cumulative NCA state-steps.}
+        \label{fig:other-loss-plot}
+    \end{subfigure}
 \end{figure}
 
 
@@ -307,7 +281,7 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
-	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack.}
+	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack (theirs).}
 	\label{fig:goalevolvedbackprop}
 \end{figure}
 \begin{figure}[H]
@@ -318,15 +292,21 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/backprop"}
-	\caption{Gradient-based attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
-	\label{fig:backprop}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/evolved"}
-	\caption{Evolutionary attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
-	\label{fig:evolved}
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{"optona & comparison output/backprop"}
+		\caption{Gradient-based attack.}
+		\label{fig:backprop}
+	\end{subfigure}
+
+	\begin{subfigure}{\linewidth}
+		\centering
+		\includegraphics[width=\linewidth]{"optona & comparison output/evolved"}
+		\caption{Evolutionary attack.}
+		\label{fig:evolved}
+	\end{subfigure}
+	\caption{Attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120.}
+	\label{fig:attack-comparison}
 \end{figure}
 
 Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA \ref{fig:grownmutationevolvedbackprop} and the target image \ref{fig:goalevolvedbackprop}, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail) \ref{fig:only_blurred}.
@@ -381,42 +361,6 @@ evolutionary approach.
 	\includegraphics[width=1\linewidth]{"optona & comparison output/emissions_plot"}
 	\caption{Comparison of total carbon emissions and energy consumption breakdown (CPU, GPU, and RAM) across the evaluated methods.}
 	\label{fig:emissions-plot}
-\end{figure}
-
-
-\todo[inline]{aaron annotate/story it up}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
-	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack.}
-	\label{fig:goalevolvedbackprop}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/grown_mutation_evolved_backprop"}
-	\caption{Left: fully grown lizard, original target image. Middle: CMA-ES attack on fully grown lizard. Right: gradient-based attack on fully grown lizard}
-	\label{fig:grownmutationevolvedbackprop}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/backprop"}
-	\caption{Gradient-based attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
-	\label{fig:backprop}
-\end{figure}
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/evolved"}
-	\caption{Evolutionary attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
-	\label{fig:evolved}
-\end{figure}
-
-Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA and the target image, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail).
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=1\linewidth]{"optona & comparison output/only_blurred.png"}
-	\caption{For reference: the target image transformed down and then up 4x with linear, none, and cubic interpolation algorithms in GIMP.}
-	\label{fig:only_blurred}
 \end{figure}
 
 
@@ -716,7 +660,41 @@ https://github.com/DavidMagaram/NaturalComputing
 
 
 
-\section*{Appendix}
+\newpage
+\end{multicols}
+
+\appendix
+\section{Appendix: Optuna visualizations}
+\label{appendix:a}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
+	\caption{First optuna sweep. It ran 30 times in 20 minutes with early pruning after 5 minutes.}
+	\label{fig:optuna1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1_1"}
+	\caption{Hyperparameter importance during the first Optuna sweep.}
+	\label{fig:optuna11}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2"}
+	\caption{Second optuna sweep with less options as the winners from the first round were re-introduced. It ran 20 times in 20 minutes with early pruning after 5 minutes.}
+	\label{fig:optuna2}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2_1"}
+	\caption{Hyperparameter importance during the second Optuna sweep.}
+	\label{fig:optuna21}
+\end{figure}
+
+
+\section{Appendix: Additional Images for Experiment 4}
+\label{appendix:b}
 
 
 \begin{figure}[H]
@@ -731,6 +709,11 @@ https://github.com/DavidMagaram/NaturalComputing
 	\caption{}
 	\label{fig:visuals2}
 \end{figure}
+
+
+
+\section{Appendix: Additional Images for Experiment 4 Addition}
+\label{appendix:c}
 
 
 Further graphics plots/graphics from training a gradient-based attack starting on a random starter perturbation matrix:
@@ -761,10 +744,9 @@ Further graphics plots/graphics from training a gradient-based attack starting o
 \end{figure}
 
 
+\section{Appendix: Visual Fidelity Rubric}
+\label{appendix:d}
 
-
-
-\end{multicols}
 
 \begin{table}[H]
     \centering
