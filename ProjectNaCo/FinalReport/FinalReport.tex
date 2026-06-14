@@ -571,9 +571,20 @@ Experiment 2, the lizard to butterfly experiment, demonstrates that the black-bo
 CMA-ES can approximate the butterfly"s shape and color distribution to some degree and grow back to its original state when perturbation is turned off. 
 While it mutates one perturbation is applied again, it shows that even if the NCA's underlying dynamics are of a lizard we can steer the output towards a different target without permanently changing what the model has learned. 
 
+Similarly, in Experiment 3, where we turn perturbation of and off, the NCA model displays impressive regenerative capabilities.
+Once the perturbation is disabled, the blue coloring disappears within 15 steps and is entirely gone within 30 steps. Throughout the next steps the lizard then recovers its structural details and is almost indistinguishable from the original by step 925.
+While NCAs are used as defensive layers by Xu et al. \cite{xu2024adanca}, it is important to note that they can be attacked using a black-box attacker, however, the effects are not permanent as once the perturbation is disabled, they regenerate back quickly. 
+
 
 \todo[inline]{LIMITATIONS (rubric D4): write a dedicated paragraph covering: (1) $M$ restricted to symmetric matrices (limits the reachable perturbation space); (2) evaluated on a single NCA model and a small set of targets (lizard color-change, butterfly); (3) ~10x sample/compute inefficiency and higher energy vs. the gradient baseline; (4) no explicit query-budget accounting, so the "realistic black-box attacker" framing is only partially validated; (5) failure to recover from a gaussian/white-noise starter matrix.}
 \todo[inline]{FUTURE WORK (rubric D5): write a dedicated paragraph covering: asymmetric/structured perturbation matrices; query-efficient ES variants to close the sample-efficiency gap; evaluation across other NCA models/targets; a true query-budget-constrained threat model; transferability of evolved perturbations across models; combining gradient warm-start + CMA-ES refinement (link to Exp. 4 result).}
+
+
+\todo[inline]{Is this (below) relevant? Or maybe for future work?}
+
+Unlike, Randazzo et al. \cite{randazzo2021adversarial}, we have not observed any shifts or traversing in our experiments, except of a couple of mutations.
+While we intended to follow and replicate their experiments with our black-box approach, we have not tried and implemented all of them. The shifts and traversing seems to only happen when combining multiple perturbations at the same time.
+Future work should explore and replicate these other experiments as well and see how the black-box model compares. 
 
 
 \section*{Conclusion}
