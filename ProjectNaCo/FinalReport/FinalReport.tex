@@ -604,12 +604,12 @@ Furthermore, these loss functions were selected because of their relation to the
 %\todo[inline]{Is this (below) relevant? Or maybe for future work?}
 
 Other than addressing the stated limitations and issues in the previous paragraphs, there are several directions the future work could follow. 
-It would be interesting to explore asymmetrical perturbation matrix as it would allow for a wider search space and different resulting attack strategies.
+Asymmetrical perturbation matrix would allow for a wider search space and different resulting attack strategies.
 Improving efficiency is also crucial as CMA-ES currently needs roughly 10 times more NCA forward passes than the gradient-based baseline. Other strategies such as gray-box attacks, natural evolution strategies, or other approaches could reduce the cost. 
 Furthermore, we have not fully replicated the other experiments by Randazzo et al. \cite{randazzo2021adversarial}, such as the removal of limbs, combining multiple perturbations at the same time, and even adversarial injections.
 Doing so would involve a different parameter configuration setting and different fitness function and more. While the black-box model performed well so far, and we believe it would perform well on these task as well, it would be interesting to see how well it compares.
 Therefore, future work should explore and replicate these other experiments as well and see how the black-box model compares. 
-
+Finally, future work should test if the perturbation matrix found by CMA-ES would corrupt the defense layers used by Xu et al. \cite{xu2024adanca} inside their Vision Transformers.
 
 \section*{Conclusion}
 Conclusions. Is your line of work worth pursuing?
