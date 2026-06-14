@@ -601,7 +601,9 @@ Finally, future work should test if the perturbation matrix found by CMA-ES woul
 
 \section*{Conclusion}
 
-Overall, our query-only evolutionary attack comes close to the white-box gradient baseline. It reproduces the same targeted reprogramming and reaches a visually similar result (with near-identical SSIM and comparable LPIPS, 2D-FFT, and TSS). Within the same 30-minute budget the gradient baseline still converges to a somewhat lower loss and slightly sharper detail, but our attack lands in the same range rather than being clearly worse. This closeness comes at a cost, as CMA-ES needs roughly three times more NCA forward passes and more energy to get there. At the same time it shows some interesting properties: it achieves its results with minimal changes to the starter perturbation matrix and appears to fail more gracefully than the gradient approach from a fully random start. The attack also generalises beyond the colour change, approximating a different target (the butterfly) by simply swapping the target image, with the choice of fitness function further shaping the result. We do, however, confirm that the attacks are not permanent, as the NCA regenerates its original form within a few hundred steps once the perturbation is switched off.
+Overall, our query-only evolutionary attack comes close to the white-box gradient baseline. It reproduces the same targeted reprogramming and reaches a visually similar result (with near-identical SSIM and comparable LPIPS, 2D-FFT, and TSS). Within the same 30-minute budget the gradient baseline still converges to a somewhat lower loss and slightly sharper detail, but our attack lands in the same range rather than being clearly worse. This closeness comes at a cost, as CMA-ES needs roughly three times more NCA forward passes and more energy to get there. 
+
+At the same time it shows some interesting properties: it achieves its results with minimal changes to the starter perturbation matrix and appears to fail more gracefully than the gradient approach from a fully random start. The attack also generalises beyond the colour change, approximating a different target (the butterfly) by simply swapping the target image, with the choice of fitness function further shaping the result. We do, however, confirm that the attacks are not permanent, as the NCA regenerates its original form within a few hundred steps once the perturbation is switched off.
 
 We have shown that a white-box attack is not needed to successfully attack NCA's and that they may not be as robust as they were priorly considered.
 
@@ -695,7 +697,7 @@ Tasks were divided roughly equally, with each member independently running their
 
 All code used in this project can be found at https://github.com/DavidMagaram/NaturalComputingFinal. 
 All experiments were performed using Jupyter notebooks that were developed in Google Colab using a T4 GPU, and can be located in the $Codee$ folder. 
-No additional installation or configuration is needed.
+No additional installation or configuration is needed if running the fitting notebook for each experiment in colab.
 
 \newpage
 \end{multicols}
