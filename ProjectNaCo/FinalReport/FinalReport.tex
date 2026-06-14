@@ -612,7 +612,10 @@ Therefore, future work should explore and replicate these other experiments as w
 Finally, future work should test if the perturbation matrix found by CMA-ES would corrupt the defense layers used by Xu et al. \cite{xu2024adanca} inside their Vision Transformers.
 
 \section*{Conclusion}
-\todo[inline]{Conclusions. Is your line of work worth pursuing?}
+This work explores whether a query-only, black-box attacker using evolutionary search can reproduce the same targeted adversarial reprogramming of Growing NCA which was previously only demonstrated with a white-box, gradient-based methods. 
+Comparing the final grown image loss and visual output quality, we compare the methods.
+In this work we show that a realistic attacker who has no access to model weights and gradients can change the NCA output towards a selected target image, just like the gradient approach could, by using CMA-ES to optimize a global $16\multiply 16$ state perturbation matrix.
+
 
 Overall, our evolutionary approach manages to come quite close to the baseline gradient approach. Though it takes longer and more compute to reach results as well for the main experiment, it has some interesting properties in that it achieves its results with minimal changes to the starter perturbation matrix and deals better with a fully random starter perturbation matrix. We show that blackbox attacks in which the target model is not available for backpropagation can succeed against NCA models, indicating that perhaps NCA's are not as robust against attacks as indicated by prior literature.
 
