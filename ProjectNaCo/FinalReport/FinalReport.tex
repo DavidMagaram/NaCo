@@ -378,7 +378,7 @@ closely follow the gradient baseline.
 \subsubsection*{Experiment 1.2: Environmental Impact}
 
 To contextualize the computational cost and environmental footprint of different methods, we tracked carbon emissions and energy consumption 
-during the optimization process. For a fair comparison of convergence efficiency, each method was run until it reached a target log10 loss of -2.5.
+during the optimization process. For a fair comparison of convergence efficiency, each method was run until it reached a target log$_{10}$ loss of -2.5.
 
 As detailed in Table \ref{tab:emissions-metrics} and illustrated in Figure \ref{fig:emissions-plot}, the gradient approach is substantially more 
 efficient. It successfully reached the target loss in roughly half the time and consumed approximately half the overall energy compared to the 
@@ -462,7 +462,7 @@ Instead of starting from identity as attack matrix, we also tried starting from 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"starter matrices experiment/continued training_clean"}
-	\caption{The loss of the gradient approach (theirs) in purple trained for 8000 steps, with the CMA-ES approach (ours) taking its final perturbation matrix as starter.}
+	\caption{The log$_{10}$ loss of the gradient approach (theirs) in purple trained for 8000 steps, with the CMA-ES approach (ours) taking its final perturbation matrix as starter.}
 	\label{fig:continued-trainingclean}
 \end{figure}
 
@@ -471,7 +471,7 @@ There is initially a significant jump upwards in loss after the switch to CMA-ES
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"starter matrices experiment/loss by matrix"}
-	\caption{The log10 loss of 3 training runs against the baseline: starting with the identity matrix (default), the already gradient-approach optimized matrix, and one filled with gaussian noise.}
+	\caption{The log$_{10}$ loss of 3 training runs against the baseline: starting with the identity matrix (default), the already gradient-approach optimized matrix, and one filled with gaussian noise.}
 	\label{fig:loss-by-matrix}
 \end{figure}
 
@@ -507,7 +507,7 @@ As we were interested in how the gradient-based approach would handle a random s
 \end{figure}
 
 With a grown-image loss of 4.550461 (+- 0.201547) it never even came close to the baseline of one starter pixel on a white background as shown in Figure \ref{fig:matrix-loss-graph} and has a much higher loss than the rest.
-
+More firgures can be found in Appendix \hyperref[appendix:c]{C}.
 
 \subsection*{Experiment 5: Different Fitness Functions}
 Table \ref{tab:losses} displays the evaluation metrics for the explored fitness functions. 
@@ -565,7 +565,7 @@ Compared to the original backpropagation version, our NCA-ES tuned adversarial a
 Comparing these two methods highlights a tradeoff between threat models and overall resource costs. 
 Because CMA-ES evaluates entire populations instead of using gradients, it requires roughly ten times more forward simulation 
 steps. Despite this computational penalty, the evolutionary attack remains competitive in practical wall clock time. However, 
-when we measure the environmental footprint required to reach a specific target loss of -2.5 (on a log$_10$ scale), the differences become obvious. 
+when we measure the environmental footprint required to reach a specific target loss of -2.5 (on a log$_{10}$ scale), the differences become obvious. 
 The gradient approach is significantly more efficient. It reaches the target in half the time, uses half the total energy, 
 and produces half the carbon emissions compared to the CMA-ES method. While the gradient baseline is greener and faster, 
 it is less stable. We observed that the gradient attack produces a higher standard deviation in its final loss. 
@@ -773,7 +773,7 @@ Figure \ref{fig:optuna21} shows the importance of these remaining parameters.
 \end{figure}
 
 
-
+\newpage
 \section*{Appendix C: Additional Images for Experiment 4 Addition}
 \label{appendix:c}
 
@@ -782,28 +782,30 @@ Further graphics plots/graphics from training a gradient-based attack starting o
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/loss history"}
-	\caption{}
+	\includegraphics[width=.9\linewidth]{"starter matrices experiment/random starter matrix gradient based/loss history"}
+	\caption{The log$_{10}$ loss of the gradient-based attack trained for 8000 steps with a random starter perturbation matrix. The y-axis shows a the log$_{10}$ scale from 0.45 to 0.80.}
 	\label{fig:loss-history}
 \end{figure}
 \begin{figure}[H]
 	\centering
+	\includegraphics[width=.9\linewidth]{"starter matrices experiment/random starter matrix gradient based/myplot"}
+	\caption{The log$_{10}$ loss of the gradient-based attack trained for 8000 steps with a random starter perturbation matrix. The empty-seed baseline has been given as a reference point.}
+	\label{fig:myplot}
+\end{figure}
+\begin{multicols}{2}
+	\begin{figure}[H]
+	\centering
 	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/mutated grown lizard"}
-	\caption{}
+	\caption{Left: fully grown lizard, original NCA lizard. Right: gradient-based attack applied to an already grown structure.  }
 	\label{fig:mutated-grown-lizard}
 \end{figure}
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/myplot"}
-	\caption{}
-	\label{fig:myplot}
-\end{figure}
-\begin{figure}[H]
-	\centering
 	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/target vs grown lizard"}
-	\caption{}
+	\caption{Left: the target lizard. Right: gradient-based attack grown from a single seed pixel.}
 	\label{fig:target-vs-grown-lizard}
 \end{figure}
+\end{multicols}
 
 
 \section*{Appendix D: Rubric for the Target-Specific Semantic Score (TSS)}
