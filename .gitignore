@@ -1,4 +1,6 @@
 node_modules/
+__pycache__/
+*.pyc
 Assignment1/1A/img
 Assignment1/1C/Experiments/img
 Assignment1/1A/example_node/img
@@ -16,7 +18,7 @@ Assignment2/report.fls
 Assignment2/report.log
 Assignment2/report.out
 Assignment2/report.pyg
-Assignment2/report.synctex.gz
+Assignment2/report.synctex*
 Assignment2/_minted-report/25EF9B3429D441069853F59E50EDC546F73D778D6577DD371281B40198477396.pygtex
 Assignment2/_minted-report/B6CE9060137B625FCA9E6CE6E867DCE5F73D778D6577DD371281B40198477396.pygtex
 Assignment2/_minted-report/default.pygstyle
@@ -29,6 +31,8 @@ Assignment2/_minted-report/default.pygstyle
 *.gz
 *.json
 *.tdo
+*.synctex*
+*.pdf
 # *.png
 Assignment1/1C/img
 .idea/

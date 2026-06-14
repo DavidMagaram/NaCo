@@ -18,56 +18,793 @@
 \usepackage{url}
 \usepackage[T1]{fontenc}
 \usepackage{todonotes}
-\title{Final Project Report}
+\usepackage{bookmark}
+\usepackage{amssymb}
+\usepackage{multicol}
+\title{Evolutionary Adversarial Reprogramming of Growing Neural Cellular Automata}
 \author{Aaron Bussche \and  David Magaram\\[0.3em] Group 28 \and Jason Kasdiran}
 \begin{document}
 	\maketitle
+\begin{multicols}{2}
+
+
 
 \section*{Introduction}
-Final Report: Aim for a max 10 pages document, excluding references and contributions of team members. We will not subtract points for small deviations from the 10 pages, but keep in mind that if your report is much longer, there is likely an issue with conciseness / data presentation somewhere!
 
+Neural Cellular Automata (NCAs) are small, shared-weight networks that grow images from a single seed pixel and can regenerate after damage, making them a promising model for robust, self-organizing systems. Their perceived robustness has led to NCAs being deployed as a defensive component in larger architectures: Xu et al. \cite{xu2024adanca} use NCA layers as plug-and-play adaptors inside Vision Transformers to make them more resistant against adversarial samples. Whether NCAs themselves can be subverted is therefore not just of theoretical interest but relevant to the security of systems that rely on them.
+
+Randazzo et al. \cite{randazzo2021adversarial} and Cavuoti et al. \cite{cavuoti2022adversarial} demonstrated targeted attacks that, for example, can make a generated lizard image lose its tail or change color. However, every published attack on NCAs relies on white-box, gradient-based methods that require full access to the model's weights and backpropagation through the rollout. Robustness claims are so far tested only against this strong threat model. Additionally, focusing on the nature-inspired roots of NCAs, a white-box is not what a realistic adversary, for instance in a biological or bioengineering setting, would plausibly have access to.
+
+%We therefore ask: \textit{can a query-only, black-box attacker using evolutionary search reproduce the same targeted reprogramming of a Growing NCA, and how close does it get to the gradient-based ceiling?} 
 
 \section*{Problem Statement}
-Problem statement outlining the specific goals of the work. Use the project proposal assignment and feedback as input.
+% Problem statement outlining the specific goals of the work. Use the project proposal assignment and feedback as input.
+
+In this project we investigate whether a query-only, black-box attacker using evolutionary search can reproduce the same targeted reprogramming of a Growing NCA by changing it towards the target image, and how close does it get to the gradient-based ceiling.
+
+The goal is to find a $16 \times 16$ state-perturbation matrix that when applied to every cell's 16-dimensional hidden state at every timestep forces the NCA to grow into the target image rather than to its original form (blue lizard instead of a green lizard), which is the same attack surface used by Randazzo et al. \cite{randazzo2021adversarial}. 
+In our approach the attacker can only observe the final RGB output and optimize the L2 distance to a chosen target image using the CMA-ES evolutionary algorithm, without ever accessing model weights or gradient information.  
+
+%We attack the NCA via a $16 \times 16$ state-perturbation matrix applied to every cell's 16-dimensional hidden state at every timestep, the same attack surface used by Randazzo et al. Our attacker observes only the final RGB output and optimizes the L2 distance to a chosen target image using CMA-ES, without ever accessing model weights, hidden channels, or gradient information.
+
+We evaluate if our black-box attack can influence the Growing NCA in a similar way as the white-box approach by comparing the approaches by their final grown-image loss and visual output quality. If the evolutionary attacker approaches the gradient ceiling, it suggests that NCAs may be vulnerable and less robust than previously assumed. However, if it fails to closely approach that ceiling, then the NCAs may be considered safe from more realistic attack types and safe to be used in public-facing, but not open-weights, machine learning systems. 
+
+%If Growing NCAs can be influenced by this attack in a similar way as through white-box approaches, they may be less robust than previously assumed. Otherwise, they may be safe from more realistic attack types and to be used in public-facing, but not open-weights, ML systems.  
 
 
 \section*{Related Work}
-Review of related work and how your project fits in with this. Use the project proposal assignment and feedback as input.
+% Review of related work and how your project fits in with this. Use the project proposal assignment and feedback as input.
+Mordvintsev et al. \cite{mordvintsev2020growing} introduced the Growing NCA model and showed that, through a sample pool training strategy and exposure to damage during training, the learned local update rules become robust enough to regenerate damaged parts. Due to this robustness, NCAs have also been used defensively: Xu et al. \cite{xu2024adanca} inserted NCA layers between vision transformer blocks to serve as an armor against adversarial attacks.
 
-\section*{Motivation}
-Motivation and description of your approach, including: methods, algorithms, evaluation/testing procedures, experimental setup, etc. Ensure that the work is reproducible given this description alone.
+On the offensive side, Randazzo et al. \cite{randazzo2021adversarial} investigated white-box vulnerabilities of Growing NCAs and showed that, while they are more resistant to local injections, they can still be reprogrammed using global state perturbations applied to every cell at every step. Similarly, Cavuoti et al. \cite{cavuoti2022adversarial} demonstrated that injecting a small number of adversarial cells into the grid can drastically alter the grown image. Both studies rely on gradient-based optimization with full access to model weights.
+
+Covariance Matrix Adaptation Evolution Strategy (CMA-ES), introduced by Hansen \cite{hansen2001cmaes}, is an algorithm for non-linear, non-convex black-box optimization that maintains a population of candidates and iteratively shifts them toward high-fitness regions. While evolutionary black-box attacks are commonly used to evaluate traditional image classifiers, they have not yet been applied as an adversarial tool against cellular automata.
+
+
+
+
+
+
+\section*{Methodology and Approach}
+% Motivation and description of your approach, including: methods, algorithms, evaluation/testing procedures, experimental setup, etc. Ensure that the work is reproducible given this description alone.
+
+% \subsection*{Motivation}
+\todo[inline]{Motivation and description of your approach, including: methods, algorithms, evaluation/testing procedures, experimental setup, etc. Ensure that the work is reproducible given this description alone.}
+
+To assess the true vulnerability of NCAs under a realistic threat model, we constrain the attacker to a strict black-box setting. The attacker cannot access the internal weights of the pretrained NCA, nor can they perform automatic differentiation through the grid's temporal evolution. Instead, the attacker can only provide an initial state (or intervening perturbation) and observe the final converged visual output. Because the fitness landscape of an NCA rolled out over hundreds of steps is highly non-convex and non-differentiable from a black-box perspective, we utilize CMA-ES. This evolutionary strategy is well-suited for our setup because it is derivative-free, robust to noisy objective functions, and scales well to our specific parameter space.
+
+\subsection*{Experimental Setup}
+%Neural Cellular Automata (NCAs) are small, shared-weight networks that grow images from a single seed pixel and can regenerate after damage. 
+%We use a pretrained Growing NCA model, one of a lizard emoji, introduced by Mordvintsev et al. \cite{mordvintsev2020growing}. 
+%The model operates on a W $\times$ H (40 $\times$ 40, padding 32) grid where each cell (pixel) has a 16-dimensional vector. Among the 16 channels, 3 encode RGB color, 1 encodes transparency (Alpha), and the remaining 12 are hidden.
+%The NCA is rolled out for N timesteps from a single seed pixel
+
+We target a pretrained Growing NCA model optimized to generate a specific 2D image from a single seed pixel (e.g., the "lizard" emoji model) introduced by Mordvintsev et al. \cite{mordvintsev2020growing}. 
+The NCA operates on a  W $\times$ H (40 $\times$ 40, padding 32) grid of cells, where each cell (pixel) has a continuous 16-dimensional state vector $x \in \mathbb{R}^{16}$. Among the 16 channels, 3 encode RGB color, 1 encodes transparency (Alpha), and the remaining 12 are hidden.
+
+The gradient-based attack from Randazzo et al.~\cite{randazzo2021adversarial}, which optimizes $M$ directly via backpropagation through the full NCA rollout using MSE loss and the Adam optimizer, with complete access to model weights, serves as the performance ceiling against which our black-box approach is measured. 
+Following this framework, we restrict our attack to a global, linear state perturbation. 
+At each timestep of the simulation, before the NCA's convolutional update rules are applied, every cell's state vector is multiplied by a global transformation matrix $M \in \mathbb{R}^{16 \times 16}$. To maintain stability in the cellular dynamics, we restrict $M$ to be a symmetric matrix.
+A symmetric $16 \times 16$ matrix contains exactly 136 unique parameters (the upper triangular elements, including the diagonal). This 136-dimensional vector space forms the search space for our CMA-ES algorithm.
+
+
+To evaluate the impact of the starting distribution on the evolutionary search, we initialize the population center from three distinct points:
+\begin{itemize}
+	\item \textbf{The Identity Matrix:} This represents a "zero-damage" starting point, allowing the evolutionary search to incrementally discover minimal perturbations.
+	\item \textbf{A Random Matrix:} Initialized via a standard normal distribution to test the algorithm's ability to converge from an arbitrary, highly destructive state.
+	\item \textbf{The Baseline Gradient Matrix:} The final output matrix derived from the white-box gradient descent method used by Randazzo et al., establishing a benchmark for convergence speed and local minimum trapping.
+\end{itemize}
+
+For the initial standard deviation ($\sigma_0$), which dictates the initial search volume, we conduct a sweep across multiple magnitudes (e.g., $10^{-2}, 10^{-3}, 10^{-4}$). A smaller $\sigma_0$ is critical when starting from the identity matrix to prevent immediate catastrophic failure of the NCA rules.
+
+% Population size. % Title?
+During CMA-ES training, the NCA is rolled out for a randomly sampled number of steps in $[64, 96]$ per generation. For evaluation, a fixed 96 steps are used.
+At each generation, the CMA-ES produced population of 64 candidate vectors. Each candidate is evaluated by rolling out the NCA from a batch of \texttt{batch\_size}$=4$ states taken from a sample pool of 1024 states and averaging the resulting loss. 
+We apply step-size decay to avoid making disruptive jumps during search. There, $\sigma$ is multiplied by \texttt{decay\_factor} $= 0.9$ every \texttt{decay\_freq} $= 175$ generations. 
+The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21}.
+
+Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 4 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
+Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optuna sweep. It reveals that batch\_size is the most important hyperparameter by a significant amount.  
+In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous Optuna sweep were re-introduced, such as batch\_size 4, so we could find the remaining best hyperparameters. 
+This run favored population size of 64, a higher sigma0, and a higher decay frequency. 
+
+
+\end{multicols}
+\todo[inline]{way too big can't lie maybe appendix}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
+	\caption{First optuna sweep. It ran 30 times in 20 minutes with early pruning after 5 minutes.}
+	\label{fig:optuna1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1_1"}
+	\caption{Hyperparameter importance during the first Optuna sweep.}
+	\label{fig:optuna11}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2"}
+	\caption{Second optuna sweep with less options as the winners from the first round were re-introduced. It ran 20 times in 20 minutes with early pruning after 5 minutes.}
+	\label{fig:optuna2}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2_1"}
+	\caption{Hyperparameter importance during the second Optuna sweep.}
+	\label{fig:optuna21}
+\end{figure}
+
+
+\begin{multicols}{2}
+Based on the two Optuna sweeps, our final algorithm uses the parameters displayed in table \ref{tab:final_params}.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+Parameter & Value \\
+\midrule
+sigma0 & 0.0048 \\
+batch\_size & 4 \\
+popsize & 64 \\
+decay\_factor & 0.9 \\
+decay\_freq & 175 \\
+\bottomrule
+\end{tabular}
+\caption{Hyperparameter values used for CMA-ES optimization.}
+\label{tab:final_params}
+\end{table}
+
+
+
+
+\subsection*{Evaluation Metrics}
+
+While the Mean Squared Error (MSE, or $L_2$ distance) is utilized as the primary fitness function during the CMA-ES optimization process due to its computational efficiency, it is widely recognized that pixel-wise distances correlate poorly with human visual perception. A perturbation matrix may achieve a low MSE while simultaneously producing an image with unnatural artifacts or structurally disjointed features. Therefore, to rigorously evaluate and compare the outputs of the black-box evolutionary attack against the baseline gradient-based attack, we employ a suite of quantitative metrics focusing on structural, perceptual, and frequency-domain similarities.
+
+\textbf{Structural Similarity Index Measure (SSIM):} Introduced by Wang et al. \cite{wang2004image}, SSIM evaluates the visual impact of luminance, contrast, and spatial structural dependencies between two images. Unlike MSE, which estimates absolute errors, SSIM considers image degradation as perceived change in structural information. We calculate the SSIM over the RGB channels with a maximum pixel value of $1.0$. A higher SSIM value (closer to $1.0$) indicates better structural fidelity to the target image.
+
+\textbf{Learned Perceptual Image Patch Similarity (LPIPS):} To quantify semantic and perceptual similarity, we utilize the LPIPS metric \cite{zhang2018unreasonable}. By passing both the target image and the generated NCA output through a pretrained deep convolutional network (in our case, AlexNet) and comparing the internal feature activations, LPIPS effectively measures whether the generated image "looks" semantically identical to the target. Images are normalized to the $[-1, 1]$ range prior to extraction. A lower LPIPS score indicates that the adversarial image is perceptually closer to the intended target.
+
+\textbf{Target-Specific Semantic Score (TSS)}: While automated metrics like SSIM and LPIPS capture structural and deep feature similarities, they can occasionally overlook distinct morphological traits critical to the specific target image (e.g., the accurate formation of individual limbs or highly localized color patterns). To bridge the gap between qualitative human perception and quantitative evaluation, we implement a Target-Specific Semantic Score. This metric systematically assesses five key features of the generated morphology: Granularity, Bodily Parts, Blueness, Dorsal Stripe, and Head Features. 
+Each feature is evaluated on a discrete scale from $1$ (highly degraded) to $4$ (excellent target match). The final composite score $\sum TSS$ is then min-max normalized to yield a continuous value $TSS_{norm} \in [0, 1]$ according to the following formula:$$TSS_{norm} = \frac{\sum TSS - 5}{15}$$where a score closer to $1.0$ indicates superior structural and morphological alignment with the target. The comprehensive evaluation rubric detailing the specific criteria for each score is provided in table \ref{tab:visual-rubric}.
+
+\textbf{2D Fast Fourier Transform (2D-FFT):} Adversarial reprogramming of cellular automata relies on altering local convolutional updates, which frequently introduces high-frequency structural noise (e.g., checkerboard artifacts) not heavily penalized by spatial loss functions. To quantify these artifacts, we perform a 2D Fast Fourier Transform (2D-FFT) on the grayscale representations of the generated and target images. We compute the mean absolute difference of their log-magnitude spectra:
+\begin{equation*}
+\begin{split}
+    D_{F} &= \frac{1}{H \times W} \sum_{u,v} \Big| \log(1 + |\mathcal{F}(\text{img}_{\text{target}})_{u,v}|) \\
+    &\quad - \log(1 + |\mathcal{F}(\text{img}_{\text{grown}})_{u,v}|) \Big|
+\end{split}
+\end{equation*}
+where $\mathcal{F}$ denotes the discrete 2D-FFT. 
+
+Furthermore, because our targets involve localized morphological changes (such as the removal of a lizard's tail or head), a global Fourier transform may average out highly localized frequency discrepancies. To address this, we implement a partitioned spectral difference metric: the images are divided into a $2 \times 2$ grid (four quadrants), and the spectral difference is calculated independently for each block and then averaged. This allows us to precisely capture localized artifacting around the explicitly altered regions of the target shapes.
+
+
+
+\subsection*{Different Fitness Functions}
+% Setup = What is loss/fitness...
+% What losses we use - short description of each, why...?
+% All losses evaluated on the color change task using the best found parameters (from table X) of ....
+
+% Results? New section or not?
+
+% Loss function is a mathematical way of quantifying the error between a model's prediction and the actual target value. Similarly, a
+% A fitness function evaluates how good a candidate solution in a evaluation strategy is.
+% Both work similarly, just in different directions, and while we usually try to maximize one and minimize the other, in the settings of CMA-ES loss is fitness. 
+
+At each generation, every candidate perturbation matrix is evaluated by rolling out the NCA for a batch of states and computing a scalar distance between the generated output and the target image. CMA-ES then uses this to update its search distribution.
+%  focusing on lower loss regions on the parameter search space. Therefore, loss function plays an important role in determining what is better during optimization, with different loss functions leading to different results.
+
+Five different fitness functions were evaluated in total. All were evaluated on the same color change task across 500 generations using identical parameters found in table~\ref{tab:final_params}.
+Fitness functions were selected based on their relevance to this task, with MSE serving as the baseline, and evaluated using the evaluation metrics mentioned in earlier.
+
+
+
+\textbf{Mean Squared Error (MSE): } 
+MSE measures the average of the squared differences between the actual and predicted values.
+It is a pixel-wise fitness function that is applied to all 4 channels, where $x$ is the generated image and $t$ is the target image. 
+It squares the errors, giving more weight to larger errors, and is used as a baseline in this project.
+\begin{equation*}
+  \mathcal{L}_{\mathrm{MSE}}(x) = \frac{1}{HWC}
+  \sum_{h,w,c}\bigl(x_{hwc} - t_{hwc}\bigr)^2
+\end{equation*}
+
+
+\textbf{Huber: } 
+Huber loss \cite{huber1964robust} is a robust fitness function which combines MSE and MAE. 
+It uses MSE for small errors and switches to MAE for larger errors when $\delta$ is crossed.
+We use a small $\delta = 0.1$ threshold to use MSE for pixel errors smaller than 10\% of the full range and MAE for larger errors.
+\begin{equation*}
+  \ell_\delta(r) = \begin{cases}
+    \tfrac{1}{2}r^2 & |r| \leq \delta \\
+    \delta\!\left(|r| - \tfrac{1}{2}\delta\right) & |r| > \delta
+  \end{cases}
+\end{equation*}
+
+
+\textbf{Weighted RGBA: }
+This is a variant of the MSE function that gives a higher weight to the
+specified channels: $\mathcal{L} = \frac{1}{HWC}\sum_{h,w,c} w_c
+(x_{hwc} - t_{hwc})^2$. Weights were manually set to $w = 2$ for RGB and $w = 1$ for A.
+
+
+\textbf{Foreground-masked MSE: } %Like weighted RGBA, but this one is not about which channels matter more but about which location matters more...
+This fitness function is a spatially weighted variant of MSE that scales each pixel's contribution by its position in the image. 
+It works similarly to weighted RGBA, however, all channels are weighted equally, pixels inside the body contribute fully, but other pixels contribute less, with background pixels contributing only 20\%. 
+\begin{equation*}
+  \mathcal{L}_{\mathrm{fg}}(x) = \frac{1}{HWC}\sum_{h,w,c}
+  \bigl(0.2 + 0.8\,t_{hw,\alpha}\bigr)\cdot\bigl(x_{hwc} - t_{hwc}\bigr)^2
+\end{equation*}
+
+
+\textbf{SSIM: }
+As detailed in the Evaluation Metrics section, we also explore SSIM \cite{wang2004image} as an alternative fitness function to explicitly optimize for structural and perceptual similarity.
+\begin{equation*}
+\begin{split}
+  \mathcal{L}_{\mathrm{SSIM}}(x) &= 1 - \frac{1}{|W|}\sum_{w\in W} \\
+  &\quad \frac{(2\mu_x\mu_t + c_1)(2\sigma_{xt} + c_2)}{(\mu_x^2+\mu_t^2+c_1)(\sigma_x^2+\sigma_t^2+c_2)}
+\end{split}
+\end{equation*}
+
 
 \section*{Results}
-Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
+% Results. Ensure to perform a correct experimental analysis (e.g. repeated experiments, statistical analysis of results). Verbally describe your results in this section and make sure to reference the corresponding figures/tables.
+
+\subsection*{Experiment 1: Comparing our CMA-ES approach with their gradient-approach}
+\subsection*{1.1: Comparison after 30 Minutes runtime}
+
+While the gradient-based model reaches better results in the same time, the loss of the NCA-ES trained adversarial attack is not too far off (figure~\ref{fig:loss-graph}). 
+It is interesting to note that the gradient-based attack has a higher standard deviation than the evolved one.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.9\linewidth]{"optona & comparison output/loss graph"}
+	\caption{The best loss achieved during training and the averaged loss of the final model after training both of our implementation and the gradient-based implementation after 30 minutes of training time. 366 generations/4719 steps.}
+	\label{fig:loss-graph}
+\end{figure}
+
+
+% Do we need to show/disprove statistical significance here?
+To compare the optimization efficiency of the black-box CMA-ES attack against the gradient-based baseline, we 
+tracked the convergence of the $\log_{10}$ objective loss across three different independent variables, namely wall-clock time, 
+algorithmic iterations, and cumulative NCA state-steps. Given the fundamentally different mechanics of 
+population-based search versus gradient descent, relying on a single metric does not provide the full picture. 
+Wall-clock time serves as a practical benchmark for real-world adversarial feasibility; by this measure, 
+the evolutionary attack is highly competitive. Figure~\ref{fig:loss-plot-1} shows that the gradient-based baseline completes 
+significantly more update steps and converges to a marginally lower final loss than the CMA-ES attack.
+While the loss per iteration (figure~\ref{fig:loss-plot-2}) appears superficially comparable, this metric masks the differing computational payloads.
+A single CMA-ES iteration evaluates an entire population of candidates, whereas the gradient-based iteration evaluates a single mini-batch.
+The loss per cumulative NCA state-steps (figure~\ref{fig:other-loss-plot}) isolates forward-pass sample efficiency, highlighting that the CMA-ES attack requires 
+roughly an order of magnitude more simulation steps to achieve convergence compared to the gradient-based baseline.
+Thus, when analyzing the loss per iteration or per cumulative NCA state-step, the inherent sample inefficiency of the CMA-ES attack becomes apparent.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.85\linewidth]{"optona & comparison output/loss plot 1"}
+    \caption{Optimization trajectory measured by wall-clock time (approximately 30 minutes).}
+    \label{fig:loss-plot-1}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.9\linewidth]{"optona & comparison output/loss plot 2"}
+    \caption{Optimization trajectory measured by training iterations.}
+    \label{fig:loss-plot-2}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\linewidth]{"optona & comparison output/other loss plot"}
+    \caption{Optimization efficiency measured by cumulative NCA state-steps.}
+    \label{fig:other-loss-plot}
+\end{figure}
+
+
+
+\todo[inline]{aaron storied it up (text after) but its still a lot of images for little text around here, maybe put chunks from the texts before and after inbetween}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
+	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack.}
+	\label{fig:goalevolvedbackprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/grown_mutation_evolved_backprop"}
+	\caption{Left: fully grown lizard, original target image. Middle: CMA-ES attack on fully grown lizard. Right: gradient-based attack on fully grown lizard}
+	\label{fig:grownmutationevolvedbackprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/backprop"}
+	\caption{Gradient-based attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
+	\label{fig:backprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/evolved"}
+	\caption{Evolutionary attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
+	\label{fig:evolved}
+\end{figure}
+
+Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA \ref{fig:grownmutationevolvedbackprop} and the target image \ref{fig:goalevolvedbackprop}, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail) \ref{fig:only_blurred}.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/only_blurred.png"}
+	\caption{For reference: the target image transformed down and then up 4x with linear, none, and cubic interpolation algorithms in GIMP.}
+	\label{fig:only_blurred}
+\end{figure}
+
+Lastly for this comparison with both approaches running for equal time, we wanted to take a look at the final perturbation matrices.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/final perturbation matrices"}
+	\caption{Visualisations of the final perturbation matrices for the gradient baseline and our CMA-ES approach, both trained 30 minutes.}
+	\label{fig:final-perturbation-matrices}
+\end{figure}
+
+The changes from identity (not pictured here) are hard to see visually in the CMA-ES version, as they are comparatively tiny. The gradient baseline on the other hand has made much bigger changes to the starter perturbation matrix, as also validated by comparing the Euclidean distance between the perturbation matrices and the identity matrix. This is despite leading to comparable (if worse) results, see Figure \ref{fig:goalevolvedbackprop}.
+
+\subsubsection*{Experiment 1.2: Environmental Impact}
+
+To contextualize the computational cost and environmental footprint of different methods, we tracked carbon emissions and energy consumption 
+during the optimization process. For a fair comparison of convergence efficiency, each method was run until it reached a target log10 loss of -2.5.
+
+As detailed in Table \ref{tab:emissions-metrics} and illustrated in Figure \ref{fig:emissions-plot}, the gradient approach is substantially more 
+efficient. It successfully reached the target loss in roughly half the time and consumed approximately half the overall energy compared to the 
+evolutionary approach. 
+% In contrast, all of the evolutionary approaches exhausted the 600-generation limit with the white noise initialization far from
+% crossing the -2.5 threshold.
+\begin{table}[H]
+	\centering
+	\resizebox{\linewidth}{!}{
+		\begin{tabular}{lrrr}
+			\hline
+			Method & Emissions &Duration & Energy \\ 
+			\hline
+			CMA-ES & 0.015 & 1994.738 & 0.043 \\
+			% Gradient-start & 0.015 & 1981.945 & 0.043 \\
+			Gradient & 0.008 & 1024.074 & 0.022 \\
+			% White Noise & 0.015 & 1975.147 & 0.042 \\ 
+			\hline
+	\end{tabular}}
+	\caption{Environmental impact and computational cost of the evolutionary strategy and the gradient baseline. The table presents total carbon emissions in kgCO$_2$e, optimization duration in seconds, and overall energy consumed in kWh.}
+	\label{tab:emissions-metrics}
+\end{table}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/emissions_plot"}
+	\caption{Comparison of total carbon emissions and energy consumption breakdown (CPU, GPU, and RAM) across the evaluated methods.}
+	\label{fig:emissions-plot}
+\end{figure}
+
+
+\todo[inline]{aaron annotate/story it up}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/goal_evolved_backprop"}
+	\caption{Left: The target image for our attack. Middle: Lizard grown from pixel with CMA-ES attack (ours). Right: Lizard grown from pixel with gradient-based attack.}
+	\label{fig:goalevolvedbackprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/grown_mutation_evolved_backprop"}
+	\caption{Left: fully grown lizard, original target image. Middle: CMA-ES attack on fully grown lizard. Right: gradient-based attack on fully grown lizard}
+	\label{fig:grownmutationevolvedbackprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/backprop"}
+	\caption{Gradient-based attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
+	\label{fig:backprop}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/evolved"}
+	\caption{Evolutionary attacked Lizard during growing steps 0, 20, 40, 60, 80, 100, 120}
+	\label{fig:evolved}
+\end{figure}
+
+Visually, both the gradient-based attack and our lizard trained with CMA-ES produce noisier results than the trained NCA and the target image, which becomes obvious when looking at them closely, but not when looking at them from afar. In detail, our lizard has sharper, ragged edges and colours like the original green but also a darker blue shining through more. The gradient-attacked lizard has greater colour accuracy and superiour details (such as the position of the eyes \& the white line on the back), but seems a bit blurrier. That said, it is not as easy as to say that the gradient-based attack produces a blurred version of the target image, as a blurred version of the target image is of brighter colour, with cleaner fine details (such as the eyes and tail).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"optona & comparison output/only_blurred.png"}
+	\caption{For reference: the target image transformed down and then up 4x with linear, none, and cubic interpolation algorithms in GIMP.}
+	\label{fig:only_blurred}
+\end{figure}
+
+
+\subsection*{How long does it takes to recover from an attack: Perturbation On/Off}
+Following the same steps as Randazzo et al. \cite{randazzo2021adversarial} did in their experiments, we also explore how long it takes to recover from an attack by setting perturbation on and off.
+The visualization of the training run ran for 2500 steps while toggling perturbation off during steps 500-1000.
+A model trained for 500 steps with the MSE loss is used.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/perturbation_onoff.png"}
+	\caption{Images from the visualization of the training run at steps 100, 500, 515, 530, and 2500, with perturbation off from 500 to 1000, trained for 500 steps.}
+	\label{fig:perturbation_onoff}
+\end{figure}
+
+Figure \ref{fig:perturbation_onoff} displays the results at specific steps during the visualization of the training run. 
+Earlier steps are not displayed as Figure \ref{fig:evolved} already depicts them. What is important to note is that by step 60 the lizard is fully initialized, with step 500 here serving purely as a baseline. 
+Turning perturbation off, within 15 steps the lizard loses most of the blue color, and by step 530 the blue is entirely gone.
+By step 625 the image grows sharper, and by step 925 we can notice its individual toes, making it almost indistinguishable from the original. 
+Turning the perturbation back on, the image behaves similarly as it did in the beginning. However, at step 1800 it begins mutating, creating a new body by step 2500.
+
+In the end, it only takes the model several steps to regain its original color and several hundred steps to return to its original state, demonstrating its impressive regenerating capabilities.
+While it began mutating, it is not uncommon. We attribute this to the fact that the model has only been trained for 500 steps. 
+
+
+\subsection*{Experiment 2: Change Lizard to Butterfly}
+In order to explore the capabilities of the NCA model and the CMA-ES framework, we tried to change the original lizard into a butterfly.
+For this, we only needed to change the target image.
+
+Figure \ref{fig:butterfly-steps} displays 5 images from the visualization of the training run at 5 different steps, along with the target image for comparison.
+The first image at step 120 was selected because it had the most butterfly-like shape. The overall color distribution also approximates the the target image distribution, however, the details and patterns are not present.
+At 500 steps, the butterfly shape is somewhat lost. 
+After 500 steps, perturbation is turned off and the NCA starts regenerating. But because of the strange shape and pixel distribution, 2 lizards are regenerated.
+After 1000 steps, perturbation is turned back on. Again, after 120 steps the shape is the most butterfly-like, however, this time there are 2 lizards so we end up with 2 overlapping butterflies. At the end at 2500 steps the NCA again loses its shape in a similar fashion as at 500 steps.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/butterlfly_steps.png"}
+	\caption{Images from the visualization of the training run at steps 120, 500, 1000, 1120, and 2500, with perturbation off from 500 to 1000, trained for 600 steps. Target image included.}
+	\label{fig:butterfly-steps}
+\end{figure}
+
+While the target image was not reached, it can be concluded that the task succeeded to some degree as CMA-ES managed to approximate the butterfly, both its shape and its orange color. 
+This also demonstrates the CMA-ES black-box capabilities and the NCA's impressive regenerative powers. 
+While the results are not exactly perfect, had the model been trained for longer we expect the outcome to be slightly better.
+
+
+\subsection*{Experiment 3: How long it takes to recover from an attack: Perturbation On/Off}
+\todo[inline]{finish subsection}
+Following the same steps as X did in their experiments, we also explored how long it takes to recover from an attack by setting perturbation on and off.
+
+
+
+\subsection*{Experiment 4: Different starter perturbation matrices}
+Instead of starting from identity as attack matrix, we also tried starting from white noise \& the 8000 step gradient-optimized matrix. We used the same hyperparameter values we found using optuna to train a ~500-generation attack starting from the identify matrix.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/continued training_clean"}
+	\caption{The loss of the gradient approach (theirs) in purple trained for 8000 steps, with the CMA-ES approach (ours) taking its final perturbation matrix as starter.}
+	\label{fig:continued-trainingclean}
+\end{figure}
+
+There is initially a significant jump upwards in loss after the switch to CMA-ES, likely caused by sigma0 being too high and too big steps being taken away from the already decent local optimum. The loss does recover though to a similar level after 500 generations.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/loss by matrix"}
+	\caption{The log10 loss of 3 training runs against the baseline: starting with the identity matrix (default), the already gradient-approach optimized matrix, and one filled with gaussian noise.}
+	\label{fig:loss-by-matrix}
+\end{figure}
+
+While the model trained starting from the identity matrix and the model trained from the gradient-result-matrix continued improving, the white-noise matrix start only managed to not be worse than producing a white canvas and got stuck there. The baseline here is the loss for the starter image of white canvas with a single black pixel in the middle, so very similar to a fully white canvas.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/loss graph"}
+	\caption{The best loss during training and the average final loss after growing a full lizard for each of the starter matrices and the gradient approach (theirs) for comparison.}
+	\label{fig:matrix-loss-graph}
+\end{figure}
+
+In averaged loss after growing a full lizard from a pixel, the random matrix start sits near the empty baseline. Identity comes third place at 0.0040, gradient-only (theirs) is second at 0.0038 (+- 0.000086) and the best result comes from further training the gradient output with CMA-ES at 0.0036 (+- 0.000177). Keep in mind that the gradient-trained and CMA-ES trained results here are not directly comparable, as they are not matched in computation time or another way.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/lizard_comparison"}
+	\caption{Target (nr.1) and gradient-trained (nr. 4) lizards among CMA-ES trained ones. The third one started training on the gradient-trained matrix. }
+	\label{fig:lizardcomparison}
+\end{figure}
+
+The output from the white-noise trained matrix is just white, while the other ones clearly show a lizard. The Lizard trained from the gradient-trained baseline matrix seems to have the best colour accuracy, while the gradient-trained one has the most detailed white spine.
+
+
+\subsubsection*{Experiment 4 results graded by different evaluation metrics}
+
+\todo[inline]{needs description + see earlier todo. I think the grading rubric is better suited to (additionally?) be in experiment 1}
+
+\begin{table}[H]
+	\centering
+	% \renewcommand{\arraystretch}{1.2}
+	\resizebox{\linewidth}{!}{
+		\begin{tabular}{lcccc}
+			\hline
+			Method & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\downarrow$\\ 
+			\hline
+			Identity & 0.932 & 0.081 & 0.437 & 0.47\\ 
+			Gradient-start &  0.941 &  0.070 &  0.435 &  0.53\\ 
+			Gradient & 0.934 & 0.074 & 0.439 & 0.60\\ 
+			White Noise & 0.857 & 0.551 & 1.488 & 0.00 \\ 
+			\hline
+	\end{tabular}}
+	\caption{Quantitative comparison of evaluation metrics across different attack initializations and the gradient baseline. Higher SSIM, lower LPIPS, lower 2D-FFT, and lower TSS indicate better visual fidelity to the target image.}
+	\label{tab:quantitative-metrics}
+\end{table}
+
+\subsubsection*{Experiment 4 Addition: Training a gradient-approach attack starting with a random perturbation matrix}
+
+As we were interested in how the gradient-based approach would handle a random starter permutation matrix in comparison, we additionally also ran a white noise start with it. Instead of producing white outputs, it looked like this after 8000 training steps:
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/growth"}
+	\caption{Steps 0, 20, 40, 60, 80, 100, 120 of a gradient-based model (theirs) trained for 8000 steps starting with a gaussian permutation matrix.}
+	\label{fig:growth}
+\end{figure}
+
+With a grown-image loss of 4.550461 (+- 0.201547) it never even came close to the baseline of one starter pixel on a white background as shown in Figure \ref{fig:matrix-loss-graph} and has a much higher loss than the rest.
+
+
+\subsection*{Experiment 5: Different Fitness Functions}
+Table \ref{tab:losses} displays the evaluation metrics for the explored fitness functions. 
+
+\begin{table}[H]
+\centering
+\resizebox{\linewidth}{!}{%
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+Fitness Functions  & SSIM $\uparrow$ & LPIPS $\downarrow$ & 2D-FFT $\downarrow$ & TSS $\downarrow$\\ %Blue?
+\midrule
+MSE  & 0.925  & 0.096 & 0.541& 0.47\\
+Huber  & 0.935  & 0.097 & 0.495 & 0.47 \\
+Weighted RGBA  & 0.934  & 0.103 & 0.544 & 0.47 \\
+Foreground-masked MSE  & 0.927  & 0.117 & 0.576 & 0.27 \\
+SSIM $\star$ & 0.950 & 0.197 & 0.362 & 0.40 \\ % Didnt turn blue. Green lizard probably already satisfies some SSIM liminance, contrast, structure... 
+% Goodheart's law = when measure becomes target it stops being a good measure...? 
+\bottomrule
+\end{tabular}}
+\caption{Fitness functions with their evaluation metrics. (lower) or (higher) determine if a smaller or larger scores are better. $\star$ means that the lizard did not turn blue.}
+\label{tab:losses}
+\end{table}
+
+
+As can be seen from the table, all losses perform similarly well. However, out of all the losses, Huber performs the best overall, achieving the highest SSIM of 0.9349, the lowest FFT of 0.4949, and the second lowest LPIPS of 0.0972. 
+
+While quantitative metrics are a good indicator of performance, they do not fully reflect the actual results. In order to do that, we need to also inspect the produced final images displayed in Figure~\ref{fig:loss_mean_tgt}, which shows the mean grown image averaged over 8 rollouts using the final perturbation matrix for each of the losses, along with the target image.
+All losses, except the SSIM, can successfully recolor the lizard, however, there are visible differences.
+Huber produces the sharpest looking result consistent with its performance across all metrics, but the limbs and the head have green residue and the edges of the body are much darker compared to others.
+MSE produces a similar result with slightly better colors. Although it is less sharper and lacks behind in some metrics, the results look to be on par with Huber. 
+The weighted RGBA and the Foreground-masked MSE both produce noticeably blurry results. Comparing the two, weighted RGBA better handles color and does not produce pink eyes.
+Lastly, although the SSIM has technically the highest SSIM and lowest FFT, it fails the task of turning the lizard blue. This is most likely due to fact that the green lizard to a large degree already satisfies its measures of luminance, contrast, and structure.
+This is an example of a phenomenon called Goodhart's law \cite{strathern1997improving} which states that when a measure becomes a target, it ceases to be a good measure.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/losses_mean_target.png"}
+	\caption{Mean grown image averaged over 8 rollouts using the final perturbation matrix for each of the 5 losses, along with the target image. }
+	\label{fig:loss_mean_tgt}
+\end{figure}
+
+
+
+Overall, Huber provides the best results closest to the target, both quantitatively and visually. 
+The results show that the selection of loss function affects the quality of the output and the attack in general. 
+
+
+
 
 
 \section*{Discussion}
-Discussion. A thorough discussion based on the analysis of the results, including limitations and future directions (What additional enhancements could be made? What future work should be done?)
+
+Compared to the original backpropagation version, our NCA-ES tuned adversarial attack is less effective in the same time. That said, the evolutionary version is in our opinion surprisingly not that far behind and produces results which are roughly on the same qualitative level as the ones presented by \cite{randazzo2021adversarial}. 
+
+Comparing these two methods highlights a tradeoff between threat models and overall resource costs. 
+Because CMA-ES evaluates entire populations instead of using gradients, it requires roughly ten times more forward simulation 
+steps. Despite this computational penalty, the evolutionary attack remains competitive in practical wall clock time. However, 
+when we measure the environmental footprint required to reach a specific target loss of -2.5 (on a log$_10$ scale), the differences become obvious. 
+The gradient approach is significantly more efficient. It reaches the target in half the time, uses half the total energy, 
+and produces half the carbon emissions compared to the CMA-ES method. While the gradient baseline is greener and faster, 
+it is less stable. We observed that the gradient attack produces a higher standard deviation in its final loss. 
+Gradient descent quickly exploits local information but often gets trapped in local minima based on its starting conditions. 
+CMA-ES avoids this issue by continuously sampling a broader search space. This guides the model toward more stable solutions 
+and results in less variance across different runs.
+
+\todo[inline]{put qualitative results}
+
+
+Now CMA-ES and the original version are both relatively successfully optimizing the same loss function, and getting to similar results with differing amounts of effort. But there are still differences in the results they produce. The end result of the gradient-optimized attack is an image with more details, but it overemphasizes the blue and is somewhat blurry. The CMA-ES trained adversarial attack leads to a more jagged image that perhaps overemphasizes the green of the edges and is more jagged and grainy, but not washed out.
+
+Crucially, both optimizers optimize in broadly the same direction and our version can further improve on top of the final results by the original approach. Seeing that CMA-ES does not lead away from the optimum but further guides toward it validates our approach. The results would likely be even better if we started the run (see figure \ref{fig:continued-trainingclean}) with a lower $sigma0$ instead of the priorly found optimal values for full training, so that it hadn't initially taken disproportionately big steps out of the local optimum. It is interesting though that the results of both optimizers do clearly have distinct characteristic looks given the same training objective, meaning they do not optimize in precisely the same direction.
+
+Our approach does not manage to recover from being initialized from a fully gaussian starter matrix, but instead produces a completely white image. These results are very similar to when we first started experimenting with our approach and, underestimating the power of the permutation matrix being multiplied once per growth step for a total of 64-96 times, set $sigma0$ too high. The big implication of small changes likely lock the model in a very unfavorable local optima that it cannot manage to climb out of, as every single step from it makes the results even worse. The standard identity matrix starter is a forgiving start, as it preserves all features of the lizard, with only the colour needing changing, so a step-by-step improvement is possible.
+
+
+\todo[inline]{write about all the other results like going from lizard to butterfly}
+\todo[inline]{limitations more clearly}
+\todo[inline]{future directions \& additional possible enhancements}
 
 
 \section*{Conclusion}
 Conclusions. Is your line of work worth pursuing?
 
+
+ we ball
+
+
 \newpage
+
+\begin{thebibliography}{9}
+	
+	\bibitem{mordvintsev2020growing}
+	A.~Mordvintsev, E.~Randazzo, E.~Niklasson, and M.~Levin,
+	``Growing neural cellular automata,''
+	\textit{Distill}, vol.~5, no.~2, e23, 2020.
+	[Online]. Available: \url{https://distill.pub/2020/growing-ca}
+	doi: \texttt{10.23915/distill.00023}.
+	
+	\bibitem{xu2024adanca}
+	Y.~Xu, T.~Zhang, and S.~Süsstrunk,
+	``AdaNCA: Neural cellular automata as adaptors for more robust vision transformer,''
+	\textit{Advances in Neural Information Processing Systems}, vol.~37, pp.~25709--25746, 2024.
+	
+	\bibitem{randazzo2021adversarial}
+	E.~Randazzo, A.~Mordvintsev, E.~Niklasson, and M.~Levin,
+	``Adversarial reprogramming of neural cellular automata,''
+	\textit{Distill}, vol.~6, no.~5, e00027-004, 2021.
+	[Online]. Available: \url{https://distill.pub/selforg/2021/adversarial}
+	doi: \texttt{10.23915/distill.00027.004}.
+	
+	\bibitem{cavuoti2022adversarial}
+	L.~Cavuoti, F.~Sacco, E.~Randazzo, and M.~Levin,
+	``Adversarial takeover of neural cellular automata,''
+	in \textit{Artificial Life Conference Proceedings 34}, 2022, p.~38.
+	MIT Press.
+	
+	\bibitem{hansen2001cmaes}
+	N.~Hansen and A.~Ostermeier,
+	``Completely derandomized self-adaptation in evolution strategies,''
+	\textit{Evolutionary Computation}, vol.~9, no.~2, pp.~159--195, 2001.
+	
+	
+	\bibitem{greydanus2022growing}
+	S.~Greydanus,
+	``Studying growth with neural cellular automata,''
+	blog post and PyTorch implementation, 2022.
+	[Online]. Available: \url{https://greydanus.github.io/2022/05/24/studying-growth}
+
+	\bibitem{wang2004image}
+    Z.~Wang, A.~C.~Bovik, H.~R.~Sheikh, and E.~P.~Simoncelli,
+    ``Image quality assessment: from error visibility to structural similarity,''
+    \textit{IEEE Transactions on Image Processing}, vol.~13, no.~4, pp.~600--612, 2004.
+    
+    \bibitem{zhang2018unreasonable}
+    R.~Zhang, P.~Isola, A.~A.~Efros, E.~Shechtman, and O.~Wang,
+    ``The unreasonable effectiveness of deep features as a perceptual metric,''
+    in \textit{Proceedings of the IEEE conference on computer vision and pattern recognition (CVPR)}, 2018, pp.~586--595.
+
+	\bibitem{huber1964robust}
+	P.~J. Huber,
+	``Robust Estimation of a Location Parameter,''
+	\emph{The Annals of Mathematical Statistics},
+	vol.~35, no.~1, pp.~73--101, 1964.
+	[Online]. Available: \url{https://doi.org/10.1214/aoms/1177703732}
+
+	\bibitem{strathern1997improving}
+	M.~Strathern,
+	``‘Improving ratings’: audit in the British University system,''
+	\emph{European Review},
+	vol.~5, no.~3, pp.~305--321, 1997.
+	[Online]. Available: \url{https://doi.org/10.1002/(SICI)1234-981X(199707)5:3<305::AID-EURO184>3.0.CO;2-4}
+
+
+\end{thebibliography}
+
 \appendix
-\section*{Appendix}
-
-
-\subsection*{Bibliography}
-
-
-
-
-\subsection*{Author Contribution}
+\section*{Author Contribution}
 Author contribution: describe each team member contributions to the project.
 
 
-\section{Code}
-Include a link to a github repository with implementation of algorithms developed and used during the project. The repository should include
-source code,
-all data necessary to run the program (think instructions for installing external software, package versions/virtual environment, etc);
-a short manual describing how to use/run the program;
-a sample run, screenshot, or other indication of system behavior.
+\section*{Code}
+%Include a link to a github repository with implementation of algorithms developed and used during the project. The repository should include
+%source code,
+%all data necessary to run the program (think instructions for installing external software, package versions/virtual environment, etc);
+%a short manual describing how to use/run the program;
+%a sample run, screenshot, or other indication of system behavior.
 
+https://github.com/DavidMagaram/NaturalComputing 
+
+
+
+\section*{Appendix}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/visuals1"}
+	\caption{Results from Experiments starting with different matrixes.}
+	\label{fig:visuals1}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/visuals2"}
+	\caption{}
+	\label{fig:visuals2}
+\end{figure}
+
+
+Further graphics plots/graphics from training a gradient-based attack starting on a random starter perturbation matrix:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/loss history"}
+	\caption{}
+	\label{fig:loss-history}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/mutated grown lizard"}
+	\caption{}
+	\label{fig:mutated-grown-lizard}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/myplot"}
+	\caption{}
+	\label{fig:myplot}
+\end{figure}
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=1\linewidth]{"starter matrices experiment/random starter matrix gradient based/target vs grown lizard"}
+	\caption{}
+	\label{fig:target-vs-grown-lizard}
+\end{figure}
+
+
+
+
+
+\end{multicols}
+
+\begin{table}[H]
+    \centering
+    % \renewcommand{\arraystretch}{1.5}
+    \begin{tabular}{| p{0.15\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} | p{0.2\linewidth} |}
+        \hline
+        \textbf{Feature} & \textbf{1 - Poor (Highly Degraded)} & \textbf{2 - Fair (Significant Artifacts)} & \textbf{3 - Good (Minor Flaws)} & \textbf{4 - Excellent (Target Match)} \\ \hline
+        
+        \textbf{Granularity} & 
+        Edges are highly unstable; explosive noise, or completely blurred boundaries. & 
+        Significant noise or artifacting around the borders; toes are indistinguishable blobs. & 
+        Edges are mostly clean. & 
+        Crisp pixelated edges; distinct toes/limbs, with minimal to no stray pixels. \\ \hline
+        
+        \textbf{Bodily Parts} & 
+        Unrecognizable mass; missing a tail or multiple limbs. & 
+        Recognizable as a lizard, but severely deformed (e.g., missing one leg, severely stunted/bloated tail). & 
+        All four limbs and tail are present; minor structural anomalies or slightly incorrect proportions. & 
+        Excellent anatomical structure; four distinct legs with toes, a clearly defined head, and a smoothly curving tail. \\ \hline
+        
+        \textbf{Blueness} & 
+        Deep blue is largely absent, completely overtaken by noise, or shifted to the wrong hue. & 
+        Blue is present but patchy, washed out, or heavily mixed with incorrect stray colors. & 
+        Body is predominantly the correct deep blue; minor color bleeding or slight noise in the torso. & 
+        Solid, cohesive deep blue body that contrasts sharply with the dorsal stripe and the head. \\ \hline
+        
+        \textbf{Dorsal Stripe} & 
+        Stripe is completely missing or unrecognizable. & 
+        Stripe is visible but heavily fragmented, scattered, or significantly the wrong color/thickness. & 
+        Stripe is visible and mostly continuous down the back, but may have minor interruptions or jaggedness. & 
+        Distinct, continuous pale white stripe running cleanly from the base of the head down the spine. \\ \hline
+        
+        \textbf{Head Features} & 
+        Head is indistinguishable from the body; eyes are completely missing. & 
+        Head is somewhat distinct, but eyes are blurry, merged into a single blob, or missing pupils. & 
+        Head shows lighter coloration; two eyes are present but slightly distorted or asymmetric. & 
+        Head is distinctively lighter (light purple/blue); two clear white eyes with distinct black pupils are perfectly placed. \\ \hline
+    \end{tabular}
+    \caption{Visual Fidelity Rubric for the NCA Lizard Target Image.}
+    \label{tab:visual-rubric}
+\end{table}
 
 \end{document}
