@@ -582,7 +582,6 @@ Crucially, both optimizers optimize in broadly the same direction and our versio
 Our approach does not manage to recover from being initialized from a fully gaussian starter matrix, but instead produces a completely white image. These results are very similar to when we first started experimenting with our approach and, underestimating the power of the permutation matrix being multiplied once per growth step for a total of 64-96 times, set $sigma0$ too high. The big implication of small changes likely lock the model in a very unfavorable local optima that it cannot manage to climb out of, as every single step from it makes the results even worse. The standard identity matrix starter is a forgiving start, as it preserves all features of the lizard, with only the colour needing changing, so a step-by-step improvement is possible.
 
 
-\todo[inline]{write about all the other results like going from lizard to butterfly}
 Experiment 2, the lizard to butterfly experiment, demonstrates that the black-box attack can be used for other types of attack, just by simply swapping the target. 
 CMA-ES can approximate the butterfly"s shape and color distribution to some degree and grow back to its original state when perturbation is turned off. 
 While it mutates one perturbation is applied again, it shows that even if the NCA's underlying dynamics are of a lizard we can steer the output towards a different target without permanently changing what the model has learned. 
@@ -598,18 +597,18 @@ The SSIM loss achieved an even better SSIM and 2D-FFT scores than Huber loss did
 Although Huber loss is the best overall loss, all experiments used the baseline MSE loss. 
 Furthermore, these loss functions were selected because of their relation to the color change task. Other loss functions might work better for other experiments such as limb removal.
 
-\todo[inline]{LIMITATIONS (rubric D4): write a dedicated paragraph covering: (1) $M$ restricted to symmetric matrices (limits the reachable perturbation space); (2) evaluated on a single NCA model and a small set of targets (lizard color-change, butterfly); (3) ~10x sample/compute inefficiency and higher energy vs. the gradient baseline; (4) no explicit query-budget accounting, so the "realistic black-box attacker" framing is only partially validated; (5) failure to recover from a gaussian/white-noise starter matrix.}
-\todo[inline]{FUTURE WORK (rubric D5): write a dedicated paragraph covering: asymmetric/structured perturbation matrices; query-efficient ES variants to close the sample-efficiency gap; evaluation across other NCA models/targets; a true query-budget-constrained threat model; transferability of evolved perturbations across models; combining gradient warm-start + CMA-ES refinement (link to Exp. 4 result).}
+%\todo[inline]{LIMITATIONS (rubric D4): write a dedicated paragraph covering: (1) $M$ restricted to symmetric matrices (limits the reachable perturbation space); (2) evaluated on a single NCA model and a small set of targets (lizard color-change, butterfly); (3) ~10x sample/compute inefficiency and higher energy vs. the gradient baseline; (4) no explicit query-budget accounting, so the "realistic black-box attacker" framing is only partially validated; (5) failure to recover from a gaussian/white-noise starter matrix.}
+%\todo[inline]{FUTURE WORK (rubric D5): write a dedicated paragraph covering: asymmetric/structured perturbation matrices; query-efficient ES variants to close the sample-efficiency gap; evaluation across other NCA models/targets; a true query-budget-constrained threat model; transferability of evolved perturbations across models; combining gradient warm-start + CMA-ES refinement (link to Exp. 4 result).}
 
 
-\todo[inline]{Is this (below) relevant? Or maybe for future work?}
+%\todo[inline]{Is this (below) relevant? Or maybe for future work?}
 
-There are several directions the future work could follow. Other than addressing the stated limitations and issues in the previous paragraphs, future work should explore asymmetrical perturbation matrix.
-An asymmetric perturbation matrix would allow for a wider search space and different resulting attack strategies. 
-
-Unlike Randazzo et al. \cite{randazzo2021adversarial}, we have not observed any shifts or traversing in our experiments, except of a couple of mutations.
-While we intended to follow and replicate their experiments with our black-box approach, we have not tried and implemented all of them. The shifts and traversing seems to only happen when combining multiple perturbations at the same time.
-Future work should explore and replicate these other experiments as well and see how the black-box model compares. 
+Other than addressing the stated limitations and issues in the previous paragraphs, there are several directions the future work could follow. 
+It would be interesting to explore asymmetrical perturbation matrix as it would allow for a wider search space and different resulting attack strategies.
+Improving efficiency is also crucial as CMA-ES currently needs roughly 10 times more NCA forward passes than the gradient-based baseline. Other strategies such as gray-box attacks, natural evolution strategies, or other approaches could reduce the cost. 
+Furthermore, we have not fully replicated the other experiments by Randazzo et al. \cite{randazzo2021adversarial}, such as the removal of limbs, combining multiple perturbations at the same time, and even adversarial injections.
+Doing so would involve a different parameter configuration setting and different fitness function and more. While the black-box model performed well so far, and we believe it would perform well on these task as well, it would be interesting to see how well it compares.
+Therefore, future work should explore and replicate these other experiments as well and see how the black-box model compares. 
 
 
 \section*{Conclusion}
@@ -619,7 +618,7 @@ Conclusions. Is your line of work worth pursuing?
 Only white-box attacks explored. White-box is not a realistic adversary (biological...) (no access to internals).
 So: It is not as safe as assumed/claimed. Black-box attack also works and Xu et al. should asses the practical security risk of using NCAs as defensive layers...}
 
- we ball
+we ball
 
 
 \newpage
