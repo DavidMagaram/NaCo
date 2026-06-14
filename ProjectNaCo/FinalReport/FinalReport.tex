@@ -101,13 +101,7 @@ For the initial standard deviation ($\sigma_0$), which dictates the initial sear
 During CMA-ES training, the NCA is rolled out for a randomly sampled number of steps in $[64, 96]$ per generation. For evaluation, a fixed 96 steps are used.
 At each generation, the CMA-ES produced population of 64 candidate vectors. Each candidate is evaluated by rolling out the NCA from a batch of \texttt{batch\_size}$=4$ states taken from a sample pool of 1024 states and averaging the resulting loss. 
 We apply step-size decay to avoid making disruptive jumps during search. There, $\sigma$ is multiplied by \texttt{decay\_factor} $= 0.9$ every \texttt{decay\_freq} $= 175$ generations. 
-The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps depicted in Figure \ref{fig:optuna1} and Figure \ref{fig:optuna21} (Figures \ref{fig:optuna1}, \ref{fig:optuna11}, \ref{fig:optuna2} and \ref{fig:optuna21} can be found in the \ref{Appendix}.
-
-Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 4 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
-Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optuna sweep. It reveals that batch\_size is the most important hyperparameter by a significant amount.  
-In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous Optuna sweep were re-introduced, such as batch\_size 4, so we could find the remaining best hyperparameters. 
-This run favored population size of 64, a higher sigma0, and a higher decay frequency. 
-
+The chosen hyperparameters were selected first by manual experiments, but later by 2 narrowing Optuna sweeps detailed in Appendix \hyperref[appendix:a]{A}.
 
 Based on the two Optuna sweeps, our final algorithm uses the parameters displayed in table \ref{tab:final_params}.
 
@@ -644,7 +638,7 @@ Conclusions. Is your line of work worth pursuing?
 
 \end{thebibliography}
 
-\appendix
+% \appendix
 \section*{Author Contribution}
 Author contribution: describe each team member contributions to the project.
 
@@ -664,13 +658,29 @@ https://github.com/DavidMagaram/NaturalComputing
 \end{multicols}
 
 \appendix
-\section{Appendix: Optuna visualizations}
+\section*{Appendix A: Hyperparameter Optimization using Optuna}
 \label{appendix:a}
+
+We used the Optuna library to find the best hyperparameters for the CMA-ES attack. We divided the search into two consecutive 
+sweeps to manage computational time. The first sweep ran thirty trials over twenty minutes and applied early pruning after five 
+minutes to stop bad runs. Figure \ref{fig:optuna1} shows that this initial search favored a batch size of 4 and a population 
+size of 32 or 64. A higher decay frequency also performed better. Figure \ref{fig:optuna11} confirms that batch size was the most 
+important hyperparameter by a large margin.
+
+For the second sweep, we narrowed the search space. We fixed the batch size to 4 based on the previous results to tune the remaining 
+parameters. This second sweep ran twenty trials over twenty minutes and again used early pruning at five minutes. As shown in 
+Figure \ref{fig:optuna2}, this run favored a population size of 64, a higher initial standard deviation, and a higher decay frequency. 
+Figure \ref{fig:optuna21} shows the importance of these remaining parameters.
+
+% Figure \ref{fig:optuna1} displays that the run clearly favored a batch size of 4 and population size of 32 or 64. It can also be said that larger moderate decay frequency was more favorable than lower one.
+% Figure \ref{fig:optuna11} shows the hyperparameter importance for the first Optuna sweep. It reveals that batch\_size is the most important hyperparameter by a significant amount.  
+% In the second sweep in Figure \ref{fig:optuna2}, the winners from the previous Optuna sweep were re-introduced, such as batch\_size 4, so we could find the remaining best hyperparameters.
+% This run favored population size of 64, a higher sigma0, and a higher decay frequency.
 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna1"}
-	\caption{First optuna sweep. It ran 30 times in 20 minutes with early pruning after 5 minutes.}
+	\caption{Highlighting the most favorable parameters within the thirty trials of the first Optuna sweep.}
 	\label{fig:optuna1}
 \end{figure}
 \begin{figure}[H]
@@ -682,7 +692,8 @@ https://github.com/DavidMagaram/NaturalComputing
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=1\linewidth]{"optona & comparison output/optuna2"}
-	\caption{Second optuna sweep with less options as the winners from the first round were re-introduced. It ran 20 times in 20 minutes with early pruning after 5 minutes.}
+	\caption{Second optuna sweep with less options as the winners from the first round were re-introduced. This visual 
+	highlights the most favorable parameters within the twenty trials.}
 	\label{fig:optuna2}
 \end{figure}
 \begin{figure}[H]
@@ -693,7 +704,7 @@ https://github.com/DavidMagaram/NaturalComputing
 \end{figure}
 
 
-\section{Appendix: Additional Images for Experiment 4}
+\section*{Appendix B: Additional Images for Experiment 4}
 \label{appendix:b}
 
 
@@ -712,7 +723,7 @@ https://github.com/DavidMagaram/NaturalComputing
 
 
 
-\section{Appendix: Additional Images for Experiment 4 Addition}
+\section*{Appendix C: Additional Images for Experiment 4 Addition}
 \label{appendix:c}
 
 
@@ -744,7 +755,7 @@ Further graphics plots/graphics from training a gradient-based attack starting o
 \end{figure}
 
 
-\section{Appendix: Visual Fidelity Rubric}
+\section*{Appendix D: Rubric for the Target-Specific Semantic Score (TSS)}
 \label{appendix:d}
 
 
