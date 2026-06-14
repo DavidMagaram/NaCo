@@ -285,7 +285,7 @@ Thus, when analyzing the loss per iteration or per cumulative NCA state-step, th
 
 
 % \todo[inline]{aaron storied it up (text after) but its still a lot of images for little text around here, maybe put chunks from the texts before and after inbetween}
-We evaluate the visual results of both attacks under two different conditions. Figure~\ref{fig:goalevolvedbackprop} shows the results when the 
+Additionally, we evaluate the visual results of both attacks under two different conditions. Figure~\ref{fig:goalevolvedbackprop} shows the results when the 
 perturbation matrix is applied from a single seed pixel to grow the target shape. Figure~\ref{fig:grownmutationevolvedbackprop} shows 
 how the attacks behave when applied to a fully grown original NCA lizard to mutate its existing structure. Figure~\ref{fig:attack-comparison} 
 further details the step by step growth process of both attacks over 120 simulation steps.
@@ -337,9 +337,9 @@ That said, it is not as easy as to say that the gradient-based attack produces a
 	\label{fig:only_blurred}
 \end{figure}
 
-Lastly for this comparison with both approaches running for equal time, we wanted to take a look at the final perturbation matrices.
+Furthermore, we analyze the mathematical differences in the final perturbation matrices.
 
-The changes from identity (not shown in Figure \ref{fig:goalevolvedbackprop}) are hard to see visually in the CMA-ES version, as they are comparatively tiny. However, in figure \ref{fig:goalevolvedbackprop} we see that the gradient baseline has made much bigger changes to the starter perturbation matrix, as also validated by comparing the Euclidean distance between the perturbation matrices and the identity matrix. This is despite leading to comparable (if worse) results.
+The changes from identity (not shown in Figure \ref{fig:final-perturbation-matrices}) are hard to see visually in the CMA-ES version, as they are comparatively tiny. However, in figure \ref{fig:final-perturbation-matrices} we see that the gradient baseline has made much bigger changes to the starter perturbation matrix, as also validated by comparing the Euclidean distance between the perturbation matrices and the identity matrix. This is despite leading to comparable (if worse) results.
 
 \begin{figure}[H]
 	\centering
@@ -347,6 +347,15 @@ The changes from identity (not shown in Figure \ref{fig:goalevolvedbackprop}) ar
 	\caption{Visualisations of the final perturbation matrices for the gradient baseline and our CMA-ES approach, both trained 30 minutes.}
 	\label{fig:final-perturbation-matrices}
 \end{figure}
+
+Finally, Table \ref{tab:quantitative-metrics} presents the quantitative evaluation of both attack methods. The structural similarity 
+(SSIM) scores are nearly identical, showing that both methods recover the broad spatial structure of the target image equally well. 
+However, the gradient baseline performs better on the Learned Perceptual Image Patch Similarity (LPIPS) and the Target Specific Score 
+(TSS). This aligns with our visual observation that the gradient attack better reconstructs semantic features like the eyes and the 
+dorsal stripe. Conversely, the CMA-ES approach achieves a slightly lower 2D-FFT score. This suggests that while the evolutionary 
+approach struggles with specific target traits, it introduces slightly less high frequency structural noise into the final grid than 
+the gradient method. Overall, the quantitative metrics confirm that the black box attack produces highly competitive results that 
+closely follow the gradient baseline.
 
 \begin{table}[H]
 	\centering
@@ -395,7 +404,7 @@ evolutionary approach.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\linewidth]{"optona & comparison output/emissions_plot"}
+	\includegraphics[width=1\linewidth]{"optona & comparison output/emissions_plot"}
 	\caption{Comparison of total carbon emissions and energy consumption breakdown (CPU, GPU, and RAM) across the evaluated methods.}
 	\label{fig:emissions-plot}
 \end{figure}
